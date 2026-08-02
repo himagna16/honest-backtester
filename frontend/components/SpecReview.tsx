@@ -37,6 +37,12 @@ export default function SpecReview({
   const [showJson, setShowJson] = useState(false);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Local telemetry (Gap #11): card views minus confirms = abandonment rate.
+  useEffect(() => {
+    api("/api/event", { method: "POST", json: { type: "ui_spec_card_shown" } })
+      .catch(() => undefined);
+  }, []);
+
   useEffect(() => {
     if (debounce.current) clearTimeout(debounce.current);
     debounce.current = setTimeout(() => {

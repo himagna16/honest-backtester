@@ -5,7 +5,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { API_BASE, api } from "@/lib/api";
 import type { AuditFinding, ReportEnvelope } from "@/lib/types";
 import { startRun } from "@/lib/run";
 import RunProgress from "@/components/RunProgress";
@@ -66,10 +66,19 @@ export default function ReportPage({
 
   return (
     <div>
-      <p className="faint">
-        {r.spec.name as string} · {r.data.effective_start} → {r.data.effective_end} ·
-        data as of {r.data.as_of}{r.data.stale ? " (cached)" : ""} ·
-        run {r.run?.id}{r.run?.replay_of ? ` (snapshot replay of ${r.run.replay_of})` : ""}
+      <p className="faint" style={{ display: "flex", gap: "0.8rem",
+                                    flexWrap: "wrap", alignItems: "center" }}>
+        <span>
+          {r.spec.name as string} · {r.data.effective_start} → {r.data.effective_end} ·
+          data as of {r.data.as_of}{r.data.stale ? " (cached)" : ""} ·
+          run {r.run?.id}{r.run?.replay_of ? ` (snapshot replay of ${r.run.replay_of})` : ""}
+        </span>
+        <a className="btn" href={`${API_BASE}/api/report/${id}/export.png`}>
+          Export PNG
+        </a>
+        <a className="btn" href={`${API_BASE}/api/report/${id}/export.pdf`}>
+          Export PDF
+        </a>
       </p>
       <VerdictBanner verdict={r.verdict} />
       <StatRow metrics={r.metrics} benchmark={r.benchmark} benchLabel={r.benchmark.label} />

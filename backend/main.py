@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from config import settings
+from routes.exports import router as exports_router
 from routes.journal import router as journal_router
 from routes.runs import router as runs_router
 from routes.specs import router as specs_router
@@ -30,6 +31,7 @@ app.include_router(specs_router)
 app.include_router(translate_router)
 app.include_router(runs_router)
 app.include_router(journal_router)
+app.include_router(exports_router)
 
 app.add_middleware(
     CORSMiddleware,
