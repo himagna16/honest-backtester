@@ -105,13 +105,39 @@ doubt, choose the interpretation consistent with the product thesis
   segment. Green requires beating SPY at 20 bps net in the holdout, with no
   FATAL findings and regime coverage including a bear market.
 
+## Audit semantics (decided empirically during M4)
+
+- **Neutral-universe comparison uses common accrual dates only.** The
+  hand-picked run and the S&P re-run can start accruing at different times
+  (signal lookback meets different data histories); totals over different
+  periods are not comparable. The 2× FATAL ratio is computed over the
+  intersection of accrual dates.
+- **A ranked strategy on a hand-picked universe can never earn green.** The
+  War-list fixture exposed why the 2× rule alone is not enough: over
+  2023–2026 (the AI melt-up), *identical* top-5 momentum rules on the CURRENT
+  S&P 500 list returned +3405% net-5bps — more than the War list's +1905% —
+  because today's index list contains exactly the stocks that mooned into it
+  (SMCI, PLTR, APP, CVNA…). The "neutral" list is itself survivor-loaded, so
+  a favorable ratio must never launder a hindsight universe into a green
+  verdict. Rollup rule: ranked + user_watchlist ⇒ verdict capped at amber
+  with the selection-bias card and a one-click S&P re-run; FATAL still fires
+  when the ratio exceeds 2×.
+- **Verdict rollup determinized** (Section 3 → concrete order): FATAL →
+  red "not trustworthy"; holdout net-5bps trails benchmark → red; net-20bps
+  (full window) trails → amber "dies at realistic costs"; no bear market →
+  amber; sensitivity flip → amber; hand-picked ranked universe → amber;
+  else green (rare by construction).
+
 ## Dip-buy cost-collapse reproduction (Definition of Done)
 
 The original session's "gross win → net death" came from `reversal.py`, which
-holds **today's losers for one day** (full daily portfolio replacement) and
-subtracts a flat daily cost. The brief's worked example #2 holds for 5 days
-(overlapping cohorts), which mechanically trades ~1/5 of the book per day, so
-turnover-scaled costs bite ~5× less. Both variants are golden-tested; the
-Definition-of-Done check ("flips from beating SPY gross to losing at 20 bps")
-is asserted against the empirical result on the frozen fixture panel and
-reported honestly either way.
+holds **today's losers for one day** on the War list and subtracts a flat
+daily cost. Empirically reproduced through the engine on the frozen War
+panel (2022-01 → 2026-05): gross +153% (Sharpe 1.11) beats SPY +68% (0.76);
+still ahead at 5 bps (+122%); **flips to losing at 20 bps (+51%)** with ~59×
+annual turnover — pinned in `test_audit.py::test_dip_buy_cost_collapse_reproduction`.
+The brief's worked example #2 (5% dip filter, 5-day hold) trades only ~10×/yr
+under honest turnover-scaled costs and does NOT flip — the flat per-day cost
+in `reversal.py` overstated its drag; the turnover-scaled formula (Section 3,
+which wins) is gentler on slow-rolling cohorts. Both variants ship as tests;
+the report shows the flip wherever it exists.

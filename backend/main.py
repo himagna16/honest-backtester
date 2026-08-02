@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from config import settings
+from routes.journal import router as journal_router
+from routes.runs import router as runs_router
 from routes.specs import router as specs_router
 from routes.translate import router as translate_router
 from store.db import get_engine
@@ -26,6 +28,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="The Honest Backtester", version="0.1.0", lifespan=lifespan)
 app.include_router(specs_router)
 app.include_router(translate_router)
+app.include_router(runs_router)
+app.include_router(journal_router)
 
 app.add_middleware(
     CORSMiddleware,
