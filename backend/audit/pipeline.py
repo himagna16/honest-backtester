@@ -191,6 +191,25 @@ def build_report(
                 "re-run it on the full S&P 500."
             ),
         }
+    elif (spec.universe.preset in ("sp500", "nasdaq100", "dow30")
+          and spec.selection.static_allocation is None
+          and (1 + metrics.total_return(net20))
+              / max(1 + metrics.total_return(bench), 1e-9) > 2.0):
+        # Extreme outperformance on a CURRENT-members index list gets the
+        # same 2× discipline as hand-picked universes: today's constituents
+        # include exactly the stocks that mooned into the index, and a
+        # ranked strategy harvesting them cannot be called a survivor.
+        verdict = {
+            "color": "amber", "icon": "▲",
+            "headline": "Beats the benchmark — but on today's index membership.",
+            "sub": (
+                "This preset uses the index's CURRENT constituents, which "
+                "include exactly the winners that grew into it. Outperformance "
+                "this large (>2× in wealth terms) is what index survivorship "
+                "inflates — point-in-time membership data (V1) is the honest "
+                "test."
+            ),
+        }
     else:
         verdict = {
             "color": "green", "icon": "✓",

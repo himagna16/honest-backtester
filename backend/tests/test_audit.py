@@ -189,3 +189,19 @@ def test_benchmark_fit_flags_low_beta():
     finding = extra.check_benchmark_fit(strat, bench, "SPY", "SPY buy-and-hold")
     assert finding.severity == "warning"
     assert "60/40" in (finding.action or "")
+
+
+def test_index_preset_extreme_outperformance_capped_at_amber():
+    """A ranked strategy harvesting today's index membership for >2x wealth
+    outperformance can never be called a survivor (green)."""
+    r = build({
+        "name": "sp500 momentum melt-up",
+        "universe": {"preset": "sp500"},
+        "selection": {"rank_by": {"type": "return", "lookback_days": 252},
+                      "direction": "top", "n": 5},
+        "weighting": "equal", "rebalance": "monthly", "benchmark": "SPY",
+        "window": {"start": "2023-01-02", "end": "2026-05-29"},
+    }, attempts=3)
+    assert r["verdict"]["color"] in ("red", "amber")
+    if r["verdict"]["color"] == "amber":
+        assert "index membership" in r["verdict"]["headline"] or "hand-picked" in r["verdict"]["headline"]
