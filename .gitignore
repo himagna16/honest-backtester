@@ -1,0 +1,20 @@
+# Secrets — never committed
+.env
+backend/.env
+
+# Local data: DB, price cache, run snapshots, exports
+data/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node / Next.js
+node_modules/
+frontend/.next/
+frontend/out/
+
+# OS
+.DS_Store
