@@ -198,6 +198,38 @@ def validate_spec(raw: dict) -> ValidationResult:
             "portfolio every day — expect the cost sweep to hurt"
         )
 
+    # Insufficient-history check BEFORE running (Section 1 edge state) —
+    # cheap cache-metadata lookup for small universes; big presets surface
+    # the same facts as audit findings after the run.
+    if not errors and resolved and len(resolved) <= 60:
+        try:
+            from engine.data import PriceCache
+            meta = PriceCache()._load_meta()
+            uncached = [t for t in resolved if t not in meta]
+            late_cut = (date.fromisoformat(start) + timedelta(days=400)).isoformat()
+            short = {t: meta[t]["first"] for t in resolved
+                     if t in meta and meta[t]["first"] > late_cut}
+            if short:
+                sample = ", ".join(f"{t} (from {d})" for t, d in
+                                   sorted(short.items())[:5])
+                warnings.append(
+                    f"{len(short)} of {len(resolved)} tickers have much less "
+                    f"history than the window: {sample}"
+                    + ("…" if len(short) > 5 else "")
+                    + " — the backtest will effectively shorten or thin out; "
+                      "this becomes an audit finding"
+                )
+            if uncached:
+                warnings.append(
+                    f"{len(uncached)} ticker(s) not in the local cache "
+                    f"({', '.join(sorted(uncached)[:5])}"
+                    + ("…" if len(uncached) > 5 else "")
+                    + ") — they will be fetched at run time, or excluded "
+                      "with a finding if unavailable"
+                )
+        except Exception:
+            pass  # history preview is best-effort; the audit still catches it
+
     if errors:
         return ValidationResult(False, None, None, errors, warnings)
 

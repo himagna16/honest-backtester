@@ -1,58 +1,162 @@
 # The Honest Backtester
 
 Describe a trading strategy in plain English → get a backtest that actively
-tries to kill it: bias audits, cost sweeps, and an always-on SPY benchmark on
+tries to kill it: bias audits, cost sweeps, and an always-on benchmark on
 every single result. *The backtester that tries to kill your strategy before
 the market does.*
 
-**Educational research tool only. Not investment advice.**
+Born from a real session: a first momentum backtest said **+1650%**. Removing
+the hand-picked universe dropped it to numbers that **lost to SPY buy-and-hold**.
+A dip-buying strategy beat SPY gross and died at realistic trading costs.
+Every existing retail tool would have shown the first number and none of the
+corrections. This one shows the corrections first.
+
+> **Educational research tool. Past performance does not predict future
+> results. Not investment advice.** No trade execution, no signals — ever.
 
 ## Quickstart (macOS)
 
 Prereqs: Python 3.11 (`brew install python@3.11`), Node 18+ (`brew install node`).
 
 ```bash
-# 1. One-time: seed the offline price cache from the frozen fixtures
+# 1. One-time: seed the offline price cache from the frozen fixtures (~30s)
 make seed
 
-# 2. Optional (only needed for plain-English → spec translation):
-cp .env.example .env   # then put your ANTHROPIC_API_KEY in .env
+# 2. Optional — only needed for plain-English → spec translation:
+cp .env.example .env    # put your ANTHROPIC_API_KEY inside
 
-# 3. Run everything (backend :8000*, frontend :3000)
+# 3. Run everything (backend :8000, frontend :3000) with one command
 make dev
 ```
 
-Open http://localhost:3000. Backend API docs at http://localhost:8000/docs.
+Open **http://localhost:3000**. Backend API docs: http://localhost:8000/docs.
 
-\* If port 8000 is taken, `dev.sh` automatically falls back to 8010/8020/8030
-and points the frontend at the right port. Override with `HONEST_BACKEND_PORT`.
-
-The engine, honesty audits, journal, and exports all work **fully offline** on
-the seeded fixture data. Only the translation endpoint needs the API key.
+- If port 8000 is busy, `dev.sh` falls back to 8010/8020/8030 automatically
+  and points the frontend at the right port (`HONEST_BACKEND_PORT` overrides).
+- The engine, honesty audits, journal, exports, and re-runs all work **fully
+  offline** on the seeded fixtures. Without an API key the home page offers a
+  paste-a-spec-JSON path instead of translation.
 
 ## Tests
 
 ```bash
-make test    # engine golden tests, DSL validation, API tests, frontend typecheck
-make eval    # live LLM translation eval harness (requires ANTHROPIC_API_KEY)
+make test    # golden + property + audit + API tests, then frontend typecheck
+make eval    # live LLM translation eval harness (needs ANTHROPIC_API_KEY):
+             # ≥90% exact-match on spec cases, 100% on clarify/refuse cases
 ```
 
-## Architecture
+The engine's golden fixtures are hand-computed with exact fraction arithmetic
+and were independently recomputed by a separate audit (see `DECISIONS.md`).
 
-- `frontend/` — Next.js (App Router, TypeScript). Pages: describe → confirm
-  spec → Truth Report; journal; glossary.
-- `backend/` — Python FastAPI.
-  - `dsl/` — the strategy spec (constrained JSON DSL), semantic validator,
-    day-count conventions (single source of truth), deterministic readback.
-  - `engine/` — vectorized pandas backtest, data layer with per-run parquet
-    snapshots, metrics.
-  - `audit/` — the honesty audit: selection bias, lookahead, cost sweep,
-    benchmark truth, regimes, out-of-sample, multiple testing, capacity,
-    benchmark appropriateness.
-  - `llm/` — Claude translation (English → spec JSON or clarifying questions).
-  - `store/` — SQLite via SQLAlchemy; plain-SQL migrations.
-- `fixtures/` — frozen price panels + constituent lists (offline test data).
-- `data/` — gitignored: SQLite DB, parquet price cache, run snapshots, exports.
+## How it works
 
-See `DECISIONS.md` for ambiguity resolutions and `PRODUCT_BRIEF.md` for the
-full spec. This README is expanded with full docs in milestone M6.
+```
+plain English ──Claude (Sonnet)──▶ spec JSON or clarifying questions
+                                      │  (never guesses material params)
+                        deterministic validator  ← the security boundary
+                                      │  (only validated DSL ever runs)
+                          YOU confirm the spec card ("Run the gauntlet")
+                                      │
+                 frozen parquet snapshot (SHA-256 content hash)
+                                      │
+              vectorized engine (signals at t → returns from t+1)
+                                      │
+        THE HONESTY AUDIT — always, no toggle:  selection bias (neutral
+        re-run) · cost sweep 0/5/20 bps · regime coverage · 70/30 holdout ·
+        parameter sensitivity · benchmark fit · capacity · multiple-testing
+        counter · data-quality disclosures · lookahead impossibility
+                                      │
+                    Truth Report (verdict first, benchmark always)
+```
+
+**Non-negotiables baked into the code:**
+- There is no route or function that runs a backtest without the full audit.
+- The benchmark appears on every result and inside every exported artifact.
+- No arbitrary code execution — the LLM only emits JSON against a closed
+  schema; unknown fields are rejected, never ignored.
+- The plain-English readback on the spec card is generated by template code
+  from the validated JSON, never by the model that produced it.
+- Data problems (exclusions, gaps, shortened windows, stale cache) surface as
+  findings, never silently.
+- The verdict always quotes the pessimistic cell: net-of-costs, holdout
+  segment. A ranked strategy on a hand-picked universe can never earn green.
+
+## Repository layout
+
+```
+├── Makefile / dev.sh          # dev, test, eval, seed
+├── backend/
+│   ├── main.py                # FastAPI app + routers
+│   ├── config.py              # settings; ANTHROPIC_API_KEY via .env only
+│   ├── dsl/                   # schema (Pydantic), validator, conventions
+│   │   │                      #   (single source of truth for day counts),
+│   │   ├── readback.py        #   deterministic English readback
+│   │   ├── universes.py       #   presets from checked-in seed lists
+│   │   └── symbols.py         #   symbol master + typo suggestions
+│   ├── engine/                # calendar, signals, vectorized backtest,
+│   │   │                      #   metrics, data layer + snapshots
+│   ├── audit/                 # every check + pipeline.build_report (the
+│   │                          #   ONLY path to a result) + verdict rollup
+│   ├── llm/                   # translator + versioned prompt
+│   ├── routes/                # specs, translate, runs (SSE), journal, exports
+│   ├── store/                 # SQLite via SQLAlchemy, plain-SQL migrations,
+│   │                          #   local event log (never third-party)
+│   └── tests/                 # golden, property, audit, API, eval harness
+├── frontend/                  # Next.js App Router: describe → confirm →
+│   │                          #   Truth Report; journal; compare; glossary
+├── fixtures/                  # frozen price panels + constituent seed lists
+│   │                          #   (source + snapshot date in each header)
+├── scripts/                   # seed_cache.py, refresh_universes.py
+└── data/                      # gitignored: DB, price cache, run snapshots
+```
+
+## Reproducibility (Gap #2)
+
+Every run freezes the exact price panel it used to
+`data/runs/<run_id>/panel.parquet` with a SHA-256 content hash stored on the
+run. **Re-running a saved strategy replays the snapshot by default** and
+reproduces the report's metrics byte-for-byte (tested). "Refresh data & run"
+is the only path to new numbers. yfinance restates adjusted prices over time
+— that's why the journal's compare view shows each run's snapshot hash.
+
+## Adding a DSL block (how to extend)
+
+1. **Schema** — add the field/enum in `backend/dsl/schema.py` (keep
+   `extra="forbid"`), bump nothing: `spec_version` only changes on breaking
+   shape changes.
+2. **Validation** — semantic rules in `backend/dsl/validator.py`; reject
+   anything the engine would silently ignore.
+3. **Engine** — implement in `backend/engine/signals.py` (backward-looking
+   ops only; add it to the future-perturbation test in `test_golden.py`) or
+   `backtest.py`.
+4. **Conventions** — document the exact formula in
+   `backend/dsl/conventions.py`; the LLM prompt and glossary render from it.
+5. **Prompt + evals** — describe it in `backend/llm/prompts/translator_v1.md`
+   (new prompt version if behavior changes) and add eval cases in
+   `backend/tests/eval_cases.json`.
+6. **Tests** — a golden fixture if it touches money math.
+
+## Data honesty in V0 (known limitations)
+
+- **Universe presets use current index members** (checked-in seed lists from
+  Wikipedia with snapshot dates; `scripts/refresh_universes.py` refreshes).
+  Current-members lists are survivor-loaded; every report discloses this and
+  extreme outperformance on them is capped at an amber verdict. True
+  point-in-time membership needs licensed data (V1).
+- **yfinance** is fine for personal research, not for a commercial product
+  (ToS + survivorship). The V1 path is licensed survivorship-free data.
+- **No market-cap/ADV data** — the wide-spread warning is a heuristic
+  disclosure, not a measurement.
+- Daily bars only; long-only; US equities + ETFs.
+
+## Troubleshooting
+
+- **"no price data available"** → run `make seed`.
+- **Translation returns 503** → set `ANTHROPIC_API_KEY` in `.env`; everything
+  except translation works without it.
+- **yfinance rate-limited** → runs fall back to the cache automatically and
+  the report is stamped "data as of <date> (cached)".
+- **Port 8000 taken** → automatic fallback; or `HONEST_BACKEND_PORT=8020 make dev`.
+
+See `DECISIONS.md` for every ambiguity resolution and the adversarial-audit
+fix log, and `PRODUCT_BRIEF.md` for the full product spec.
