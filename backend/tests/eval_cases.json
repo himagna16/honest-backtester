@@ -1,0 +1,272 @@
+{
+  "comment": "LLM translation eval set (Gap #7). spec_subset keys are deep-compared exactly against the expanded spec; lists of plain strings are compared as sets. Semantic traps included: '6-month' must be 126 trading days (never 26), '1 week' = 5 days, '12-1' = 252/21.",
+  "cases": [
+    {
+      "id": "six_month_top5",
+      "input": "Buy the 5 best 6-month performers in the S&P 500, rebalanced monthly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "universe": {"preset": "sp500"},
+          "selection": {"rank_by": {"type": "return", "lookback_days": 126, "skip_days": 0}, "direction": "top", "n": 5},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "twelve_one_momentum",
+      "input": "Classic 12-1 momentum on the S&P 500: hold the top 10, rebalance monthly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "return", "lookback_days": 252, "skip_days": 21}, "direction": "top", "n": 10},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "dip_five_day_hold",
+      "input": "Buy S&P 500 stocks that fell at least 5% yesterday and hold each batch for 5 trading days",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "universe": {"preset": "sp500"},
+          "filters": [{"signal": {"type": "daily_return", "lookback_days": 1, "skip_days": 0}, "op": "lte", "value": -0.05}],
+          "entry_exit": {"hold_days": 5},
+          "rebalance": "daily"
+        }
+      }
+    },
+    {
+      "id": "sixty_forty",
+      "input": "Put 60% in US stocks and 40% in US bonds, rebalance once a year",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"static_allocation": [{"ticker": "SPY", "weight": 0.6}, {"ticker": "AGG", "weight": 0.4}]},
+          "rebalance": "annual"
+        }
+      }
+    },
+    {
+      "id": "sector_rotation",
+      "input": "Each month hold the 3 sector ETFs with the best 3-month returns",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "universe": {"preset": "sector_etfs"},
+          "selection": {"rank_by": {"type": "return", "lookback_days": 63, "skip_days": 0}, "direction": "top", "n": 3},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "low_vol_quarterly",
+      "input": "Hold the 20 least volatile S&P 500 stocks measured over the past year, rebalanced quarterly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "volatility", "lookback_days": 252}, "direction": "bottom", "n": 20},
+          "rebalance": "quarterly"
+        }
+      }
+    },
+    {
+      "id": "rsi_oversold_weekly",
+      "input": "Buy the 10 most oversold S&P 500 names by 14-day RSI each week",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "rsi", "lookback_days": 14}, "direction": "bottom", "n": 10},
+          "rebalance": "weekly"
+        }
+      }
+    },
+    {
+      "id": "golden_cross_filter",
+      "input": "Every month buy the 10 best 6-month performers in the S&P 500, but only consider stocks trading above their 200-day moving average",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "filters": [{"signal": {"type": "sma_cross", "fast": 1, "slow": 200}, "op": "gt", "value": 0}],
+          "selection": {"rank_by": {"type": "return", "lookback_days": 126, "skip_days": 0}, "direction": "top", "n": 10},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "nasdaq_three_month",
+      "input": "Top 5 Nasdaq-100 stocks by 3-month return, rebalanced monthly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "universe": {"preset": "nasdaq100"},
+          "selection": {"rank_by": {"type": "return", "lookback_days": 63, "skip_days": 0}, "direction": "top", "n": 5},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "one_week_reversal",
+      "input": "Every week buy the 10 worst performers of the past week in the S&P 500",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "return", "lookback_days": 5, "skip_days": 0}, "direction": "bottom", "n": 10},
+          "rebalance": "weekly"
+        }
+      }
+    },
+    {
+      "id": "drawdown_buyer",
+      "input": "Each month buy the 15 S&P 500 stocks that are furthest below their 52-week high",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "drawdown_from_high", "lookback_days": 252}, "direction": "bottom", "n": 15},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "inverse_vol_weights",
+      "input": "Hold the top 10 S&P 500 stocks by 12-month momentum, weighted by inverse volatility, rebalanced monthly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "return", "lookback_days": 252}, "direction": "top", "n": 10},
+          "weighting": "inverse_vol",
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "qqq_benchmark",
+      "input": "Top 5 Nasdaq-100 stocks by 6-month momentum, monthly rebalance, compare it against QQQ",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "universe": {"preset": "nasdaq100"},
+          "selection": {"rank_by": {"type": "return", "lookback_days": 126}, "direction": "top", "n": 5},
+          "benchmark": "QQQ"
+        }
+      }
+    },
+    {
+      "id": "explicit_window",
+      "input": "Top 5 S&P 500 stocks by 12-month momentum, monthly, tested from 2018-01-01 to 2024-01-01",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "return", "lookback_days": 252}, "direction": "top", "n": 5},
+          "window": {"start": "2018-01-01", "end": "2024-01-01"}
+        }
+      }
+    },
+    {
+      "id": "inline_watchlist",
+      "input": "From my watchlist of AAPL, MSFT, NVDA, AMZN and GOOGL, hold the 2 with the best 1-month return, rebalanced monthly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "universe": {"preset": "user_watchlist", "resolved_tickers": ["AAPL", "AMZN", "GOOGL", "MSFT", "NVDA"]},
+          "selection": {"rank_by": {"type": "return", "lookback_days": 21}, "direction": "top", "n": 2},
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "top25_weekly",
+      "input": "Hold the top 25 S&P 500 stocks by 3-month return, refreshed every week",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "return", "lookback_days": 63}, "direction": "top", "n": 25},
+          "rebalance": "weekly"
+        }
+      }
+    },
+    {
+      "id": "spy_buy_and_hold",
+      "input": "Just buy and hold SPY",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"static_allocation": [{"ticker": "SPY", "weight": 1.0}]}
+        }
+      }
+    },
+    {
+      "id": "rank_weighted_momentum",
+      "input": "Top 10 S&P 500 stocks by 6-month momentum with the biggest weight on the strongest names, rebalanced monthly",
+      "expect": {
+        "status": "spec",
+        "spec_subset": {
+          "selection": {"rank_by": {"type": "return", "lookback_days": 126}, "direction": "top", "n": 10},
+          "weighting": "rank",
+          "rebalance": "monthly"
+        }
+      }
+    },
+    {
+      "id": "vague_strong_stocks",
+      "input": "Buy strong stocks",
+      "expect": {"status": "needs_clarification"}
+    },
+    {
+      "id": "vague_momentum",
+      "input": "Buy good momentum stocks",
+      "expect": {"status": "needs_clarification"}
+    },
+    {
+      "id": "vague_dip",
+      "input": "Buy the dip",
+      "expect": {"status": "needs_clarification"}
+    },
+    {
+      "id": "vague_best",
+      "input": "Hold the best stocks in the S&P 500",
+      "expect": {"status": "needs_clarification"}
+    },
+    {
+      "id": "missing_rebalance",
+      "input": "Buy the top 10 S&P 500 stocks by 12-month momentum",
+      "expect": {"status": "needs_clarification"}
+    },
+    {
+      "id": "missing_count",
+      "input": "Buy S&P 500 stocks with the highest 6-month returns, rebalance monthly",
+      "expect": {"status": "needs_clarification"}
+    },
+    {
+      "id": "options_covered_calls",
+      "input": "Sell covered calls on SPY every month",
+      "expect": {"status": "unsupported"}
+    },
+    {
+      "id": "shorting",
+      "input": "Short the 5 weakest S&P 500 stocks each month",
+      "expect": {"status": "unsupported"}
+    },
+    {
+      "id": "margin_leverage",
+      "input": "Use 2x margin leverage to double my S&P 500 momentum returns",
+      "expect": {"status": "unsupported"}
+    },
+    {
+      "id": "crypto_rotation",
+      "input": "Rotate between Bitcoin and Ethereum based on momentum",
+      "expect": {"status": "unsupported"}
+    },
+    {
+      "id": "intraday",
+      "input": "Day-trade S&P 500 stocks using 5-minute charts",
+      "expect": {"status": "unsupported"}
+    },
+    {
+      "id": "pe_fundamentals",
+      "input": "Buy the 10 cheapest S&P 500 stocks by P/E ratio each quarter",
+      "expect": {"status": "unsupported"}
+    }
+  ]
+}

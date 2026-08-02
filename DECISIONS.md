@@ -74,6 +74,27 @@ doubt, choose the interpretation consistent with the product thesis
   text). Cache hits skip the API entirely; every translation attempt is logged
   and doubles as the future eval corpus (Gap #11).
 
+## LLM layer — translation semantics
+
+- **Material vs immaterial parameters** (non-negotiable #5 vs the Section 1
+  "assumed monthly — correct?" example): the ranking signal + lookback, the
+  holding count, and the rebalance frequency are MATERIAL — the model must ask,
+  never default. Benchmark (SPY), window (last 10 years), weighting (equal),
+  and skip_days (0) are immaterial defaults the model may apply but must list
+  as assumptions, which the spec card shows in amber for confirmation. The
+  spec-confirm gate ("Run the gauntlet") still covers everything.
+- **`effort: "low"`, `max_tokens: 4000`** for translation calls: Sonnet 5 runs
+  adaptive thinking by default and `max_tokens` caps thinking + text together,
+  so the brief's 2000 was raised to 4000; low effort keeps the spec card
+  feeling instant. The eval harness is the instrument that validates this
+  choice — if accuracy drops below the 90% bar, raise effort, re-run
+  `make eval`.
+- **"Exact-match" operationalized as subset-exact-match**: each eval case pins
+  the fields the input actually determines (signal, lookback, n, direction,
+  rebalance, filters, window…) and compares them exactly against the expanded
+  spec; fields the input leaves open (e.g. the name string, defaulted window
+  dates relative to "today") are not asserted. Ticker lists compare as sets.
+
 ## Reports & export
 
 - **PNG/PDF export is rendered server-side with matplotlib**, so the
