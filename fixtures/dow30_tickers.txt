@@ -1,0 +1,32 @@
+# source: https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average
+# snapshot: 2026-08-02
+AAPL
+AMGN
+AMZN
+AXP
+BA
+CAT
+CRM
+CSCO
+CVX
+DIS
+GOOGL
+GS
+HD
+HON
+IBM
+JNJ
+JPM
+KO
+MCD
+MMM
+MRK
+MSFT
+NKE
+NVDA
+PG
+SHW
+TRV
+UNH
+V
+WMT
