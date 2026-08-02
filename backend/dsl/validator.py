@@ -219,9 +219,19 @@ def _check_signal(sig, where: str) -> list[str]:
         elif sig.fast >= sig.slow:
             errs.append(f"{where}: sma_cross fast ({sig.fast}) must be shorter "
                         f"than slow ({sig.slow})")
+        if sig.lookback_days is not None:
+            errs.append(f"{where}: sma_cross uses fast/slow, not lookback_days")
     elif sig.type in ("return", "daily_return", "volatility", "drawdown_from_high"):
         if sig.lookback_days is None:
             errs.append(f"{where}: signal '{sig.type}' needs lookback_days")
+    # A field the engine would silently ignore is a spec-fidelity break — the
+    # user would confirm a readback of a strategy that never runs. Reject.
+    if sig.type not in ("return", "daily_return") and sig.skip_days:
+        errs.append(f"{where}: skip_days only applies to return signals — "
+                    f"it does nothing on '{sig.type}' and is rejected rather "
+                    f"than silently ignored")
+    if sig.type != "sma_cross" and (sig.fast is not None or sig.slow is not None):
+        errs.append(f"{where}: fast/slow only apply to sma_cross")
     if sig.type != "fundamental" and sig.field is not None:
         errs.append(f"{where}: 'field' only applies to fundamental signals")
     return errs

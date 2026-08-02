@@ -68,7 +68,7 @@ CONVENTIONS_TABLE: list[dict[str, str]] = [
     },
     {
         "convention": "hold_days (overlapping cohorts)",
-        "rule": "Each rebalance date starts a new cohort held for hold_days trading days. Capital is split equally across all active cohorts each day; within a cohort the spec's weighting applies. The portfolio's daily return is the equal-weighted average of active-cohort returns. A day with no qualifying names spawns no cohort — capital concentrates in the remaining cohorts, or sits in cash if none are active.",
+        "rule": "Each rebalance date starts a new cohort held for hold_days trading days. Capital is split equally across all active cohorts each day; within a cohort the spec's weighting applies. The portfolio's daily return is the equal-weighted average of active-cohort returns. A day with no qualifying names spawns no cohort — capital concentrates in the remaining cohorts, or sits in cash if none are active. The daily re-equalization across cohorts is a real trade flow: pre-trade weights are NAV-share aggregated, so it is charged in turnover.",
     },
     {
         "convention": "Partial eligibility",
@@ -96,7 +96,7 @@ CONVENTIONS_TABLE: list[dict[str, str]] = [
     },
     {
         "convention": "Missing data",
-        "rule": "Tickers with no data in the window are excluded and disclosed as an audit finding. Tickers become eligible only once their full signal lookback exists. A NaN price mid-hold freezes at the last close and forces exit at the next rebalance, disclosed.",
+        "rule": "Tickers with no data in the window are excluded and disclosed as an audit finding. Signals require a COMPLETE gap-free lookback — a halt or vendor hole inside the window makes the ticker ineligible until a clean lookback exists again. A NaN price mid-hold freezes at the last close, disclosed; standard mode exits the position at the next rebalance, cohort mode carries it to the cohort's expiry. Zero-volatility (stale-feed) tickers are excluded from inverse-vol selection, disclosed.",
     },
 ]
 

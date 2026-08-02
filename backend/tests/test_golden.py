@@ -157,8 +157,12 @@ def test_three_ticker_momentum_hand_computed(three_ticker_panel):
 #     Jun 5: 1/194; Jun 6: (2/195 + 1/95)/2; Jun 7: 1/96; Jun 12: 1/194;
 #     Jun 13: 2/195; all other days 0.
 #   Turnover: 0.25 @Jun5 (deploy C1); 0.25064102564 @Jun6 (C2 in, drift);
-#     0.25320563663 @Jun7 (C1 out); 0.25515463918 @Jun10 (C2 out);
-#     0.25 @Jun12 (C3 in); 0 @Jun13 (pure drift); 0.25380710660 @Jun14 (C3 out).
+#     @Jun7 (C1 out): pre-trade weights are NAV-SHARE aggregated — during
+#     Jun 6 C1 grew by 2/195 and C2 by 1/95, so shares are 3743/7487 and
+#     3744/7487; W_pre_A = (3743/7487)·(100/197), W_pre_B = (3744/7487)·(97/192),
+#     W_post = {B: 97/192} → turnover = 727871/2875008 = 0.25317181726;
+#     0.25515463918 @Jun10 (C2 out); 0.25 @Jun12 (C3 in); 0 @Jun13 (pure
+#     drift, single cohort); 0.25380710660 @Jun14 (C3 out).
 COHORT_EXPECTED_GROSS = {
     "2024-06-04": 0.0,
     "2024-06-05": 0.005154639175257732,
@@ -174,7 +178,7 @@ COHORT_EXPECTED_TURNOVER = {
     "2024-06-04": 0.0,
     "2024-06-05": 0.25,
     "2024-06-06": 0.25064102564102564,
-    "2024-06-07": 0.2532056366328257,
+    "2024-06-07": 0.2531718172610302,  # NAV-share pre-trade weights (see derivation)
     "2024-06-10": 0.2551546391752577,
     "2024-06-11": 0.0,
     "2024-06-12": 0.25,

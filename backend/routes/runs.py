@@ -76,7 +76,8 @@ def _execute_run(run_id: str, spec_raw: dict, universe: list[str],
             data_source = f"snapshot:{replay_of}"
         else:
             _push(run_id, "fetching", "Fetching prices…")
-            needed = universe + BENCHMARK_TICKERS[spec.benchmark] + ["^IRX"]
+            # SPY is always fetched: it is the calendar (and usually the benchmark)
+            needed = universe + BENCHMARK_TICKERS[spec.benchmark] + ["SPY", "^IRX"]
             panel = get_panel(needed, start=spec.window.start,
                               end=spec.window.end, refresh=refresh)
             data_source = "network" if refresh else "cache"

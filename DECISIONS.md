@@ -105,6 +105,37 @@ doubt, choose the interpretation consistent with the product thesis
   segment. Green requires beating SPY at 20 bps net in the holdout, with no
   FATAL findings and regime coverage including a bear market.
 
+## Adversarial verification of the engine (M1 workflow)
+
+An 18-agent verification workflow (a) independently recomputed both golden
+fixtures from the raw CSVs + written semantics — every checkpoint matched the
+engine to the exact fraction — and (b) adversarially reviewed the engine.
+All confirmed findings were fixed and pinned with regression tests
+(`test_engine_fixes.py`):
+
+- inverse-vol + zero-volatility (stale-feed) ticker produced a silent all-cash
+  run reported as exactly 0% — now excluded at eligibility AND disclosed.
+- `return`/`daily_return`/`rsi` signals bridged data holes (halts, vendor
+  gaps), making tickers eligible with fabricated momentum — signals now
+  require a complete gap-free lookback (the documented rule, now enforced).
+- Cohort mode's daily capital re-equalization was uncharged turnover —
+  pre-trade weights are now NAV-share aggregated; the cohort golden fixture's
+  Jun-7 turnover changed from 0.25320563663 to 727871/2875008 =
+  0.25317181726 (re-derived by hand).
+- Cohort-mode gap disclosure checked the forward-filled array (dead code) —
+  now checks raw prices; conventions updated to state cohort positions carry
+  to cohort expiry.
+- Max drawdown ignored losses from initial capital — the peak now includes
+  the day-0 stake.
+- Metrics silently skipped NaN — they now refuse with an explicit error.
+- The panel calendar was the union of every ticker's dates, so one spurious
+  weekend row could hijack a month-end rebalance — the calendar is now
+  strictly SPY's sessions (as the conventions table always said), disclosed
+  when rows are dropped.
+- `skip_days`/`fast`/`slow`/`lookback_days` on inapplicable signal types were
+  silently ignored — now validation errors (spec fidelity: what you confirm
+  is what runs).
+
 ## Audit semantics (decided empirically during M4)
 
 - **Neutral-universe comparison uses common accrual dates only.** The

@@ -22,6 +22,14 @@ from dsl.schema import Signal
 INVERSE_VOL_LOOKBACK = 63
 
 
+def _complete_window(prices: pd.DataFrame, window: int) -> pd.DataFrame:
+    """True where the trailing `window` rows are ALL non-NaN — a signal must
+    never bridge a data hole (halt, vendor gap); the documented eligibility
+    rule is a full clean lookback, and shift/ewm-based formulas would
+    otherwise silently score across gaps (confirmed audit finding)."""
+    return prices.notna().rolling(window, min_periods=window).sum().eq(window)
+
+
 def compute_signal(prices: pd.DataFrame, signal: Signal) -> pd.DataFrame:
     """Signal value per (date, ticker). NaN where history is insufficient."""
     t = signal.type
@@ -30,7 +38,8 @@ def compute_signal(prices: pd.DataFrame, signal: Signal) -> pd.DataFrame:
         if lb is None:
             raise ValueError(f"signal '{t}' requires lookback_days")
         skip = signal.skip_days
-        return prices.shift(skip) / prices.shift(skip + lb) - 1.0
+        raw = prices.shift(skip) / prices.shift(skip + lb) - 1.0
+        return raw.where(_complete_window(prices, skip + lb + 1))
     if t == "volatility":
         lb = signal.lookback_days
         if lb is None:
@@ -59,8 +68,9 @@ def compute_signal(prices: pd.DataFrame, signal: Signal) -> pd.DataFrame:
         avg_loss = loss.ewm(alpha=1.0 / lb, adjust=False, min_periods=lb).mean()
         rs = avg_gain / avg_loss
         rsi = 100.0 - 100.0 / (1.0 + rs)
-        # avg_loss == 0 → RSI 100 by convention
-        return rsi.where(avg_loss != 0, 100.0).where(avg_gain.notna())
+        # avg_loss == 0 → RSI 100 by convention; and never bridge data holes
+        out = rsi.where(avg_loss != 0, 100.0).where(avg_gain.notna())
+        return out.where(_complete_window(prices, lb + 1))
     if t == "fundamental":
         raise ValueError(
             "fundamental signals need licensed data — rejected in V0; "

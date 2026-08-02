@@ -216,6 +216,18 @@ def get_panel(
 
     prices = pd.DataFrame(columns).sort_index()
     prices = prices.dropna(how="all")
+    # The trading calendar is SPY's own sessions (dsl/conventions.py). A
+    # spurious weekend/holiday row from one bad ticker would otherwise hijack
+    # month-end rebalances and inflate day counts (confirmed audit finding).
+    if "SPY" in prices.columns:
+        spy_valid = prices["SPY"].notna()
+        dropped = int((~spy_valid).sum())
+        if dropped:
+            notes.append(
+                f"{dropped} non-SPY-session row(s) dropped — the calendar is "
+                f"SPY's trading days"
+            )
+        prices = prices[spy_valid]
     as_of = min(fetch_dates)[:10] if fetch_dates else "unknown"
     if fetch_failed:
         stale = True

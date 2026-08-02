@@ -16,19 +16,31 @@ import numpy as np
 import pandas as pd
 
 
+def _check(returns: pd.Series) -> pd.Series:
+    """A NaN in a return series is an upstream alignment bug. Skipping it
+    silently converts broken data into confident wrong numbers (confirmed
+    audit finding) — refuse instead."""
+    if returns.isna().any():
+        raise ValueError(
+            f"return series contains {int(returns.isna().sum())} NaN value(s) "
+            f"— refusing to compute metrics on broken data"
+        )
+    return returns
+
+
 def equity_curve(returns: pd.Series, start_value: float = 1.0) -> pd.Series:
-    return start_value * (1.0 + returns).cumprod()
+    return start_value * (1.0 + _check(returns)).cumprod()
 
 
 def total_return(returns: pd.Series) -> float:
-    return float((1.0 + returns).prod() - 1.0)
+    return float((1.0 + _check(returns)).prod() - 1.0)
 
 
 def cagr(returns: pd.Series) -> float:
     days = len(returns)
     if days == 0:
         return float("nan")
-    total = (1.0 + returns).prod()
+    total = (1.0 + _check(returns)).prod()
     if total <= 0:
         return -1.0
     return float(total ** (252.0 / days) - 1.0)
@@ -37,13 +49,13 @@ def cagr(returns: pd.Series) -> float:
 def annual_vol(returns: pd.Series) -> float:
     if len(returns) < 2:
         return float("nan")
-    return float(returns.std(ddof=1) * math.sqrt(252.0))
+    return float(_check(returns).std(ddof=1) * math.sqrt(252.0))
 
 
 def sharpe(returns: pd.Series, rf_daily: float = 0.0) -> float:
     if len(returns) < 2:
         return float("nan")
-    excess = returns - rf_daily
+    excess = _check(returns) - rf_daily
     sd = excess.std(ddof=1)
     if sd == 0 or np.isnan(sd):
         return float("nan")
@@ -51,13 +63,16 @@ def sharpe(returns: pd.Series, rf_daily: float = 0.0) -> float:
 
 
 def max_drawdown(returns: pd.Series) -> float:
-    eq = equity_curve(returns)
-    return float((eq / eq.cummax() - 1.0).min())
+    return float(drawdown_series(returns).min())
 
 
 def drawdown_series(returns: pd.Series) -> pd.Series:
+    # The peak includes the initial capital: an investor who funds at
+    # inception and immediately loses 30% IS 30% underwater — measuring
+    # only from later highs hides that (confirmed audit finding).
     eq = equity_curve(returns)
-    return eq / eq.cummax() - 1.0
+    peak = eq.cummax().clip(lower=1.0)
+    return eq / peak - 1.0
 
 
 def hit_rate_monthly(returns: pd.Series, benchmark: pd.Series) -> float:

@@ -66,7 +66,7 @@ def check_selection_bias(
     try:
         neutral_universe = preset_tickers("sp500")
         panel = get_panel(
-            neutral_universe + BENCHMARK_TICKERS[spec.benchmark],
+            neutral_universe + BENCHMARK_TICKERS[spec.benchmark] + ["SPY"],
             start=spec.window.start, end=spec.window.end,
         )
         neutral_res = run(neutral_spec, panel.prices, neutral_universe)

@@ -91,6 +91,12 @@ def _position_weights(
         assert vol is not None
         inv = 1.0 / vol.loc[picks.index]
         w = inv / inv.sum()
+        if not np.isfinite(w).all():
+            # zero-vol picks are excluded at eligibility; this is a backstop
+            raise EngineError(
+                "inverse-vol weighting hit a zero-volatility ticker — "
+                "stale price data in the universe"
+            )
     else:
         raise EngineError(f"unknown weighting: {weighting}")
     return w * scale
@@ -103,6 +109,7 @@ class _SelectionEngine:
         self.spec = spec
         self.universe = [t for t in dict.fromkeys(universe) if t in prices.columns]
         self.prices = prices
+        self.zero_vol_excluded: set[str] = set()
         sel = spec.selection
         self.static = sel.static_allocation is not None
         if not self.static:
@@ -143,7 +150,13 @@ class _SelectionEngine:
         for panel, op, value in self.filter_panels:
             eligible &= apply_filter_op(panel.loc[t], op, value).fillna(False)
         if self.vol_panel is not None:
-            eligible &= self.vol_panel.loc[t].notna()
+            vol_row = self.vol_panel.loc[t]
+            # a zero-vol ticker is a stale/halted feed — excluding it silently
+            # would be its own bias, so exclusions are tracked and disclosed
+            zero_vol = eligible & vol_row.notna() & (vol_row <= 1e-10)
+            for tk in zero_vol[zero_vol].index:
+                self.zero_vol_excluded.add(str(tk))
+            eligible &= vol_row.notna() & (vol_row > 1e-10)
 
         elig_scores = scores_row[eligible]
         k_eligible = int(len(elig_scores))
@@ -269,6 +282,9 @@ def _run_standard(
         float(bps): gross - turnover * (bps / 10_000.0)
         for bps in spec.costs.sweep_bps
     }
+    if gross.isna().any():
+        raise EngineError("engine produced NaN returns — data alignment bug")
+    data_notes.extend(_zero_vol_notes(selector))
     years = len(accrual) / 252.0
     result = EngineResult(
         accrual_index=accrual,
@@ -283,6 +299,16 @@ def _run_standard(
         signal_dates=sig,
     )
     return result
+
+
+def _zero_vol_notes(selector: _SelectionEngine) -> list[str]:
+    if not selector.zero_vol_excluded:
+        return []
+    names = ", ".join(sorted(selector.zero_vol_excluded)[:8])
+    return [
+        f"excluded from inverse-vol selection for zero measured volatility "
+        f"(stale/halted price feed): {names}"
+    ]
 
 
 def _run_cohorts(
@@ -305,6 +331,7 @@ def _run_cohorts(
     col_ix = {tk: i for i, tk in enumerate(tickers)}
     prices_ff = prices[tickers].ffill()
     px = prices_ff.to_numpy()
+    raw_px = prices[tickers].to_numpy()  # UN-filled — for honest gap detection
     date_pos = {d: i for i, d in enumerate(prices.index)}
     sig_set = set(sig)
 
@@ -363,17 +390,20 @@ def _run_cohorts(
                 row_now / row_prev,
             )
 
-        # 1. Earn day d in every active cohort
+        # 1. Earn day d in every active cohort. Gap detection uses the RAW
+        # (un-filled) prices — checking the ffilled array can never fire
+        # (confirmed audit finding: silent absorption).
         rets = []
-        nan_now = np.isnan(row_now)
+        nan_now = np.isnan(raw_px[pos])
         for c in cohorts:
             before = c["v"].sum() + c["cash"]
             held_gaps = nan_now & (c["v"] > 0)
             if held_gaps.any():
                 for j in np.flatnonzero(held_gaps):
                     data_notes.add(
-                        f"{tickers[j]}: price missing while held (around "
-                        f"{d.date()}); last close carried forward"
+                        f"{tickers[j]}: price missing while held in a cohort "
+                        f"(around {d.date()}); marked at the last close until "
+                        f"the cohort expires"
                     )
             c["v"] = c["v"] * day_rel
             after = c["v"].sum() + c["cash"]
@@ -387,8 +417,21 @@ def _run_cohorts(
         if i == 0:
             turnover[i] = 0.5 * float(np.abs(w_post).sum())
 
-        # 2. Close-of-day d bookkeeping: kill expired cohorts, spawn new one
-        w_pre = aggregate_weights()
+        # 2. Close-of-day d bookkeeping. Pre-trade weights are NAV-SHARE
+        # aggregated: during day d each cohort's capital grew by its own
+        # return, so before the daily re-equalization the portfolio is a
+        # NAV-weighted mixture of cohort books. Charging |post − pre| on the
+        # equal-mean for both sides would let the re-split flow trade for
+        # free (confirmed audit finding: uncharged turnover).
+        if cohorts:
+            growth = np.array([1.0 + r for r in rets])
+            shares = growth / growth.sum()
+            w_pre = np.zeros(n_assets)
+            for share, c in zip(shares, cohorts):
+                total = c["v"].sum() + c["cash"]
+                w_pre += share * (c["v"] / total)
+        else:
+            w_pre = np.zeros(n_assets)
         cohorts[:] = [c for c in cohorts if c["age"] < hold_days]
         if d in sig_set:
             spawn(d)
@@ -400,10 +443,13 @@ def _run_cohorts(
 
     gross_s = pd.Series(gross, index=accrual)
     turnover_s = pd.Series(turnover, index=accrual)
+    if gross_s.isna().any():
+        raise EngineError("engine produced NaN returns — data alignment bug")
     net = {
         float(bps): gross_s - turnover_s * (bps / 10_000.0)
         for bps in spec.costs.sweep_bps
     }
+    data_notes.update(_zero_vol_notes(selector))
     years = len(accrual) / 252.0
     return EngineResult(
         accrual_index=accrual,
