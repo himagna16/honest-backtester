@@ -63,6 +63,8 @@ def test_translation_eval_suite():
 
     from llm.translate import translate
 
+    print(f"\nEval model: {settings.llm_model} "
+          f"(override with HONEST_LLM_MODEL to A/B a cheaper tier)")
     cases = json.loads(CASES_PATH.read_text())["cases"]
     spec_results: dict[str, list[str]] = {}
     gate_results: dict[str, str | None] = {}

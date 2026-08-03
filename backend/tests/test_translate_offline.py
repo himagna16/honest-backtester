@@ -136,3 +136,16 @@ def test_system_prompt_is_byte_stable():
     a, b = tr.system_prompt(), tr.system_prompt()
     assert a == b
     assert "126" in a and "{CONVENTIONS_TABLE}" not in a
+
+
+@pytest.mark.parametrize("model,expected", [
+    ("claude-sonnet-5", True),
+    ("claude-opus-5", True),
+    ("claude-sonnet-4-6", True),
+    ("claude-haiku-4-5", False),      # cheaper tier: effort would 400
+    ("claude-sonnet-4-5", False),
+])
+def test_effort_is_gated_by_model(model, expected):
+    """Switching HONEST_LLM_MODEL to a cheaper tier must not 400 on the
+    effort parameter, which those models reject."""
+    assert tr.supports_effort(model) is expected

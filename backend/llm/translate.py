@@ -84,16 +84,30 @@ def _cache_put(input_hash: str, input_text: str, status: str, result: dict) -> N
         )
 
 
+# The effort parameter is rejected (400) by the cheaper/older tiers — notably
+# claude-haiku-4-5, which is the intended cost step-down. Gate it by model so
+# switching HONEST_LLM_MODEL never breaks the endpoint.
+_NO_EFFORT_PREFIXES = ("claude-haiku", "claude-sonnet-4-5", "claude-3")
+
+
+def supports_effort(model: str) -> bool:
+    return not model.startswith(_NO_EFFORT_PREFIXES)
+
+
 def _call_model(messages: list[dict]) -> TranslatorReply:
     import anthropic
 
     client = anthropic.Anthropic(
         api_key=settings.anthropic_api_key, timeout=90.0, max_retries=2
     )
+    kwargs: dict = {}
+    if supports_effort(settings.llm_model):
+        # Low effort keeps the spec card feeling instant; the eval harness is
+        # the instrument for checking this is still accurate enough.
+        kwargs["output_config"] = {"effort": "low"}
     response = client.messages.parse(
         model=settings.llm_model,
         max_tokens=4000,
-        output_config={"effort": "low"},
         system=[{
             "type": "text",
             "text": system_prompt(),
@@ -101,6 +115,7 @@ def _call_model(messages: list[dict]) -> TranslatorReply:
         }],
         messages=messages,
         output_format=TranslatorReply,
+        **kwargs,
     )
     if response.stop_reason == "refusal":
         raise TranslateError(
