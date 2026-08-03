@@ -2,8 +2,13 @@
 
 // Public landing page for the validation sprint (brief Section 5, step 2).
 // Broadsheet treatment: the founding story is reported, not pitched. Editorial
-// rules and whitespace replace bordered cards; the only image on the page is a
-// real Truth Report exported from the running app.
+// rules and whitespace replace bordered cards; the imagery is a self-playing
+// replay of a real run plus a real exported Truth Report — nothing mocked up.
+//
+// Motion is progressive enhancement throughout: the server HTML is complete
+// and fully visible; Reveal/FigureCount (components/broadsheet/Reveal.tsx)
+// only animate below-the-fold content after hydration, and the hero entrance
+// is CSS-only so it can never flash or depend on JS.
 
 import { useState } from "react";
 import Link from "next/link";
@@ -11,6 +16,8 @@ import Image from "next/image";
 import { api } from "@/lib/api";
 import { DISCLAIMER } from "@/lib/constants";
 import { Notice } from "@/components/ui/Primitives";
+import { Reveal, FigureCount } from "@/components/broadsheet/Reveal";
+import LiveDemo from "@/components/broadsheet/LiveDemo";
 
 const ENTRIES = [
   ["01", "Selection bias, named out loud",
@@ -74,19 +81,19 @@ export default function Landing() {
         {/* ---------------- hero ---------------- */}
         <section className="bs-hero">
           <div className="bs-wrap">
-            <p className="bs-kicker">Educational research tool · Nothing here is advice</p>
-            <h1>
+            <p className="bs-kicker bs-enter">Educational research tool · Nothing here is advice</p>
+            <h1 className="bs-enter" style={{ "--enter-delay": "60ms" } as React.CSSProperties}>
               My backtest said <em>+1650%</em>. Then I removed the cheating.
             </h1>
-            <hr className="rule-under" />
+            <hr className="rule-under bs-enter-rule" style={{ "--enter-delay": "120ms" } as React.CSSProperties} />
             <div className="lede-row">
-              <p className="standfirst">
+              <p className="standfirst bs-enter" style={{ "--enter-delay": "120ms" } as React.CSSProperties}>
                 Every retail backtester would have shown me that first number and
                 none of the corrections. So I built the one that <em>argues back</em>
                 {" "}— it runs a full honesty audit on every result, and there is
                 no way to turn it off.
               </p>
-              <p className="byline">
+              <p className="byline bs-enter" style={{ "--enter-delay": "180ms" } as React.CSSProperties}>
                 <span className="drop">T</span>he number came from forty-four
                 tickers I picked in 2026 and tested from 2016. I was buying
                 winners I already knew had won. Running the identical rules on a
@@ -98,43 +105,57 @@ export default function Landing() {
               </p>
             </div>
 
-            <div className="bs-figures">
-              <div className="bs-fig a">
+            <Reveal as="div" className="bs-figures" variant="rule">
+              <Reveal as="div" className="bs-fig a" delay={0}>
                 <div className="cap">What the tool said</div>
-                <div className="num">+1650%</div>
+                <div className="num"><FigureCount value="+1650%" strike /></div>
                 <p>Forty-four hand-picked tickers, chosen with the benefit of a decade of hindsight.</p>
-              </div>
-              <div className="bs-fig b">
+              </Reveal>
+              <Reveal as="div" className="bs-fig b" delay={90}>
                 <div className="cap">On a neutral universe</div>
-                <div className="num">+163%</div>
+                <div className="num"><FigureCount value="+163%" delay={90} /></div>
                 <p>Same rules, honest universe. Still sounds good — until you notice SPY returned +362%.</p>
-              </div>
-              <div className="bs-fig c">
+              </Reveal>
+              <Reveal as="div" className="bs-fig c" delay={180}>
                 <div className="cap">After realistic costs</div>
-                <div className="num">Killed</div>
+                <div className="num"><FigureCount value="Killed" delay={420} /></div>
                 <p>Beat SPY gross on Sharpe, 1.05 against 0.83. Died completely at five basis points.</p>
-              </div>
-            </div>
+              </Reveal>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ---------------- the live demo: the product, replayed ---------------- */}
+        <section className="bs-section" id="replay">
+          <div className="bs-wrap">
+            <Reveal as="p" className="bs-kicker">Watch it argue back</Reveal>
+            <Reveal as="h2" delay={60}>One sentence goes in. An argument comes back.</Reveal>
+            <LiveDemo />
+            <p className="bs-demo-caption">
+              A replay of run rep_2c6332f417 — the same run as the export
+              further down this page. Every number is from the real report.
+            </p>
           </div>
         </section>
 
         {/* ---------------- the product shot ---------------- */}
         <section className="bs-section">
           <div className="bs-wrap">
-            <p className="bs-kicker">Every run ends here</p>
-            <h2>The verdict comes first. The flattering number comes second.</h2>
-            <p className="intro">
+            <Reveal as="p" className="bs-kicker">Every run ends here</Reveal>
+            <Reveal as="h2" delay={60}>The verdict comes first. The flattering number comes second.</Reveal>
+            <Reveal as="p" className="intro" delay={120}>
               Plain English goes in; a precise, editable spec comes back for you
               to approve. Nothing runs until you confirm exactly what will be
               tested — and what comes out is this.
-            </p>
-            <figure className="bs-plate">
+            </Reveal>
+            <Reveal as="figure" className="bs-plate">
               <div className="frame">
                 <div className="chrome"><i /><i /><i /></div>
                 <div className="shot">
+                  {/* Below the fold (the demo now precedes it) — lazy-load
+                      rather than compete with the hero and fonts. */}
                   <Image src="/truth-report-sample.png" width={1500} height={1875}
-                    alt="An exported Truth Report: an amber verdict reading “Beats the benchmark — but your universe is hand-picked”, above the strategy's return and Sharpe shown next to the SPY benchmark, a cost sweep table, and the equity curve."
-                    priority />
+                    alt="An exported Truth Report: an amber verdict reading “Beats the benchmark — but your universe is hand-picked”, above the strategy's return and Sharpe shown next to the SPY benchmark and the full cost sweep table." />
                 </div>
               </div>
               <figcaption>
@@ -142,40 +163,40 @@ export default function Landing() {
                 benchmark row and the disclaimer are baked into the image file
                 itself, so a screenshot on social media carries them too.
               </figcaption>
-            </figure>
+            </Reveal>
           </div>
         </section>
 
         {/* ---------------- the audit ---------------- */}
         <section className="bs-section" id="audit">
           <div className="bs-wrap">
-            <p className="bs-kicker">Six ways it tries to kill your idea</p>
-            <h2>The audit is not a feature. It is the only path to a result.</h2>
-            <div className="bs-entries">
-              {ENTRIES.map(([n, title, body]) => (
-                <article className="bs-entry" key={n}>
+            <Reveal as="p" className="bs-kicker">Six ways it tries to kill your idea</Reveal>
+            <Reveal as="h2" delay={60}>The audit is not a feature. It is the only path to a result.</Reveal>
+            <Reveal as="div" className="bs-entries" variant="rule">
+              {ENTRIES.map(([n, title, body], i) => (
+                <Reveal as="article" className="bs-entry" key={n} delay={i * 60}>
                   <div className="n">{n}</div>
                   <h3>{title}</h3>
                   <p>{body}</p>
-                </article>
+                </Reveal>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* ---------------- terms ---------------- */}
         <section className="bs-section" id="terms">
           <div className="bs-wrap">
-            <p className="bs-kicker">Terms</p>
-            <h2>Free forever, for the part that matters</h2>
-            <p className="intro">
+            <Reveal as="p" className="bs-kicker">Terms</Reveal>
+            <Reveal as="h2" delay={60}>Free forever, for the part that matters</Reveal>
+            <Reveal as="p" className="intro" delay={120}>
               The audit is never paywalled. Charging you to discover that your
               strategy is broken would invert the point of the product — so the
               honesty is free, and the paid tier is better <em>data</em>, which
               is where the real cost actually sits.
-            </p>
-            <div className="bs-terms">
-              <div className="bs-term">
+            </Reveal>
+            <Reveal as="div" className="bs-terms" variant="rule">
+              <Reveal as="div" className="bs-term" delay={0}>
                 <div className="name">Free</div>
                 <div className="fee">$0<span> / forever</span></div>
                 <p className="blurb">The complete honesty audit, unabridged.</p>
@@ -189,9 +210,9 @@ export default function Landing() {
                   <li className="off"><span className="mark">—</span> Monthly backtest allowance</li>
                 </ul>
                 <Link className="bs-btn quiet" href="/">Use it now — no account</Link>
-              </div>
+              </Reveal>
 
-              <div className="bs-term featured">
+              <Reveal as="div" className="bs-term featured" delay={90}>
                 <div className="name">Pro — planned</div>
                 <div className="fee">TBD<span> / month</span></div>
                 <p className="blurb">
@@ -206,13 +227,13 @@ export default function Landing() {
                   <li><span className="mark">✓</span> Everything in Free</li>
                 </ul>
                 <a className="bs-btn" href="#waitlist">Join the waitlist</a>
-              </div>
-            </div>
-            <p className="bs-footnote">
+              </Reveal>
+            </Reveal>
+            <Reveal as="p" className="bs-footnote">
               No pricing is committed, and nothing on this page is for sale. The
               paid tier ships only after a licensed data source and a legal
               review are in place.
-            </p>
+            </Reveal>
           </div>
         </section>
       </main>
@@ -220,38 +241,42 @@ export default function Landing() {
       {/* ---------------- waitlist ---------------- */}
       <section className="bs-band" id="waitlist">
         <div className="bs-wrap">
-          <p className="bs-kicker kicker-light">Validation, in the open</p>
-          <h2>Tell me what your last backtest lied to you about</h2>
-          <p className="intro">
+          <Reveal as="p" className="bs-kicker kicker-light">Validation, in the open</Reveal>
+          <Reveal as="h2" delay={60}>Tell me what your last backtest lied to you about</Reveal>
+          <Reveal as="p" className="intro" delay={120}>
             I&apos;m testing whether this is worth building for anyone but me.
             Leave an email and, if you like, the strategy you&apos;d test first —
             that answer shapes what gets built next.
-          </p>
+          </Reveal>
 
-          {state === "done" ? (
-            <p className="bs-said">
-              {message}
-              <small>No drip sequence, no newsletter — one email when there&apos;s something real to try.</small>
-            </p>
-          ) : (
-            <form className="bs-form" onSubmit={submit}>
-              <div className="line">
-                <input type="email" required value={email} aria-label="Email address"
-                  placeholder="you@example.com"
-                  onChange={(e) => setEmail(e.target.value)} />
-                <button className="bs-btn" type="submit" disabled={state === "sending"}>
-                  {state === "sending" ? "Adding…" : "Join the waitlist"}
-                </button>
-              </div>
-              <textarea value={note}
-                aria-label="What did your last backtest lie to you about?"
-                placeholder="Optional: what did your last backtest lie to you about?"
-                onChange={(e) => setNote(e.target.value)} />
-            </form>
-          )}
-          {state === "error" && (
-            <div style={{ marginTop: 16 }}><Notice kind="err">{message}</Notice></div>
-          )}
+          {/* One persistent wrapper around the whole done/form swap, so a
+              submit can never re-trigger a scroll reveal. */}
+          <Reveal as="div" delay={180}>
+            {state === "done" ? (
+              <p className="bs-said">
+                {message}
+                <small>No drip sequence, no newsletter — one email when there&apos;s something real to try.</small>
+              </p>
+            ) : (
+              <form className="bs-form" onSubmit={submit}>
+                <div className="line">
+                  <input type="email" required value={email} aria-label="Email address"
+                    placeholder="you@example.com"
+                    onChange={(e) => setEmail(e.target.value)} />
+                  <button className="bs-btn" type="submit" disabled={state === "sending"}>
+                    {state === "sending" ? "Adding…" : "Join the waitlist"}
+                  </button>
+                </div>
+                <textarea value={note}
+                  aria-label="What did your last backtest lie to you about?"
+                  placeholder="Optional: what did your last backtest lie to you about?"
+                  onChange={(e) => setNote(e.target.value)} />
+              </form>
+            )}
+            {state === "error" && (
+              <div style={{ marginTop: 16 }}><Notice kind="err">{message}</Notice></div>
+            )}
+          </Reveal>
         </div>
       </section>
 

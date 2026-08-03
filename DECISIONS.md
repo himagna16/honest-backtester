@@ -322,3 +322,69 @@ clean.
 Starter-tier team, i.e. read-only — it can inspect files, not author them. Not
 used here: with no pre-existing Figma file, designing there and re-implementing
 in code is strictly longer than iterating in code against measured targets.
+
+---
+
+## Landing motion pass — the page stops being static (2026-08-03)
+
+**Request:** "less static… videos and demos on the landing page… errors in the
+website like overflow areas." Executed as a multi-agent workflow (explicitly
+requested): 3 design/audit agents in parallel, then integration by one writer,
+then verification.
+
+**The "video" decision — a replay, not a file.** A screen recording can show
+numbers an audit never produced; a code-driven replay cannot. The new
+`#replay` section is a self-playing four-scene loop (Describe → Readback →
+Audit → Verdict) of run `rep_2c6332f417`, the founding-story run. Every
+displayed value is transcribed from that report and verified
+programmatically against the API (+1816.5% / SPY +41.9% / Sharpe 2.07 vs
+0.92 / −60.1% vs −18.8% / neutral re-run +960.2% / 1.81× / ×19.2 / ×1.42 /
+6 real check names / real readback text / the 121-point equity curve).
+It costs ~6 kB gzipped vs megabytes for video, stays crisp at every DPI, and
+the audit's warning is the dramatic peak — the product argues back on its own
+landing page. `LiveDemo.tsx`: one rAF clock, deterministic frames, clickable
+scene rail, pause control, hover-pause on hover-capable devices, tab-hidden
+pause, loop ~24s.
+
+**Motion system** (`Reveal.tsx` + CSS): IntersectionObserver reveals that fire
+once; hero entrance is CSS-keyframe-only (a JS-gated hero would either no-op
+or flash — it is always on screen at hydration); the three story figures
+count up (+1650% then draws its oxblood strike; "Killed" stamps). Hard rules
+held: server HTML fully visible with no JS; nothing hidden that is already in
+the viewport; opacity/transform only (spark drawn via stroke-dashoffset);
+prefers-reduced-motion lands everything in final state twice over (JS refuses
+to arm + CSS forces final states); demo pins its information-complete verdict
+frame.
+
+**Overflow/rendering defects (the user's report), all fixed:**
+1. The plate's fixed 540px crop sliced the cost-sweep table at a different
+   source row per viewport (37–64%), leaving half-faded ghost rows — the
+   reported "overflow area". Fix: `aspect-ratio: 1500/920` crop, pixel-scanned
+   to land in the image's quiet band (table ends y≈869, chart starts y≈982).
+2. App-shell `:focus-visible` leaked dashboard blue + 5px radius onto the
+   editorial page → scoped ink/paper outlines, 2px.
+3. `<Notice>` error state rendered the dashboard's rose alert (and a 7th font
+   size, 12.5px) on the ink band → scoped override, band palette, --t-small.
+4. Drop cap was 43.4px (a 7th size) → var(--t-head).
+5. Chrome dots were the only non-2px radius → 2px.
+6. Disabled submit repainted oxblood on hover → pointer-events: none.
+
+**Verification.** The planned 3-agent adversarial verify workflow died on a
+session usage limit, so the same three lenses ran inline instead:
+- Honesty: every demo number re-derived from the report JSON — pass.
+- Design integrity, measured across all four demo scenes at 1440px: exactly
+  {11,14,17,23,40,76} font sizes, one radius (2px), zero shadows, zero WCAG
+  failures including all new demo elements.
+- Runtime: zero hydration warnings; CLS 0.00000 over a full scripted scroll;
+  SSR HTML contains the complete verdict frame (`data-ready="0"` gate); no
+  focusables inside hidden scenes; cleanup paths (rAF, timers, observers,
+  matchMedia, visibilitychange) reviewed. Reduced-motion verified by
+  inspection of both gates, not OS emulation — the pane cannot toggle the
+  preference.
+- Production build clean (/landing 17.1 kB); backend suite 120 passed,
+  1 skipped.
+
+**Bug caught by an agent's own visual verification, kept as a warning:**
+`vector-effect="non-scaling-stroke"` makes Chrome compute dashes in screen
+space, breaking `pathLength={1}` draw-on normalisation — the spark truncated
+at ~62%. Data paths must not carry vector-effect; the dashed baseline keeps it.

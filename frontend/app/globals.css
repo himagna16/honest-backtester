@@ -582,8 +582,8 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
 }
 /* ::first-letter needs a block box — the wrapping <p>, not an inline span. */
 .bs-hero .byline::first-letter {
-  font-family: var(--font-serif); font-size: 3.1em; float: left;
-  line-height: 0.82; padding: 4px 9px 0 0; color: var(--ox); font-weight: 500;
+  font-family: var(--font-serif); font-size: var(--t-head); float: left;
+  line-height: 0.9; padding: 4px 9px 0 0; color: var(--ox); font-weight: 500;
 }
 
 /* ---------- the three figures ---------- */
@@ -641,18 +641,16 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   padding: 10px; overflow: hidden;
 }
 .bs-plate .chrome { display: flex; gap: 6px; padding: 2px 4px 10px; }
-.bs-plate .chrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); display: block; }
-/* The export is 4:5 portrait — showing all of it would swamp the page, so the
-   plate crops to the verdict + headline metrics and fades out. */
-.bs-plate .shot { position: relative; overflow: hidden; max-height: 540px; }
-.bs-plate .shot::after {
-  content: ""; position: absolute; inset: auto 0 0 0; height: 160px;
-  background: linear-gradient(to bottom, rgba(244, 242, 237, 0) 0%, var(--band) 88%);
-  pointer-events: none;
-}
+.bs-plate .chrome i { width: 9px; height: 9px; border-radius: 2px; background: var(--rule); display: block; }
+/* The export is 4:5 portrait — showing all of it would swamp the page. A fixed
+   max-height crops at a different pixel row of the source at every viewport,
+   slicing the cost-sweep table mid-row; an aspect-ratio crop is content-stable.
+   1500/920 ends in the quiet band between the cost sweep (ends y≈855) and the
+   equity chart (starts y≈980) — a clean clipping, no ghost half-rows. */
+.bs-plate .shot { position: relative; overflow: hidden; aspect-ratio: 1500 / 920; }
 .bs-plate img {
   width: 100%; height: auto; display: block; background: #fff;
-  border: 1px solid var(--rule); border-bottom: none;
+  border: 1px solid var(--rule);
 }
 .bs-plate figcaption {
   font-family: var(--font-serif); font-style: italic; font-size: var(--t-small);
@@ -776,8 +774,395 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   max-width: 92ch; margin: 0 0 10px;
 }
 
+/* ---------- app-shell leak repairs (audit findings) ----------
+   The global :focus-visible and .notice rules belong to the dashboard; on the
+   editorial page they surface the wrong palette and radius, and .notice's
+   12.5px would be a seventh type size. Scoped overrides, no new values. */
+.broadsheet :focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.bs-band :focus-visible { outline-color: var(--paper); }
+.broadsheet .notice {
+  border-radius: 2px;
+  font-size: var(--t-small);
+  background: transparent;
+  border-color: #4a453e;
+  color: #cdc7bd;
+}
+/* A disabled button must not repaint on hover — it is inert. */
+.bs-btn:disabled { pointer-events: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .broadsheet *, .broadsheet *::before, .broadsheet *::after {
     transition-duration: 0.01ms !important;
   }
+}
+/* ---------- the live demo: a replay of run rep_2c6332f417 ----------
+   Same plate language as .bs-plate — band frame, chrome dots, white sheet.
+   Every hidden state is gated on [data-ready="1"], which only client JS
+   sets: with no JS the finished verdict scene renders, static and
+   information-complete. All reveals are opacity/transform (plus the
+   sanctioned stroke-dashoffset draw for the equity spark); scenes stack in
+   a single grid cell so the stage never changes height — zero CLS. */
+
+.bs-demo {
+  background: var(--band); border: 1px solid var(--rule); border-radius: 2px;
+  padding: 10px; margin-top: clamp(32px, 5vw, 56px);
+}
+.bs-demo .chrome { display: flex; gap: 6px; align-items: center; padding: 2px 4px 10px; }
+.bs-demo .chrome i { width: 9px; height: 9px; border-radius: 2px; background: var(--rule); display: block; }
+.bs-demo .chrome .title {
+  margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; font-size: var(--t-micro); letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-3); font-weight: 500;
+}
+.bs-demo .screen { background: #fff; border: 1px solid var(--rule); border-radius: 2px; }
+
+/* The whole loop, in one sentence for screen readers. */
+.bs-demo-sr {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.bs-demo .stage {
+  display: grid;
+  padding: clamp(24px, 4vw, 42px) clamp(20px, 3.5vw, 44px) clamp(26px, 4vw, 44px);
+}
+.bs-demo .ld-scene { grid-area: 1 / 1; min-width: 0; }
+
+/* No JS: only the finished verdict scene; controls would be inert. */
+.bs-demo[data-ready="0"] .ld-scene:not(.is-active) { display: none; }
+.bs-demo[data-ready="0"] .ld-controls { display: none; }
+
+/* JS mode: scenes crossfade. visibility flips after the fade so hidden
+   scenes can't catch focus or clicks. */
+.bs-demo[data-ready="1"] .ld-scene {
+  opacity: 0; visibility: hidden; transform: translateY(6px);
+  transition: opacity 280ms ease-out, transform 280ms ease-out,
+    visibility 0s linear 280ms;
+}
+.bs-demo[data-ready="1"] .ld-scene.is-active {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 300ms ease-out 100ms, transform 300ms ease-out 100ms,
+    visibility 0s;
+}
+
+.bs-demo .ld-kicker {
+  font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 500; margin: 0 0 18px;
+}
+
+/* ----- scene 1: the strategy is typed ----- */
+/* An invisible copy of the full sentence reserves the wrapped height, so
+   typing reflows nothing. */
+.bs-demo .ld-typeline {
+  position: relative; max-width: 56ch;
+  padding-bottom: 14px; border-bottom: 1px solid var(--rule);
+}
+.bs-demo .ld-typeline .ghost,
+.bs-demo .ld-typeline .live {
+  display: block; font-size: var(--t-body); line-height: 1.6; color: var(--ink);
+}
+.bs-demo .ld-typeline .ghost { visibility: hidden; }
+.bs-demo .ld-typeline .live { position: absolute; inset: 0; margin: 0; }
+.bs-demo .ld-caret {
+  display: inline-block; width: 2px; height: 1.05em; margin-left: 1px;
+  background: var(--ink); vertical-align: text-bottom;
+  animation: bs-demo-blink 1.06s steps(1) infinite;
+}
+@keyframes bs-demo-blink { 50% { opacity: 0; } }
+
+/* ----- scene 2: the deterministic readback ----- */
+.bs-demo .ld-card {
+  background: var(--band); border: 1px solid var(--rule); border-radius: 2px;
+  padding: 20px 22px; max-width: 62ch;
+  transition: opacity 360ms ease-out, transform 360ms ease-out;
+}
+.bs-demo[data-ready="1"] .ld-card:not(.is-in) { opacity: 0; transform: translateY(10px); }
+.bs-demo .ld-card-label {
+  font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 500; margin: 0 0 10px;
+}
+.bs-demo .ld-readback { font-size: var(--t-body); line-height: 1.55; color: var(--ink); margin: 0; }
+.bs-demo .ld-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; }
+.bs-demo .ld-chips li {
+  font-size: var(--t-micro); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-2); background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 2px; padding: 5px 9px;
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+.bs-demo[data-ready="1"] .ld-chips li:not(.is-in) { opacity: 0; transform: translateY(4px); }
+.bs-demo .ld-note {
+  font-family: var(--font-serif); font-style: italic; font-size: var(--t-small);
+  color: var(--ink-3); margin: 14px 0 0; transition: opacity 300ms ease-out;
+}
+.bs-demo[data-ready="1"] .ld-note:not(.is-in) { opacity: 0; }
+
+/* ----- scene 3: the audit argues ----- */
+.bs-demo .ld-audit { list-style: none; margin: 0; padding: 0; max-width: 64ch; }
+.bs-demo .ld-audit li {
+  display: flex; gap: 10px; align-items: baseline;
+  font-size: var(--t-small); line-height: 1.45; color: var(--ink-2);
+  padding: 9px 0; border-bottom: 1px solid var(--rule);
+  transition: opacity 240ms ease-out, transform 240ms ease-out;
+}
+.bs-demo .ld-audit li:last-child { border-bottom: none; }
+.bs-demo[data-ready="1"] .ld-audit li:not(.is-in) { opacity: 0; transform: translateY(4px); }
+.bs-demo .ld-audit .mark { flex: none; width: 16px; color: var(--pos); }
+.bs-demo .ld-audit .name { flex: 1; min-width: 0; }
+.bs-demo .ld-audit .tag {
+  flex: none; font-size: var(--t-micro); letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-3); font-weight: 500;
+}
+.bs-demo .ld-audit li.warning { color: var(--warn); font-weight: 600; }
+.bs-demo .ld-audit li.warning .mark,
+.bs-demo .ld-audit li.warning .tag { color: var(--warn); }
+.bs-demo .ld-audit li.sub { display: block; padding-left: 26px; font-weight: 400; }
+.bs-demo .ld-audit li.sub strong {
+  color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums;
+}
+
+/* ----- scene 4: the verdict ----- */
+.bs-demo .ld-stamp {
+  display: inline-block; margin: 0;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-small);
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--warn);
+  border: 1px solid var(--warn); border-radius: 2px; padding: 7px 12px;
+  transform-origin: left center;
+  transition: opacity 240ms ease-out, transform 240ms ease-out;
+}
+.bs-demo[data-ready="1"] .ld-stamp:not(.is-in) { opacity: 0; transform: scale(1.05); }
+.bs-demo .ld-verdict {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-lede);
+  letter-spacing: -0.02em; line-height: 1.2; color: var(--ink);
+  margin: 14px 0 0; max-width: 30ch; text-wrap: balance;
+  transition: opacity 300ms ease-out 80ms, transform 300ms ease-out 80ms;
+}
+.bs-demo[data-ready="1"] .ld-verdict:not(.is-in) { opacity: 0; transform: translateY(6px); }
+
+.bs-demo .ld-metrics {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(16px, 3vw, 36px);
+  border-top: 2px solid var(--ink); margin: 24px 0 0; padding-top: 14px;
+}
+.bs-demo .ld-metrics .m { min-width: 0; transition: opacity 300ms ease-out, transform 300ms ease-out; }
+.bs-demo .ld-metrics .m:nth-child(2) { transition-delay: 70ms; }
+.bs-demo .ld-metrics .m:nth-child(3) { transition-delay: 140ms; }
+.bs-demo .ld-metrics .m:nth-child(4) { transition-delay: 210ms; }
+.bs-demo[data-ready="1"] .ld-metrics:not(.is-in) .m { opacity: 0; transform: translateY(5px); }
+.bs-demo .ld-metrics dt {
+  font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 500;
+}
+.bs-demo .ld-metrics dd { margin: 0; }
+.bs-demo .ld-metrics dd.v {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-lede);
+  letter-spacing: -0.02em; color: var(--ink); margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.bs-demo .ld-metrics dd.vs {
+  font-size: var(--t-small); color: var(--ink-3); margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bs-demo .ld-spark { margin: 22px 0 0; }
+.bs-demo .ld-spark svg { display: block; width: 100%; height: auto; }
+.bs-demo .ld-spark .base { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 3 4; }
+.bs-demo .ld-spark path { fill: none; }
+/* Stroke widths are viewBox units (no vector-effect — see the component):
+   ~2px / 1.4px at desktop scale, hairlines on small screens. */
+.bs-demo .ld-spark .strat { stroke: var(--ink); stroke-width: 1.2; }
+.bs-demo .ld-spark .spy { stroke: var(--ink-3); stroke-width: 0.8; }
+/* Draw-on. pathLength=1 normalises the dash, so offset runs 1 -> 0. The
+   brief sanctions stroke-dashoffset for curve draws; it is paint-only. */
+.bs-demo .ld-spark .strat,
+.bs-demo .ld-spark .spy {
+  stroke-dasharray: 1; stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1200ms ease-out;
+}
+.bs-demo .ld-spark .spy { transition-delay: 150ms; }
+.bs-demo[data-ready="1"] .ld-spark:not(.is-drawn) .strat,
+.bs-demo[data-ready="1"] .ld-spark:not(.is-drawn) .spy {
+  stroke-dashoffset: 1; transition: none;
+}
+.bs-demo .ld-legend {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px;
+  margin-top: 8px; font-size: var(--t-micro); letter-spacing: 0.06em;
+  color: var(--ink-2); font-variant-numeric: tabular-nums;
+}
+.bs-demo .ld-legend .sw {
+  display: inline-block; width: 14px; height: 2px; margin-right: 6px;
+  vertical-align: middle;
+}
+.bs-demo .ld-legend .sw.strat { background: var(--ink); }
+.bs-demo .ld-legend .sw.spy { background: var(--ink-3); }
+.bs-demo .ld-legend .dim { color: var(--ink-3); margin-left: auto; }
+
+.bs-demo .ld-endline {
+  font-family: var(--font-serif); font-style: italic; font-size: var(--t-small);
+  color: var(--ink-2); border-top: 1px solid var(--rule);
+  margin: 20px 0 0; padding-top: 12px; transition: opacity 400ms ease-out;
+}
+.bs-demo[data-ready="1"] .ld-endline:not(.is-in) { opacity: 0; }
+
+/* ----- controls: clickable scene rail + pause, all ≥44px targets ----- */
+.bs-demo .ld-controls {
+  display: flex; align-items: stretch; gap: 10px;
+  border-top: 1px solid var(--rule);
+  padding: 6px clamp(12px, 2.5vw, 20px) 8px;
+}
+.bs-demo .ld-rail {
+  list-style: none; display: flex; flex: 1; min-width: 0;
+  gap: clamp(8px, 2vw, 18px); margin: 0; padding: 0;
+}
+.bs-demo .ld-rail li { flex: 1; min-width: 0; display: flex; }
+.bs-demo .ld-rail button {
+  flex: 1; min-width: 0; min-height: 44px; padding: 10px 2px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 7px;
+  background: none; border: none; border-radius: 2px; cursor: pointer;
+  font-family: var(--font-ui); font-size: var(--t-micro); font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+  text-align: left; transition: color 180ms ease;
+}
+.bs-demo .ld-rail button:hover,
+.bs-demo .ld-rail button[aria-current="step"] { color: var(--ink); }
+.bs-demo .ld-rail button .row {
+  display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bs-demo .ld-rail button .n { color: var(--ox); font-weight: 600; margin-right: 5px; }
+.bs-demo .ld-rail button .track {
+  display: block; height: 2px; background: var(--rule); overflow: hidden;
+}
+.bs-demo .ld-rail button .track i {
+  display: block; height: 100%; background: var(--ink);
+  transform: scaleX(0); transform-origin: left center;
+}
+.bs-demo .ld-pp {
+  flex: none; width: 44px; min-height: 44px; align-self: center;
+  display: grid; place-items: center; background: none;
+  border: 1px solid var(--rule); border-radius: 2px; color: var(--ink-2);
+  cursor: pointer; transition: color 180ms ease, border-color 180ms ease;
+}
+.bs-demo .ld-pp:hover { color: var(--ink); border-color: var(--ink); }
+.bs-demo .ld-pp svg { width: 12px; height: 12px; display: block; }
+.bs-demo .ld-rail button:focus-visible,
+.bs-demo .ld-pp:focus-visible { outline: 2px solid var(--ox); outline-offset: 2px; }
+
+/* the one-line serif caption under the demo */
+.bs-demo-caption {
+  font-family: var(--font-serif); font-style: italic; font-size: var(--t-small);
+  color: var(--ink-3); margin: 12px 0 0; max-width: 58ch;
+}
+
+@media (max-width: 760px) {
+  .bs-demo .ld-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px clamp(16px, 4vw, 28px);
+  }
+  .bs-demo .ld-audit .tag { display: none; }
+  .bs-demo .ld-legend .dim { margin-left: 0; flex-basis: 100%; }
+}
+@media (max-width: 480px) {
+  /* Numbers + tracks only; each button keeps its 44px target and its
+     aria-label still names the scene. */
+  .bs-demo .ld-rail button .lbl { display: none; }
+  .bs-demo .chrome .title { display: none; }
+}
+/* ============ motion: editorial reveals (progressive enhancement) ==========
+   Server HTML is fully visible with no JS: every hidden state below is keyed
+   off [data-motion] / [data-stamp] / [data-strike], attributes set only by
+   components/broadsheet/Reveal.tsx after hydration, and never on elements
+   already inside the viewport. Animated properties are opacity and transform
+   only; drawn rules keep their 2px border slot (only border-COLOR swaps), so
+   geometry never changes — zero CLS by construction. */
+
+.broadsheet { --bs-ease: cubic-bezier(0.215, 0.61, 0.355, 1); }
+
+/* ---- scroll reveal: fade up 14px ---- */
+.broadsheet .bs-reveal[data-motion="pending"] { opacity: 0; transform: translateY(14px); }
+.broadsheet .bs-reveal[data-motion="in"] {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 480ms var(--bs-ease), transform 480ms var(--bs-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ---- scroll reveal: a 2px section rule draws in from the left ----
+   The real border keeps its slot but goes transparent; a same-size overlay
+   scales over it. Geometry untouched, so no layout shift. */
+.broadsheet .bs-rule[data-motion] { position: relative; border-top-color: transparent; }
+.broadsheet .bs-rule[data-motion]::before {
+  content: ""; position: absolute; top: -2px; left: 0; right: 0; height: 2px;
+  background: var(--ink); transform: scaleX(0); transform-origin: left center;
+}
+.broadsheet .bs-rule[data-motion="in"]::before {
+  transform: scaleX(1);
+  transition: transform 600ms var(--bs-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ---- load entrance for the hero (CSS-only, deliberately not JS-gated:
+   keyframes run with or without JS and always end fully visible, and the
+   hero is on screen at hydration so a JS-armed reveal would either no-op or
+   flash. Scroll-triggered content uses .bs-reveal instead.) ---- */
+@keyframes bs-enter {
+  from { opacity: 0; transform: translateY(14px); }
+}
+.broadsheet .bs-enter {
+  animation: bs-enter 480ms var(--bs-ease) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+@keyframes bs-enter-rule {
+  from { transform: scaleX(0); }
+}
+.broadsheet .bs-enter-rule {
+  transform-origin: left center;
+  animation: bs-enter-rule 600ms var(--bs-ease) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+/* ---- the three figures: tabular digits, stamp, drawn strike ---- */
+.broadsheet .bs-count {
+  display: inline-block; position: relative;
+  font-variant-numeric: tabular-nums; /* width cannot jitter while counting */
+}
+
+/* "Killed" is stamped, not counted: 1.04 -> 1 with opacity, one thud. */
+.broadsheet .bs-count[data-stamp="pending"] { opacity: 0; }
+.broadsheet .bs-count[data-stamp="in"] {
+  animation: bs-stamp 340ms var(--bs-ease) both;
+}
+@keyframes bs-stamp {
+  from { opacity: 0; transform: scale(1.04); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* The +1650% strike. While armed, the static text-decoration is suppressed
+   and this overlay draws left -> right ~300ms after the count lands.
+   Engines without :has() keep the static line underneath — the overlay is
+   the same 2px oxblood in the same place, so the fallback is invisible. */
+.broadsheet .bs-fig.a .num:has(.bs-count[data-strike]) { text-decoration: none; }
+.broadsheet .bs-count[data-strike]::after {
+  content: ""; position: absolute; top: calc(50% - 1px); left: 0; right: 0;
+  height: 2px; background: var(--ox);
+  transform: scaleX(0); transform-origin: left center;
+}
+.broadsheet .bs-count[data-strike="drawn"]::after {
+  transform: scaleX(1);
+  transition: transform 460ms var(--bs-ease);
+}
+
+/* ---- reduced motion: land instantly in the final printed state ----
+   (JS already refuses to arm under this preference; this block also covers
+   a mid-session toggle. Note animation: none, not just duration 0 — the
+   global reduce block zeroes durations but not animation-delay.) */
+@media (prefers-reduced-motion: reduce) {
+  .broadsheet .bs-enter,
+  .broadsheet .bs-enter-rule { animation: none; }
+  .broadsheet .bs-reveal[data-motion] { opacity: 1; transform: none; transition: none; }
+  .broadsheet .bs-rule[data-motion] { border-top-color: var(--ink); }
+  .broadsheet .bs-rule[data-motion]::before { display: none; }
+  .broadsheet .bs-count[data-stamp] { opacity: 1; animation: none; }
+  .broadsheet .bs-count[data-strike]::after { transform: scaleX(1); transition: none; }
 }
