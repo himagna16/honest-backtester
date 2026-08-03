@@ -419,3 +419,57 @@ Suite: 121 passed, 1 skipped.
 are looking at from their screenshot's pixels before assuming the prior
 diagnosis was merely incomplete — the defect lived one layer deeper than
 where I fixed it.
+
+---
+
+## Phase 2 — one product, two densities (2026-08-03)
+
+The landing page was premium and the app behind it was still blue-on-slate
+SaaS. A visitor clicking "Open the app" changed products mid-click.
+
+**Approach: retheme the token layer, not the pages.** Every page already used
+semantic classes (`.panel`, `.metric`, `.verdict`, `.finding`, `.chip`), so
+rewriting `:root` plus ~65 targeted structural rules transformed all six pages
+at once without touching a line of page logic. Far lower risk than rewriting
+six components, and it makes future theme changes one-file changes.
+
+**What carried over from Broadsheet:** warm paper `#FAF9F7`, ink `#1A1815`,
+oxblood `#7A2E2E` as the only accent, one radius (2px), zero shadows, rules
+instead of boxes. **What deliberately did NOT:** the 76px editorial scale. The
+workstation is a dense analyst tool; it gets its own ramp (11/12/13/15/19/28)
+in the same families. One system, two densities — hence `--display`,
+`--serif`, `--sans` shared via `lib/fonts.ts` and loaded once in the root
+layout.
+
+Fonts now load app-wide. `next/font` self-hosts at build time, so the
+local-first/offline promise is unaffected — the earlier "scoped to /landing"
+decision was about avoiding a runtime dependency that self-hosting removes.
+
+**Notable per-page changes**
+- Sidebar/topbar sit on paper; the current nav item is marked with an inset
+  oxblood rule instead of a filled blue pill.
+- Metric cards lost their boxes: a 2px ink rule over a 28px Montserrat figure,
+  newspaper-table style.
+- Verdict banners: flat semantic band + thick left rule, no gradients.
+- Glossary was a stack of ~12 identical bordered cards — the single strongest
+  "generated" tell. Now ruled reference entries with serif prose.
+- Badges/pills/chips squared (999px radius is a SaaS chip signature).
+- Regime legend swatches were still the old bright palette while the bars had
+  been retoned — they were hardcoded in `charts.tsx` and now match.
+- Equity line and neutral sparklines were oxblood, which reads as "loss" on a
+  +3553% gain; now ink, matching the landing demo's grammar.
+
+**Bugs found while doing it**
+1. `/health` reported `llm_configured` from `anthropic_api_key` ALONE — it
+   predated multi-provider support, so a working OpenAI setup showed
+   "Translation: no API key" in the sidebar while translating fine. Now asks
+   the provider that owns `settings.llm_model`, and returns the model name.
+2. `test_requires_api_key` blanked only the Anthropic key, so it silently
+   stopped testing anything the moment a real `OPENAI_API_KEY` existed. Now
+   blanks every provider.
+3. The five result tabs overflowed a 414px phone by 2px, putting a horizontal
+   scrollbar on every mobile view. The tab bar now scrolls internally.
+
+**Measured after (report page, all five tabs):** 7 type sizes, one radius
+(2px), zero shadows, zero WCAG failures, no horizontal overflow at 414px.
+121 passed, 1 skipped; production build clean.

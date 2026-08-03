@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Shell from "@/components/Shell";
+import { fontVars } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={fontVars}>
       <body>
         <Shell>{children}</Shell>
       </body>

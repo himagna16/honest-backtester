@@ -112,16 +112,16 @@ export default function Glossary() {
 
       <h2>Metrics</h2>
       {METRICS.map((m) => (
-        <div className="panel" style={{ padding: "14px 16px", marginBottom: 10 }} key={m.name}>
+        <div className="gloss-entry" key={m.name}>
           <h3 style={{ marginTop: 0 }}>{m.name}</h3>
-          <p className="mono" style={{ color: "var(--accent)" }}>{m.formula}</p>
+          <p className="mono formula">{m.formula}</p>
           <p className="muted">{m.gloss}</p>
         </div>
       ))}
 
       <h2>The biases the audit hunts</h2>
       {EXPLAINERS.map((e) => (
-        <div className="panel" style={{ padding: "14px 16px", marginBottom: 10 }} key={e.id} id={e.id}>
+        <div className="gloss-entry" key={e.id} id={e.id}>
           <h3 style={{ marginTop: 0 }}>{e.title}</h3>
           <p className="muted">{e.body}</p>
         </div>

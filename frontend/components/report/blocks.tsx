@@ -34,7 +34,7 @@ export function Sparkline({
     .map((v, i) => `${i === 0 ? "M" : "L"}${(i * step).toFixed(1)},${(height - ((v - lo) / span) * (height - 2) - 1).toFixed(1)}`)
     .join("");
   const stroke =
-    tone === "pos" ? "var(--pos)" : tone === "neg" ? "var(--neg)" : "var(--accent)";
+    tone === "pos" ? "var(--pos)" : tone === "neg" ? "var(--neg)" : "var(--ink)";
   return (
     <svg className="spark" viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none"
       aria-hidden="true">

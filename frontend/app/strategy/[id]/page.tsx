@@ -187,7 +187,7 @@ export default function StrategyPage({ params }: { params: Promise<{ id: string 
                 </summary>
                 <pre className="scroll-x mono" style={{
                   background: "var(--surface-2)", border: "1px solid var(--line)",
-                  borderRadius: "var(--r-sm)", padding: 12, fontSize: 11.5, marginTop: 8,
+                  borderRadius: "var(--r-sm)", padding: 12, fontSize: 11, marginTop: 8,
                 }}>
                   {JSON.stringify(v.spec, null, 2)}
                 </pre>

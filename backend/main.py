@@ -53,8 +53,15 @@ async def unhandled_error(request: Request, exc: Exception) -> JSONResponse:
 
 @app.get("/health")
 def health() -> dict:
+    # Ask the provider that actually owns the configured model — hardcoding
+    # Anthropic here predated multi-provider support and reported "no API key"
+    # to anyone running OpenAI or Gemini, even mid-translation.
+    from llm.pricing import BY_KEY
+
+    spec = BY_KEY.get(settings.llm_model)
     return {
         "status": "ok",
-        "llm_configured": bool(settings.anthropic_api_key),
+        "llm_configured": bool(spec and settings.key_for(spec.provider)),
+        "llm_model": settings.llm_model,
         "db": str(settings.db_path),
     }

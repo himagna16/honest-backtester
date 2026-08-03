@@ -61,7 +61,7 @@ export function EquityChart({
           aria-label={`Equity curve. Strategy net of 5 basis points ends at ${points[points.length - 1][1]?.toFixed(2)} times capital; ${benchLabel} ends at ${points[points.length - 1][3]?.toFixed(2)} times.`}>
           {oosIdx > 0 && (
             <rect x={x(oosIdx)} y={PAD.t} width={x(points.length - 1) - x(oosIdx)}
-              height={H - PAD.t - PAD.b} fill="#fefce8" />
+              height={H - PAD.t - PAD.b} fill="var(--warn-soft)" />
           )}
           {ticks.map((t) => (
             <g key={t}>
@@ -77,7 +77,7 @@ export function EquityChart({
           <path d={buildPath(points.map((p) => p[3]), x, y)} fill="none"
             stroke="var(--ink-3)" strokeWidth="1.3" />
           <path d={buildPath(points.map((p) => p[1]), x, y)} fill="none"
-            stroke="var(--accent)" strokeWidth="1.9" strokeLinejoin="round" />
+            stroke="var(--ink)" strokeWidth="1.9" strokeLinejoin="round" />
           {oosIdx > 0 && (
             <text x={x(oosIdx) + 5} y={PAD.t + 11} fontSize="10" fill="var(--warn)">
               holdout →
@@ -88,10 +88,10 @@ export function EquityChart({
             fill="var(--ink-3)">{dates[dates.length - 1]}</text>
         </svg>
         <div className="legend">
-          <span><span className="sw" style={{ background: "var(--accent)", height: 2 }} />Strategy · net 5 bps</span>
+          <span><span className="sw" style={{ background: "var(--ink)", height: 2 }} />Strategy · net 5 bps</span>
           {showGross && <span><span className="sw" style={{ background: "var(--line-2)" }} />Gross</span>}
           <span><span className="sw" style={{ background: "var(--ink-3)" }} />{benchLabel}</span>
-          <span><span className="sw" style={{ background: "#fefce8", height: 9, border: "1px solid var(--warn-line)" }} />Holdout</span>
+          <span><span className="sw" style={{ background: "var(--warn-soft)", height: 9, border: "1px solid var(--warn-line)" }} />Holdout</span>
         </div>
         <details className="fallback">
           <summary>View as table</summary>
@@ -214,9 +214,9 @@ export function RegimeBar({
           <span>{segments[segments.length - 1].end}</span>
         </div>
         <div className="legend">
-          <span><span className="sw" style={{ background: "#bbf7d0", height: 9 }} />bull</span>
-          <span><span className="sw" style={{ background: "#fde68a", height: 9 }} />correction</span>
-          <span><span className="sw" style={{ background: "#fda4af", height: 9 }} />bear</span>
+          <span><span className="sw" style={{ background: "#cddbd0", height: 9 }} />bull</span>
+          <span><span className="sw" style={{ background: "#e8dcb8", height: 9 }} />correction</span>
+          <span><span className="sw" style={{ background: "#e0c2c2", height: 9 }} />bear</span>
           <span><span className="sw" style={{ background: "var(--surface-3)", height: 9 }} />sideways</span>
         </div>
         {!hasBear && (
@@ -229,7 +229,7 @@ export function RegimeBar({
         )}
         <details className="fallback">
           <summary>View as list</summary>
-          <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontSize: 12.5, color: "var(--ink-2)" }}>
+          <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontSize: 12, color: "var(--ink-2)" }}>
             {segments.map((s, i) => (
               <li key={i}>
                 {s.start} → {s.end}: {s.label}

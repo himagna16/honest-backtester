@@ -40,8 +40,16 @@ def make_reply(**kw) -> TranslatorReply:
 
 
 def test_requires_api_key(monkeypatch):
+    """Blank EVERY provider key, not just Anthropic's.
+
+    Clearing one provider used to be enough only because no developer had a
+    key configured; once a real OPENAI_API_KEY existed in .env this test kept
+    passing a key through and stopped testing anything. The outcome must not
+    depend on which provider the machine happens to be set up for.
+    """
     from config import settings
-    monkeypatch.setattr(settings, "anthropic_api_key", "")
+    for attr in ("anthropic_api_key", "openai_api_key", "gemini_api_key"):
+        monkeypatch.setattr(settings, attr, "")
     with pytest.raises(TranslateError) as exc:
         translate("buy the top 5 momentum stocks")
     assert exc.value.code == "llm_not_configured"

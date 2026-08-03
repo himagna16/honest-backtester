@@ -41,11 +41,11 @@ export default function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="shell">
       <aside className="sidebar">
+        {/* Same mark as the landing masthead — one product, one signature. */}
         <Link href="/" className="brand">
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="2" y="2" width="20" height="20" rx="5" fill="#0f172a" />
-            <path d="M6 16.5 10 11l3 3 5-7.5" stroke="#7dd3fc" strokeWidth="2"
-              fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 20 9 11l4 4 8-12" stroke="#7a2e2e" strokeWidth="2.6"
+              fill="none" strokeLinecap="square" />
           </svg>
           Honest Backtester
         </Link>
