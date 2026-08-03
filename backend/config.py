@@ -43,6 +43,13 @@ class Settings(BaseSettings):
     account_size: float = 10_000.0
     cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
+    # Rate limits for the paid translation endpoint (see ratelimit.py). Tuned so
+    # a busy month stays under ~$5 of gpt-5-nano; raise once you have a bigger
+    # budget or a licence. Override with HONEST_RL_PER_MIN / _PER_DAY / _GLOBAL_PER_DAY.
+    rl_per_min: int = 6
+    rl_per_day: int = 40
+    rl_global_per_day: int = 800
+
     def ensure_dirs(self) -> None:
         for d in (self.db_path.parent, self.cache_dir, self.runs_dir,
                   self.panels_dir, self.exports_dir):

@@ -56,11 +56,12 @@ the browser is allowed to call the API.
   `NEXT_PUBLIC_*` variable; that ships it to every visitor's browser. Set
   `OPENAI_API_KEY` with `fly secrets set OPENAI_API_KEY=...` (encrypted at
   rest, never in the repo).
-- **Translation costs real money once public.** `gpt-5-nano` is ~$0.0003 per
-  translation, but a public endpoint with no auth is a public wallet. Either
-  keep the deployed landing page **frontend-only** (waitlist just needs the
-  tiny waitlist endpoint), or add rate limiting before exposing
-  `/api/translate-strategy`.
+- **Translation costs real money once public.** `gpt-5-nano` is ~$0.0002 per
+  translation ($5 ≈ 27,000). `/api/translate-strategy` is now **rate-limited**
+  (backend/ratelimit.py): per-IP burst + daily, plus a global daily budget
+  guard tuned to keep a busy month under ~$5. Tune via `HONEST_RL_*`. Local
+  calls are exempt. The real hard ceiling stays your OpenAI billing cap — set
+  a low one and the app now fails gracefully (clear "unavailable") when it's hit.
 - **yfinance is not licensed for commercial use.** Running the backtester
   publicly is a different posture than running it locally. See `SAAS_PLAN.md`.
 - **The waitlist DB holds real email addresses.** It lives on the Fly volume,

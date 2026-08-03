@@ -130,7 +130,22 @@ def _openai_reasoning_effort(model_id: str) -> str | None:
 
 def _call_openai(spec: ModelSpec, api_key: str, system: str,
                  messages: list[dict]) -> tuple[TranslatorReply, Usage]:
+    import openai
     from openai import OpenAI
+
+    def _guard(exc: Exception) -> None:
+        # Turn provider-budget / bad-key failures into clear, typed errors so
+        # the app can say "translation unavailable" instead of a raw 500 when
+        # the OpenAI spending cap is reached.
+        if isinstance(exc, openai.RateLimitError):
+            raise ProviderError(
+                "quota_exhausted",
+                "the OpenAI budget or rate limit is exhausted — translation is "
+                "temporarily unavailable",
+            ) from exc
+        if isinstance(exc, openai.AuthenticationError):
+            raise ProviderError(
+                "llm_not_configured", "the OpenAI API key was rejected") from exc
 
     client = OpenAI(api_key=api_key, timeout=90.0, max_retries=2)
     chat = [{"role": "system", "content": system}, *messages]
@@ -168,16 +183,23 @@ def _call_openai(spec: ModelSpec, api_key: str, system: str,
             raise ProviderError("parse_failed", "no parsable reply")
     except ProviderError:
         raise
-    except Exception:
-        # schema rejected by strict mode → measure the model, not the SDK
+    except Exception as exc:
+        # A budget/auth failure is terminal — don't waste a second call on the
+        # fallback; surface it as a clear typed error.
+        _guard(exc)
+        # otherwise: schema rejected by strict mode → measure the model, not the SDK
         path = "json_fallback"
-        response = client.chat.completions.create(
-            model=spec.model_id,
-            messages=[{"role": "system", "content": _schema_hint(system)}, *messages],
-            response_format={"type": "json_object"},
-            max_completion_tokens=MAX_OUTPUT_TOKENS,
-            **reason,
-        )
+        try:
+            response = client.chat.completions.create(
+                model=spec.model_id,
+                messages=[{"role": "system", "content": _schema_hint(system)}, *messages],
+                response_format={"type": "json_object"},
+                max_completion_tokens=MAX_OUTPUT_TOKENS,
+                **reason,
+            )
+        except Exception as exc2:
+            _guard(exc2)
+            raise
         content = response.choices[0].message.content or ""
         if not content.strip():
             raise ProviderError(
