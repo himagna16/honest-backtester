@@ -1,10 +1,10 @@
 # The Honest Backtester — build & launch checklist
 
-**You are here:** the product is functionally complete (M0–M6). The **whole
-app** now shares one design system. Live AI translation is **on**
-(`gpt-5-nano`). The code is backed up to a **private** GitHub repo. Deploy
-configs are written but **nothing is deployed** — the app is local-only.
-Waitlist: 2 / 50 signups.
+**You are here:** product complete (M0–M6), one design system, live AI
+(`gpt-5-nano`), private GitHub backup. **The landing page is DEPLOYED and public:
+https://honest-backtester-six.vercel.app** — but the waitlist form needs the
+backend, which is not deployed yet (Fly.io, below). Don't share the link until
+signups record. Waitlist: 2 / 50.
 
 This file is the running to-do list. Rationale for the paid-tier items lives in
 [SAAS_PLAN.md](SAAS_PLAN.md); this is the "what to do and where to go" version.
@@ -79,10 +79,12 @@ for the exact steps.** I stopped short of deploying: it needs your Vercel and
 Fly accounts (interactive sign-in), and putting the app on the public internet
 is your call, not a build side-effect.
 
-- 🔑 **Frontend → Vercel** (free tier, gives a public URL)
-  - **https://vercel.com** → sign in with GitHub → *Add New Project* → import
-    `himagna16/honest-backtester` → set **Root Directory = `frontend`** → Deploy.
-  - `frontend/vercel.json` is already committed (framework + security headers).
+- ✅ **Frontend → Vercel — LIVE at https://honest-backtester-six.vercel.app**
+  (account `himagna16` / `sai-maruvadas-projects`). `/` redirects to `/landing`.
+  Redeploy after changes: `cd frontend && npx vercel deploy --prod`.
+  - ⚠️ **The waitlist form does not work yet** — it needs the backend (next
+    item). The demo, charts and copy all work. Do NOT post the link publicly
+    until signups actually record, or you waste the launch.
 - 🔑 **Backend → Fly.io** (needed only so the waitlist form works)
   - `deploy/Dockerfile` + `deploy/fly.toml` are ready; volume-backed so the
     journal survives redeploys. `fly auth login && fly launch --no-deploy`.
