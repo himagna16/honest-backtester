@@ -549,3 +549,41 @@ letting a blank string reach `json.loads`.
 (bottom-10 Nasdaq-100 over 63 days weekly; a quarterly-rebalance request
 correctly returns needs_clarification rather than guessing). 3 new provider
 tests (effort gating on/off, clear empty-content error). 126 passed, 1 skipped.
+
+---
+
+## Drawdown chart framing + report simplification (2026-08-03)
+
+**Drawdown chart clipped.** The underwater chart scaled so the worst drawdown
+mapped exactly to the plot floor (y=168 of a 190 viewBox), with only PAD.b=22
+below it — so a deep trough crammed into the date-label row and read as cut off
+(measured: trough at 249px vs date labels at 274px, ~25px apart). Fix: scale to
+1.15× the worst value so the trough never touches the axis, reserve a dedicated
+label band below the plot, and add a dashed "worst −38.3%" reference line so the
+depth is readable, not just implied. Trough now sits at y=161 of a 210 viewBox
+with ~48px headroom; 63px of separation from the labels when rendered.
+
+**Report page felt overwhelming.** The Overview tab stacked four heavy panels
+(readback + Stress + Regime + OOS), and two of them — Stress and Regime — were
+DUPLICATED in the Cost and Charts tabs. Nine bordered blocks competed at equal
+weight with no hierarchy.
+
+Redesign — Overview becomes a genuine summary, not a dumping ground:
+1. One calm lede group: verdict (the answer) → risk badges → the metric
+   scoreboard (benchmark always shown). `--s7` (48px) gap before the detail.
+2. Overview tab now holds only the orienting one-line readback + a new
+   **AuditSummary** digest: a pass/warn/note tally, every non-passing finding
+   named with its message, and "See all 13 checks →" that jumps to the Audit
+   note tab.
+3. The detail moved to where it belongs: OOS (train/holdout + sensitivity)
+   joins Stress and Cost sweep under Cost & stress; Regime stays under Charts.
+   Nothing was removed — the redundancy was, and the summary preserves the
+   message in words.
+
+This respects non-negotiable #1 (the audit is never hidden/minimized): the
+audit is the *headline* of the summary, titled "The audit", every flag named,
+full findings one click away and still baked into the PNG export.
+
+Measured on the new Overview: 6 type sizes (11/12/13/15/19/28), one 2px radius,
+zero shadows, zero WCAG failures, no overflow at 414px. Build clean; backend
+suite 126 passed, 1 skipped (unchanged).

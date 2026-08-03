@@ -127,11 +127,18 @@ export function DrawdownChart({
   if (points.length < 2) return null;
   const dates = points.map((p) => p[0]);
   const vals = points.flatMap((p) => [p[1], p[2]]).filter((v): v is number => v !== null);
-  const lo = Math.min(...vals, -0.02);
-  const h = 190;
-  const y = (v: number) => PAD.t + (v / lo) * (h - PAD.t - PAD.b);
+  const dataMin = Math.min(...vals, -0.02);
+  const worst = Math.min(...points.map((p) => p[1] ?? 0));  // strategy's worst
+  // Scale a little deeper than the worst point so the trough never bottoms out
+  // on the axis (which read as clipped), and reserve a row BELOW the plot for
+  // the date labels so a deep spike can't crowd into them.
+  const lo = dataMin * 1.15;
+  const h = 210;
+  const axisBand = 26;                 // date-label row, below the plot
+  const plotB = h - axisBand;          // plot floor
+  const y = (v: number) => PAD.t + (v / lo) * (plotB - PAD.t);
   const x = xScale(points.length);
-  const grid = [-0.1, -0.2, -0.3, -0.5, -0.7].filter((t) => t > lo);
+  const grid = [-0.1, -0.2, -0.3, -0.5, -0.7, -0.9].filter((t) => t > lo);
   const area = buildPath(points.map((p) => p[1]), x, y) +
     `L${x(points.length - 1).toFixed(1)},${y(0).toFixed(1)}L${x(0).toFixed(1)},${y(0).toFixed(1)}Z`;
 
@@ -140,7 +147,7 @@ export function DrawdownChart({
       <header><IconChart size={15} /><h3>Drawdown · underwater</h3></header>
       <div className="body">
         <svg viewBox={`0 0 ${W} ${h}`} role="img"
-          aria-label={`Drawdown chart. Strategy worst drawdown ${pct(Math.min(...points.map((p) => p[1] ?? 0)))}.`}>
+          aria-label={`Drawdown chart. Strategy worst drawdown ${pct(worst)}.`}>
           {grid.map((t) => (
             <g key={t}>
               <line x1={PAD.l} x2={W - PAD.r} y1={y(t)} y2={y(t)} stroke="var(--line)" />
@@ -154,8 +161,13 @@ export function DrawdownChart({
           <path d={buildPath(points.map((p) => p[1]), x, y)} fill="none"
             stroke="var(--neg)" strokeWidth="1.6" />
           <line x1={PAD.l} x2={W - PAD.r} y1={y(0)} y2={y(0)} stroke="var(--line-2)" />
-          <text x={PAD.l} y={h - 5} fontSize="10" fill="var(--ink-3)">{dates[0]}</text>
-          <text x={W - PAD.r} y={h - 5} fontSize="10" textAnchor="end"
+          {/* mark the worst drawdown so its depth is readable, not just implied */}
+          <line x1={PAD.l} x2={W - PAD.r} y1={y(worst)} y2={y(worst)}
+            stroke="var(--neg)" strokeDasharray="2 3" opacity="0.5" />
+          <text x={W - PAD.r} y={y(worst) - 4} textAnchor="end" fontSize="10"
+            fill="var(--neg)">worst {pct(worst, 1)}</text>
+          <text x={PAD.l} y={h - 6} fontSize="10" fill="var(--ink-3)">{dates[0]}</text>
+          <text x={W - PAD.r} y={h - 6} fontSize="10" textAnchor="end"
             fill="var(--ink-3)">{dates[dates.length - 1]}</text>
         </svg>
         <div className="legend">

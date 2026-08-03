@@ -530,6 +530,67 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   }
 }
 
+/* ===================== report: summary-first layout ===================== */
+
+/* The answer + evidence read as one calm group; then a big gap before the
+   tabbed detail so the page has rhythm instead of nine equal-weight panels. */
+.report-lede { display: flex; flex-direction: column; gap: var(--s4); }
+.report-detail { margin-top: var(--s7); }
+
+/* orienting one-liner: "here is exactly what was tested" */
+.readback {
+  font-family: var(--serif); font-size: 15px; line-height: 1.6;
+  color: var(--ink-2); max-width: 82ch; margin: 0;
+}
+
+/* the audit, digested — the Overview headline, not the whole 13-panel wall */
+.audit-summary {
+  border: 1px solid var(--line-2); background: var(--surface);
+  padding: var(--s4) var(--s5) var(--s5);
+}
+.audit-summary > header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--s3) var(--s5); flex-wrap: wrap;
+  border-bottom: 2px solid var(--ink); padding-bottom: var(--s3); margin-bottom: var(--s4);
+}
+.audit-summary > header h3 { margin: 0; display: flex; align-items: center; gap: 8px; }
+.audit-summary .tally { display: flex; gap: var(--s4); flex-wrap: wrap; }
+.audit-summary .tally .t {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
+}
+.audit-summary .tally .pass { color: var(--pos); }
+.audit-summary .tally .warn { color: var(--warn); }
+.audit-summary .tally .fatal { color: var(--neg); }
+.audit-summary .tally .note { color: var(--ink-3); }
+
+.audit-summary .flagged { list-style: none; margin: 0; padding: 0; }
+.audit-summary .flagged li {
+  display: flex; gap: var(--s3); padding: var(--s3) 0; border-top: 1px solid var(--line);
+}
+.audit-summary .flagged li:first-child { border-top: none; padding-top: 0; }
+.audit-summary .flagged .mark { flex: none; margin-top: 1px; }
+.audit-summary .flagged .name { font-weight: 600; font-size: 13px; color: var(--ink); }
+.audit-summary .flagged .msg {
+  margin: 3px 0 0; color: var(--ink-2); font-size: 13px; line-height: 1.5; max-width: 92ch;
+}
+.audit-summary .flagged .sev-warning .mark { color: var(--warn); }
+.audit-summary .flagged .sev-fatal .mark { color: var(--neg); }
+.audit-summary .flagged .sev-note .mark { color: var(--ink-3); }
+
+.audit-summary .clean {
+  display: flex; gap: 8px; align-items: center; color: var(--ink-2);
+  font-size: 14px; margin: 0;
+}
+.audit-summary .clean svg { color: var(--pos); flex: none; }
+
+.audit-summary .see-all {
+  margin-top: var(--s4); padding: 0; min-height: 0; border: none; background: none;
+  color: var(--accent); font-weight: 600;
+}
+.audit-summary .see-all:hover {
+  color: var(--accent-ink); background: none; border: none; text-decoration: underline;
+}
+
 /* ============================================================================
    BROADSHEET — the marketing surface. Editorial financial register:
    Montserrat display, Newsreader for the reading voice, Inter for UI.

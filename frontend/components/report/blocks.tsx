@@ -168,6 +168,72 @@ export function StressPanel({ report }: { report: Report }) {
   );
 }
 
+/* ---------------- audit summary (the Overview digest) ---------------- */
+
+// The Overview should answer "what happened and why" in one calm screen, so the
+// audit appears here DIGESTED: a tally, every non-passing finding named, and a
+// link to the full list. Not minimized — the audit is the headline of the
+// summary — just not the whole 13-panel wall at once.
+export function AuditSummary({
+  report, onSeeAll,
+}: {
+  report: Report;
+  onSeeAll?: () => void;
+}) {
+  const findings = report.audit;
+  const counts = { pass: 0, note: 0, warning: 0, fatal: 0 };
+  for (const f of findings) {
+    if (f.severity in counts) counts[f.severity as keyof typeof counts] += 1;
+  }
+  const flagged = findings.filter((f) => f.severity !== "pass");
+  const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? "" : "s"}`;
+
+  return (
+    <section className="audit-summary">
+      <header>
+        <h3><IconAudit size={15} /> The audit</h3>
+        <div className="tally">
+          <span className="t pass"><IconCheck size={12} /> {counts.pass} passed</span>
+          {counts.fatal > 0 &&
+            <span className="t fatal"><IconX size={12} /> {plural(counts.fatal, "blocker")}</span>}
+          {counts.warning > 0 &&
+            <span className="t warn"><IconWarning size={12} /> {plural(counts.warning, "warning")}</span>}
+          {counts.note > 0 &&
+            <span className="t note"><IconInfo size={12} /> {plural(counts.note, "note")}</span>}
+        </div>
+      </header>
+
+      {flagged.length > 0 ? (
+        <ul className="flagged">
+          {flagged.map((f) => {
+            const meta = SEV_META[f.severity];
+            return (
+              <li key={f.check + f.name} className={`sev-${f.severity}`}>
+                <span className="mark"><meta.Icon size={12} /></span>
+                <div>
+                  <div className="name">{f.name}</div>
+                  <p className="msg">{f.message}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="clean">
+          <IconCheck size={13} /> Every check passed. Surviving a backtest is
+          necessary, not sufficient — this is not investment advice.
+        </p>
+      )}
+
+      {onSeeAll && (
+        <button className="ghost see-all" onClick={onSeeAll}>
+          See all {findings.length} checks and suggested re-tests →
+        </button>
+      )}
+    </section>
+  );
+}
+
 /* ---------------- research note ---------------- */
 
 export function ResearchNote({

@@ -15,7 +15,7 @@ import {
   IconAudit, IconChart, IconCompare, IconDownload, IconRisk, IconSnapshot,
 } from "@/components/ui/Icons";
 import {
-  AuditList, CostSweepTable, HoldingsLog, MetricCards, OOSPanel,
+  AuditList, AuditSummary, CostSweepTable, HoldingsLog, MetricCards, OOSPanel,
   ResearchNote, RiskBadges, StressPanel, VerdictBanner,
 } from "@/components/report/blocks";
 import { DrawdownChart, EquityChart, RegimeBar } from "@/components/report/charts";
@@ -106,8 +106,10 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </>
         }
       />
-      <main className="content">
-        <div className="stack">
+      <main className="content report">
+        {/* The answer, then the evidence — one calm group, generous space
+            before the tabbed detail below. */}
+        <div className="report-lede">
           <div className="row" style={{ justifyContent: "space-between" }}>
             <span className="faint">
               {r.data.effective_start} → {r.data.effective_end} · {r.data.universe_size} tickers ·
@@ -122,8 +124,10 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <RiskBadges report={r} />
           <MetricCards metrics={r.metrics} benchmark={r.benchmark} benchLabel={benchLabel}
             equity={equitySeries} drawdown={ddSeries} />
+        </div>
 
-          <div className="row" style={{ marginTop: 4 }}>
+        <div className="stack report-detail">
+          <div className="row">
             <Segmented<Tab>
               label="Report sections"
               value={tab}
@@ -146,12 +150,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
           {tab === "overview" && (
             <div className="stack">
-              <p className="faint" style={{ fontStyle: "italic", maxWidth: "84ch" }}>
-                {r.readback}
-              </p>
-              <StressPanel report={r} />
-              <RegimeBar segments={r.regimes.segments} hasBear={r.regimes.has_bear_market} />
-              <OOSPanel report={r} />
+              <p className="readback">{r.readback}</p>
+              <AuditSummary report={r} onSeeAll={() => setTab("note")} />
             </div>
           )}
 
@@ -168,6 +168,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
             <div className="stack">
               <CostSweepTable rows={r.cost_sweep} />
               <StressPanel report={r} />
+              <OOSPanel report={r} />
             </div>
           )}
 
