@@ -388,3 +388,34 @@ session usage limit, so the same three lenses ran inline instead:
 `vector-effect="non-scaling-stroke"` makes Chrome compute dashes in screen
 space, breaking `pathLength={1}` draw-on normalisation — the spark truncated
 at ~62%. Data paths must not carry vector-effect; the dashed baseline keeps it.
+
+---
+
+## The overflow was in the export itself (2026-08-03, follow-up)
+
+**Correction of my own diagnosis.** The user reported the overflow twice; the
+first fix (the landing plate's viewport-dependent crop) was real but was not
+what they were pointing at. The actual defect was **inside the exported PNG**:
+matplotlib's `wrap=True` wraps text at the *figure* boundary, not at the box
+the text sits in, so the verdict sub-text ran through the amber banner's right
+border before wrapping — in every export, on every surface that displayed one.
+No frontend change could ever have fixed it.
+
+**Fix (`backend/export.py`):** `_wrap_to()` overrides a text's
+`_get_wrap_line_width` to the banner's inner width (private matplotlib hook,
+stable for years; the regression test pins it by measuring rendered extents).
+Headline and sub are now top-anchored so extra wrapped lines grow downward
+into known-clear space; the disclaimer footer wraps at 88% figure width so it
+keeps side margins. PNG and PDF share the path.
+
+**Proof:** new `test_verdict_text_stays_inside_banner` renders all three
+verdict colors with long headlines and a 180-char sub and asserts, in pixels:
+no right-border crossing, no bottom crossing, no headline/sub collision.
+Pixel scan of the re-exported sample: 0 text pixels in the 30px band inside
+the border (was: text touching it). Landing crop row 920 still 0.0% busy.
+Suite: 121 passed, 1 skipped.
+
+**Lesson recorded:** when a user says "still not fixed", re-derive what they
+are looking at from their screenshot's pixels before assuming the prior
+diagnosis was merely incomplete — the defect lived one layer deeper than
+where I fixed it.

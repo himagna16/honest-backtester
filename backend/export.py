@@ -26,6 +26,21 @@ def _fmt_pct(v: float | None) -> str:
     return f"{v * 100:+.1f}%"
 
 
+def _wrap_to(text_obj, width_px: float):
+    """Make matplotlib wrap `text_obj` at `width_px` instead of the figure edge.
+
+    matplotlib's wrap=True computes the wrap width from the FIGURE boundary, so
+    text placed inside a drawn box happily runs through the box's right border
+    before wrapping (the defect: the verdict sub-text kissed the banner frame).
+    `_get_wrap_line_width` is a private hook, but it is the only override point
+    and has been stable for years; test_exports pins the behaviour by measuring
+    rendered extents, so a matplotlib upgrade that breaks this fails loudly.
+    """
+    text_obj.set_wrap(True)
+    text_obj._get_wrap_line_width = lambda: width_px
+    return text_obj
+
+
 def render_report(report: dict, out_path: Path, fmt: str) -> Path:
     verdict = report["verdict"]
     metrics = report["metrics"]
@@ -49,10 +64,19 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
     label = {"red": "KILLED", "amber": "WOUNDED", "green": "SURVIVED"}[verdict["color"]]
     ax0.text(0.03, 0.78, f"{verdict['icon']}  {label} — {verdict['color'].upper()} VERDICT",
              fontsize=10, fontweight="bold", color=color, transform=ax0.transAxes)
-    ax0.text(0.03, 0.47, verdict["headline"], fontsize=15, fontweight="bold",
-             color=color, transform=ax0.transAxes, wrap=True)
-    ax0.text(0.03, 0.16, verdict["sub"][:180], fontsize=8.5, color="#4b5563",
-             transform=ax0.transAxes, wrap=True)
+    # Wrap inside the banner: from the 0.03 text inset to a mirrored right
+    # inset — NOT at the figure edge, which lies beyond the box border.
+    banner_px = ax0.get_position().width * fig.get_figwidth() * fig.dpi
+    inner_px = banner_px * (1 - 2 * 0.03)
+    # Top-anchored so extra wrapped lines grow DOWNWARD into known-clear space:
+    # headline may take 2 lines (0.71 → ~0.36), the sub starts below the
+    # worst case (0.32) and 180 chars caps it at 2 lines above the border.
+    _wrap_to(ax0.text(0.03, 0.71, verdict["headline"], fontsize=15,
+                      fontweight="bold", color=color, transform=ax0.transAxes,
+                      va="top"), inner_px)
+    _wrap_to(ax0.text(0.03, 0.32, verdict["sub"][:180], fontsize=8.5,
+                      color="#4b5563", transform=ax0.transAxes, va="top"),
+             inner_px)
     ax0.text(0.03, 1.06, f"The Honest Backtester — {report['spec'].get('name', '')}",
              fontsize=9, color="#8a919c", transform=ax0.transAxes)
 
@@ -141,10 +165,13 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
              transform=ax4.transAxes)
 
     # ---- the baked-in disclaimer footer ----
-    fig.text(0.5, 0.022, disclaimer, fontsize=6.8, color="#4b5563",
-             ha="center", va="bottom", wrap=True,
-             bbox=dict(boxstyle="square,pad=0.6", facecolor="#faf9f6",
-                       edgecolor="#e4e2dc"))
+    # Same wrap fix: centered text wrapped at the raw figure edge produces
+    # margin-to-margin lines; wrap at 88% so the footer keeps side margins.
+    _wrap_to(fig.text(0.5, 0.022, disclaimer, fontsize=6.8, color="#4b5563",
+                      ha="center", va="bottom",
+                      bbox=dict(boxstyle="square,pad=0.6", facecolor="#faf9f6",
+                                edgecolor="#e4e2dc")),
+             fig.get_figwidth() * fig.dpi * 0.88)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     if fmt == "png":
