@@ -115,12 +115,30 @@ def _call_anthropic(spec: ModelSpec, api_key: str, system: str,
 
 # -------------------------------------------------------------------- OpenAI
 
+def _openai_reasoning_effort(model_id: str) -> str | None:
+    """Reasoning models (gpt-5*) spend the completion budget on hidden reasoning
+    tokens BEFORE writing any answer — gpt-5-nano burns ~2,000-2,600 on a single
+    translation. With a 4k ceiling that can leave nothing for the actual reply:
+    empty content, surfaced as "model returned non-JSON".
+
+    Translation is extraction, not problem-solving, so ask for minimal reasoning.
+    It keeps the whole budget for output, and is faster and ~10x cheaper. Older
+    non-reasoning models (gpt-4.1-nano) reject the parameter, so gate on gpt-5*.
+    """
+    return "minimal" if model_id.startswith("gpt-5") else None
+
+
 def _call_openai(spec: ModelSpec, api_key: str, system: str,
                  messages: list[dict]) -> tuple[TranslatorReply, Usage]:
     from openai import OpenAI
 
     client = OpenAI(api_key=api_key, timeout=90.0, max_retries=2)
     chat = [{"role": "system", "content": system}, *messages]
+
+    reason: dict = {}
+    effort = _openai_reasoning_effort(spec.model_id)
+    if effort:
+        reason["reasoning_effort"] = effort
 
     t0 = time.perf_counter()
     path = "native"
@@ -130,10 +148,21 @@ def _call_openai(spec: ModelSpec, api_key: str, system: str,
             messages=chat,
             response_format=TranslatorReply,
             max_completion_tokens=MAX_OUTPUT_TOKENS,
+            **reason,
         )
         message = response.choices[0].message
         if getattr(message, "refusal", None):
             raise ProviderError("model_refusal", message.refusal)
+        # Empty content with finish_reason "length" means the token budget was
+        # exhausted (usually by reasoning) — say so plainly instead of letting a
+        # blank string fall through to a cryptic JSON error.
+        if getattr(response.choices[0], "finish_reason", None) == "length" \
+                and message.parsed is None:
+            raise ProviderError(
+                "token_limit",
+                f"{spec.model_id} hit the {MAX_OUTPUT_TOKENS}-token limit before "
+                "returning a spec — raise MAX_OUTPUT_TOKENS or lower reasoning effort",
+            )
         parsed = message.parsed
         if parsed is None:
             raise ProviderError("parse_failed", "no parsable reply")
@@ -147,8 +176,17 @@ def _call_openai(spec: ModelSpec, api_key: str, system: str,
             messages=[{"role": "system", "content": _schema_hint(system)}, *messages],
             response_format={"type": "json_object"},
             max_completion_tokens=MAX_OUTPUT_TOKENS,
+            **reason,
         )
-        parsed = _validate(response.choices[0].message.content or "")
+        content = response.choices[0].message.content or ""
+        if not content.strip():
+            raise ProviderError(
+                "token_limit",
+                f"{spec.model_id} returned no content (finish_reason="
+                f"{response.choices[0].finish_reason}) — the token budget was "
+                "exhausted before any JSON was written",
+            )
+        parsed = _validate(content)
     latency = time.perf_counter() - t0
 
     u = response.usage

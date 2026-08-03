@@ -80,16 +80,23 @@ def test_effort_gate(model, expected):
 
 # ---------------------------------------------------------------- OpenAI
 
-def _fake_openai(monkeypatch, *, parse_ok=True, cached=0):
-    calls = {"parse": 0, "create": 0}
+def _fake_openai(monkeypatch, *, parse_ok=True, cached=0, create_content=None,
+                 finish_reason="stop"):
+    calls = {"parse": 0, "create": 0, "parse_kw": None, "create_kw": None}
+    content = ('{"status":"unsupported","unsupported_reason":"options"}'
+               if create_content is None else create_content)
 
     class Msg:
         refusal = None
         parsed = TranslatorReply.model_validate(GOOD) if parse_ok else None
-        content = '{"status":"unsupported","unsupported_reason":"options"}'
+
+    class CreateMsg:
+        refusal = None
 
     class Choice:
-        message = Msg()
+        def __init__(self, msg):
+            self.message = msg
+            self.finish_reason = finish_reason
 
     class Details:
         cached_tokens = cached
@@ -99,20 +106,23 @@ def _fake_openai(monkeypatch, *, parse_ok=True, cached=0):
         completion_tokens = 400
         prompt_tokens_details = Details()
 
-    class Response:
-        choices = [Choice()]
-        usage = Usage()
+    def _resp(msg):
+        return types.SimpleNamespace(choices=[Choice(msg)], usage=Usage())
 
     class Completions:
         def parse(self, **kw):
             calls["parse"] += 1
+            calls["parse_kw"] = kw
             if not parse_ok:
                 raise RuntimeError("schema rejected by strict mode")
-            return Response()
+            return _resp(Msg())
 
         def create(self, **kw):
             calls["create"] += 1
-            return Response()
+            calls["create_kw"] = kw
+            m = CreateMsg()
+            m.content = content
+            return _resp(m)
 
     class Client:
         def __init__(self, **kw):
@@ -144,6 +154,35 @@ def test_openai_falls_back_to_json_mode(monkeypatch):
     assert usage.path == "json_fallback"
     assert reply.status == "unsupported"
     assert calls["parse"] == 1 and calls["create"] == 1
+
+
+def test_gpt5_asks_for_minimal_reasoning(monkeypatch):
+    """gpt-5* reasoning models must be told to reason minimally, or reasoning
+    tokens exhaust the completion budget and the reply comes back empty."""
+    calls = _fake_openai(monkeypatch)
+    providers.call_model("gpt-5-nano", "key", "sys",
+                         [{"role": "user", "content": "hi"}])
+    assert calls["parse_kw"].get("reasoning_effort") == "minimal"
+
+
+def test_non_reasoning_model_omits_effort(monkeypatch):
+    """gpt-4.1-nano rejects reasoning_effort — it must not be sent."""
+    calls = _fake_openai(monkeypatch)
+    providers.call_model("gpt-4.1-nano", "key", "sys",
+                         [{"role": "user", "content": "hi"}])
+    assert "reasoning_effort" not in calls["parse_kw"]
+
+
+def test_empty_content_raises_clear_token_limit_error(monkeypatch):
+    """A blank fallback reply (budget exhausted) must surface a clear error,
+    not the cryptic 'model returned non-JSON: Expecting value line 1 col 1'."""
+    _fake_openai(monkeypatch, parse_ok=False, create_content="",
+                 finish_reason="length")
+    with pytest.raises(providers.ProviderError) as exc:
+        providers.call_model("gpt-5-nano", "key", "sys",
+                             [{"role": "user", "content": "hi"}])
+    assert exc.value.code == "token_limit"
+    assert "non-JSON" not in str(exc.value)
 
 
 # ---------------------------------------------------------------- Gemini

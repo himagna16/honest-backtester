@@ -516,3 +516,36 @@ parse-tested.
 **Not done, and honestly not doable by me:** the data licence, the legal
 review, and the Stripe/Clerk/Sentry accounts. Those need a signature, a lawyer,
 and a credit card.
+
+---
+
+## gpt-5-nano returned empty output ("model returned non-JSON") (2026-08-03)
+
+**Symptom:** running a strategy sometimes failed with
+`model returned non-JSON: Expecting value: line 1 column 1 (char 0)`.
+
+**Root cause — reasoning tokens, not a JSON bug.** gpt-5-nano is a reasoning
+model: hidden reasoning tokens are drawn from `max_completion_tokens` BEFORE any
+visible output. Measured on the real translator prompt, a single translation
+spent ~2,000–2,600 tokens reasoning. Against the 4,000 ceiling that leaves a
+razor-thin margin; a slightly harder input pushes reasoning over the limit,
+`finish_reason` becomes `length`, and content is empty. The SDK's `.parse()`
+then raised, the code fell through to the JSON-mode fallback, that call ran out
+of budget the same way, and `json.loads("")` produced the cryptic error. It was
+intermittent precisely because it depended on how much the model happened to
+reason for a given input.
+
+**Fix:** send `reasoning_effort="minimal"` for gpt-5* models (gated by prefix;
+older gpt-4.1-nano rejects the parameter). Translation is extraction, not
+problem-solving. Measured effect: reasoning tokens 2,048 → 0, completion tokens
+2,138 → 153 (~14x cheaper output), still a complete and correct spec. Applied to
+both the native `.parse()` and the JSON-mode fallback.
+
+**Defense in depth:** both paths now detect empty content / `finish_reason
+== "length"` and raise a clear `token_limit` error naming the cause, instead of
+letting a blank string reach `json.loads`.
+
+**Verified:** 5/5 fresh translations succeed; harder inputs map correctly
+(bottom-10 Nasdaq-100 over 63 days weekly; a quarterly-rebalance request
+correctly returns needs_clarification rather than guessing). 3 new provider
+tests (effort gating on/off, clear empty-content error). 126 passed, 1 skipped.
