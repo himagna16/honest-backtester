@@ -29,7 +29,8 @@ cp .env.example .env    # put your ANTHROPIC_API_KEY inside
 make dev
 ```
 
-Open **http://localhost:3000**. Backend API docs: http://localhost:8000/docs.
+Open **http://localhost:3000**. Backend API docs at `/docs` on the backend
+port `dev.sh` prints (8000, or the first free fallback).
 
 - If port 8000 is busy, `dev.sh` falls back to 8010/8020/8030 automatically
   and points the frontend at the right port (`HONEST_BACKEND_PORT` overrides).

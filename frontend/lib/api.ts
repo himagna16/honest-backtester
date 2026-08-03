@@ -1,5 +1,6 @@
 // Typed fetch client for the FastAPI backend. The backend owns all secrets;
-// the browser only ever talks to localhost:8000.
+// the browser only ever talks to the local backend (port 8000, or the
+// fallback port dev.sh chose and passed via NEXT_PUBLIC_API_BASE).
 
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000";

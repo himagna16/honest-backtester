@@ -16,7 +16,7 @@ dev: venv frontend-deps
 	./dev.sh
 
 # Everything: engine golden tests, DSL validation, API tests, offline LLM tests,
-# then the frontend typecheck + production build.
+# then the frontend typecheck.
 test: venv
 	$(PY) -m pytest backend/tests -q
 	cd frontend && npm run typecheck

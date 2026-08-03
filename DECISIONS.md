@@ -163,12 +163,17 @@ All confirmed findings were fixed and pinned with regression tests
 
 The original session's "gross win → net death" came from `reversal.py`, which
 holds **today's losers for one day** on the War list and subtracts a flat
-daily cost. Empirically reproduced through the engine on the frozen War
-panel (2022-01 → 2026-05): gross +153% (Sharpe 1.11) beats SPY +68% (0.76);
-still ahead at 5 bps (+122%); **flips to losing at 20 bps (+51%)** with ~59×
-annual turnover — pinned in `test_audit.py::test_dip_buy_cost_collapse_reproduction`.
-The brief's worked example #2 (5% dip filter, 5-day hold) trades only ~10×/yr
-under honest turnover-scaled costs and does NOT flip — the flat per-day cost
-in `reversal.py` overstated its drag; the turnover-scaled formula (Section 3,
-which wins) is gentler on slow-rolling cohorts. Both variants ship as tests;
-the report shows the flip wherever it exists.
+daily cost. Empirically reproduced through the hardened engine on the frozen
+War panel (2022-01 → 2026-05): gross +151.4% (Sharpe 0.92) beats SPY +67.9%
+(Sharpe 0.53); still ahead at 5 bps (+121%); **flips to losing at 20 bps
+(+50.1%)** with ~59× annual turnover — pinned in
+`test_audit.py::test_dip_buy_cost_collapse_reproduction`. (Numbers moved a
+little when the adversarial-audit fixes landed — gap-free lookbacks and
+NAV-share cohort turnover; the flip itself is unchanged.)
+The brief's worked example #2 (5% dip filter, 5-day hold) trades ~16×/yr
+under honest turnover-scaled costs and does NOT flip on the tested windows —
+on 2019–2024 it never beats SPY even gross, so there is no gross win to lose;
+the flat per-day cost in `reversal.py` overstated its drag, and the
+turnover-scaled formula (Section 3, which wins) is gentler on slow-rolling
+cohorts. Both variants ship as tests; the report shows the flip wherever it
+exists.
