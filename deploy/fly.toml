@@ -11,7 +11,7 @@ primary_region = "iad"
   # would let any site call this API from a visitor's browser.
   # MUST be a JSON array, not a bare string: cors_origins is list[str], and
   # pydantic-settings raises SettingsError on boot for anything else.
-  HONEST_CORS_ORIGINS = '["https://REPLACE-ME.vercel.app"]'
+  HONEST_CORS_ORIGINS = '["https://honest-backtester-six.vercel.app"]'
   HONEST_LLM_MODEL = "gpt-5-nano"
 
 # Secrets are NOT set here. Use:  fly secrets set OPENAI_API_KEY=...

@@ -1,0 +1,29 @@
+# Build context for deploy/Dockerfile is the REPO ROOT, so this must keep
+# secrets and local state out of the image AND out of the bytes uploaded to
+# Fly's remote builder. Do not remove the .env / data / secret entries.
+
+# Secrets — must never reach the builder
+.env
+.env.*
+backend/.env
+frontend/.env*
+**/.vercel
+
+# Local data: DB (waitlist emails), price cache, run snapshots, panels, exports
+data/
+
+# Python
+.venv/
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+
+# Node / the separately-deployed frontend (not part of the backend image)
+frontend/
+node_modules/
+
+# VCS, scratch, docs the image doesn't need
+.git/
+.github/
+*.md
+scratchpad/
