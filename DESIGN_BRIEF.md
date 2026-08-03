@@ -77,18 +77,30 @@ first — they carry more weight than everything else combined.
 
 ---
 
-## Why the current version reads as AI-generated
+## Why the old version read as AI-generated — and where it landed
 
-Measured, not vibes:
+Measured, not vibes. The "after" column is re-measured from the live DOM at
+1440px (see the audit snippet at the bottom of this file).
 
-| Signal | Current state | Target |
-|---|---|---|
-| Font sizes in use | 17, with 11 crammed between 10.5–15px | ≤ 6, spanning 5× |
-| Largest type | 44px | 64–80px |
-| Bordered-box rules | 15 | ≤ 7 |
-| Product screenshots on landing | 0 | ≥ 1 real one |
-| Icon-card grids | 6 identical cards in a row | 0 |
-| Typeface | system stack | one self-hosted family |
+| Signal | Before | Target | After — Broadsheet |
+|---|---|---|---|
+| Font sizes in use | 17, with 11 crammed between 10.5–15px | ≤ 6, spanning 5× | **6** — 11/14/17/23/40/76 |
+| Type scale range | 4.2× | ≥ 5× | **6.9×** |
+| Largest type | 44px | 64–80px | **76px** |
+| Bordered-box rules | 15 | ≤ 7 | **7** |
+| Border radii in use | 3 | 1 | **1** (2px; circles excepted) |
+| Box shadows | 4 | ≤ 1 | **0** |
+| Product screenshots on landing | 0 | ≥ 1 real one | **1**, exported from a real run |
+| Icon-card grids | 6 identical cards in a row | 0 | **0** — numbered editorial rows |
+| Typeface | system stack | one self-hosted family | **3 via `next/font`**, scoped to `/landing` |
+| Contrast failures | — | 0 | **0** of 118 text nodes |
+
+Fluid rules interpolate *between* two steps of the ramp rather than inventing a
+seventh size, which is why the count holds at 6 across viewports.
+
+The app itself (workbench, Truth Report) is deliberately untouched — dense and
+functional is correct for an analyst tool, and it keeps the system font stack so
+it renders instantly and works fully offline.
 
 The app itself (workbench, Truth Report) is defensible — dense and functional
 is correct for an analyst tool. **The landing page is where the slop is**, and
@@ -148,7 +160,38 @@ Already available in this environment:
 | `design:design-system` | Documenting components once the look is settled |
 | `design:accessibility-review` | WCAG audit before shipping |
 | `dataviz` | The equity/drawdown charts specifically |
-| Figma MCP | Real design files — **needs authorizing first** (claude.ai connector settings, or `/mcp` in an interactive terminal) |
+| Figma MCP | Connected (verified via `whoami`), but the seat is **View** on a Starter-tier team — read-only, so it can inspect existing files and not author new ones. Not on the critical path here: there is no existing Figma file to implement, so code-first iteration is the shorter loop. |
+
+---
+
+## Re-measuring after a design pass
+
+Paste this into the browser console on the page you changed. It reports the
+type scale, bordered-box count, radii, shadows, and every WCAG failure with the
+offending text — the same numbers as the table above.
+
+```js
+const lum=c=>{const[r,g,b]=c.map(v=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4});return .2126*r+.7152*g+.0722*b};
+const parse=s=>s.match(/[\d.]+/g).slice(0,3).map(Number);
+const bgOf=e=>{let n=e;while(n&&n!==document.documentElement){const c=getComputedStyle(n).backgroundColor;if(c&&!/rgba\(0, 0, 0, 0\)|transparent/.test(c))return parse(c);n=n.parentElement}return[255,255,255]};
+const fails=[],sizes={},radii=new Set(),sh=new Set();let boxed=0;
+for(const e of document.querySelectorAll('main *, header *, footer *, section *')){
+  if(!e.offsetParent)continue;const cs=getComputedStyle(e);
+  if(['Top','Right','Bottom','Left'].filter(x=>parseFloat(cs['border'+x+'Width'])>0).length>=3)boxed++;
+  if(cs.borderRadius!=='0px')radii.add(cs.borderRadius);
+  if(cs.boxShadow!=='none')sh.add(cs.boxShadow);
+  if(![...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
+  const fg=parse(cs.color),bg=bgOf(e),l1=lum(fg),l2=lum(bg);
+  const r=(Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05);
+  const px=parseFloat(cs.fontSize),bold=parseInt(cs.fontWeight)>=700;
+  const need=(px>=24||(px>=18.66&&bold))?3:4.5;
+  sizes[Math.round(px*10)/10]=1;
+  if(r<need)fails.push({text:e.textContent.trim().slice(0,42),ratio:+r.toFixed(2),need,px});
+}
+const k=Object.keys(sizes).map(Number).sort((a,b)=>a-b);
+console.table(fails);
+console.log({sizes:k,count:k.length,range:+(k.at(-1)/k[0]).toFixed(1),boxed,radii:[...radii],shadows:sh.size});
+```
 
 Worth adding to the project:
 

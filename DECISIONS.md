@@ -257,3 +257,68 @@ re-check before trusting a comparison).
   so the adapters' wire behaviour is unverified; the plumbing, usage
   accounting, cost math, fallback path, and effort gate are covered by 18
   mocked tests (`test_providers.py`).
+
+---
+
+## Landing page redesign — "Broadsheet" (2026-08-03)
+
+**Ambiguity:** the user rejected the previous landing page as "very ai sloppy"
+and asked for a premium, professionally-designed feel. Three directions were
+offered; **A · Broadsheet** was chosen.
+
+**Resolution — what "not AI-generated" was defined as, in measurements:**
+
+| Signal | Before | After |
+|---|---|---|
+| Distinct font sizes | 17 (11 of them between 10.5–15px) | 6 |
+| Type scale range | 4.2× | 6.9× (11px → 76px) |
+| Bordered boxes | 15 | 7 |
+| Border radii | 3 | 1 |
+| Box shadows | 4 | 0 |
+| Icon-card grids | 6 identical cards | 0 |
+| Real product screenshots | 0 | 1 |
+| WCAG failures | — | 0 of 118 text nodes |
+
+**Decisions and why:**
+
+1. **Fonts are scoped to `/landing`, not global.** Montserrat (display),
+   Newsreader (serif reading voice) and Inter (UI) load via `next/font/google`
+   inside `app/landing/layout.tsx`. The app itself keeps the system stack so it
+   still renders instantly and works fully offline — a webfont on the workbench
+   would trade a real local-first property for decoration.
+
+2. **The six-step ramp is enforced by tokens** (`--t-micro/small/body/lede/
+   head/hero`). Fluid `clamp()` rules interpolate *between two existing steps*
+   rather than inventing a seventh size, so the count holds at every viewport.
+
+3. **The six icon-cards became six numbered editorial rows.** A grid of
+   identical icon cards was the strongest generated-looking signal on the page.
+   Rules and whitespace carry the structure instead.
+
+4. **The screenshot is a genuine export**, generated from run `rep_2c6332f417`
+   via `/api/report/{id}/export.png`. It shows an *amber* verdict, not a
+   flattering one — consistent with the product thesis. Its benchmark row and
+   disclaimer are baked into the PNG, so a social screenshot carries them.
+   The plate crops to ~540px with a fade because the export is 4:5 portrait and
+   would otherwise swamp the page.
+
+5. **Oxblood `#7A2E2E` over the default SaaS blue.** The palette should suit a
+   tool whose job is to disagree with you. All nine pairs verified ≥4.99:1.
+
+**Bugs found and fixed during the pass:**
+- `::first-letter` was scoped to an inline `<span>`, where it does not apply —
+  the drop cap silently did not render. Moved to the block `<p>`.
+- `.bs-term li` used `display:flex`, which promoted inline `<strong>` to a
+  sibling flex item and broke the Pro tier's first bullet across a false
+  column. Changed to normal inline flow with an absolutely-positioned mark.
+- The masthead nav did not wrap below 760px and overflowed the right edge.
+
+**Unchanged on purpose:** no backend, DSL, engine or test changes. The audit,
+the unconditional benchmark, and the disclaimer on every report and export are
+untouched — 120 passed, 1 skipped after the pass, and the production build is
+clean.
+
+**Figma:** the connector authenticates, but the seat is **View** on a
+Starter-tier team, i.e. read-only — it can inspect files, not author them. Not
+used here: with no pre-existing Figma file, designing there and re-implementing
+in code is strictly longer than iterating in code against measured targets.
