@@ -20,6 +20,9 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
+// Public marketing routes render bare — no sidebar, no app chrome.
+const BARE_PREFIXES = ["/landing"];
+
 export default function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "/";
   const [health, setHealth] = useState<{ llm_configured: boolean } | null>(null);
@@ -30,6 +33,10 @@ export default function Shell({ children }: { children: ReactNode }) {
       .then(setHealth)
       .catch(() => setOffline(true));
   }, []);
+
+  if (BARE_PREFIXES.some((p) => pathname.startsWith(p))) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="shell">

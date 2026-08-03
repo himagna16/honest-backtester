@@ -16,6 +16,7 @@ from routes.journal import router as journal_router
 from routes.runs import router as runs_router
 from routes.specs import router as specs_router
 from routes.translate import router as translate_router
+from routes.waitlist import router as waitlist_router
 from store.db import get_engine
 
 
@@ -32,6 +33,7 @@ app.include_router(translate_router)
 app.include_router(runs_router)
 app.include_router(journal_router)
 app.include_router(exports_router)
+app.include_router(waitlist_router)
 
 app.add_middleware(
     CORSMiddleware,
