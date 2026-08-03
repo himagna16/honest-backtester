@@ -72,7 +72,10 @@ def _execute_run(run_id: str, spec_raw: dict, universe: list[str],
             prior = repo.get_run(replay_of)
             if not prior or not prior["snapshot_path"]:
                 raise RuntimeError(f"run {replay_of} has no snapshot to replay")
-            panel = load_snapshot(Path(prior["snapshot_path"]).parent)
+            # Resolve the prior RUN directory from its id. Deriving it from
+            # snapshot_path's parent broke once panels became content-addressed
+            # and that path started pointing at the shared blob store.
+            panel = load_snapshot(Path(settings.runs_dir) / replay_of)
             data_source = f"snapshot:{replay_of}"
         else:
             _push(run_id, "fetching", "Fetching prices…")

@@ -251,10 +251,31 @@ def panel_content_hash(prices: pd.DataFrame) -> str:
 
 
 def save_snapshot(panel: PricePanel, run_dir: Path) -> tuple[str, str]:
-    """Freeze the panel to parquet; returns (path, sha256)."""
+    """Freeze the panel; returns (path, sha256).
+
+    Panel BYTES are stored content-addressed in `data/panels/<hash>.parquet`
+    and shared by every run that froze an identical panel; the run directory
+    keeps only its own metadata pointing at that blob. Most users test the
+    same universe and window (everyone backtests S&P 500 momentum), so this is
+    the difference between one stored panel and one per run — without weakening
+    reproducibility at all, since the hash IS the identity of the bytes.
+
+    Runs written before this change keep a real `panel.parquet` inside their
+    own directory; `load_snapshot` still reads those, so old journals replay.
+    """
     run_dir.mkdir(parents=True, exist_ok=True)
-    path = run_dir / "panel.parquet"
-    panel.prices.to_parquet(path)
+    content_hash = panel_content_hash(panel.prices)
+
+    blob_dir = Path(settings.panels_dir)
+    blob_dir.mkdir(parents=True, exist_ok=True)
+    blob = blob_dir / f"{content_hash}.parquet"
+    if not blob.exists():
+        # Write then rename so a crash mid-write can never leave a truncated
+        # blob that later runs would trust on the strength of its filename.
+        tmp = blob.with_suffix(f".{os.getpid()}.tmp")
+        panel.prices.to_parquet(tmp)
+        tmp.replace(blob)
+
     meta = {
         "as_of": panel.as_of,
         "sources": panel.sources,
@@ -262,14 +283,27 @@ def save_snapshot(panel: PricePanel, run_dir: Path) -> tuple[str, str]:
         "first_dates": panel.first_dates,
         "stale": panel.stale,
         "notes": panel.notes,
-        "content_hash": panel_content_hash(panel.prices),
+        "content_hash": content_hash,
+        "panel_blob": str(blob),
     }
     (run_dir / "panel_meta.json").write_text(json.dumps(meta, indent=1))
-    return str(path), meta["content_hash"]
+    return str(blob), content_hash
 
 
 def load_snapshot(run_dir: Path) -> PricePanel:
-    path = run_dir / "panel.parquet"
+    meta_path = run_dir / "panel_meta.json"
+    legacy = run_dir / "panel.parquet"
+    # Legacy runs stored the parquet in the run directory itself; prefer that
+    # when present so journals written before content-addressing still replay.
+    if legacy.exists():
+        path = legacy
+    else:
+        ref = json.loads(meta_path.read_text()).get("panel_blob")
+        if not ref:
+            raise RuntimeError(f"run snapshot at {run_dir} has no panel to replay")
+        path = Path(ref)
+        if not path.exists():
+            raise RuntimeError(f"frozen panel {path} is missing — cannot replay")
     prices = pd.read_parquet(path)
     prices.index = pd.DatetimeIndex(prices.index)
     meta = json.loads((run_dir / "panel_meta.json").read_text())

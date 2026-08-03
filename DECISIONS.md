@@ -473,3 +473,46 @@ decision was about avoiding a runtime dependency that self-hosting removes.
 **Measured after (report page, all five tabs):** 7 type sizes, one radius
 (2px), zero shadows, zero WCAG failures, no horizontal overflow at 414px.
 121 passed, 1 skipped; production build clean.
+
+---
+
+## Phase 3 + beyond: backup, storage, and deploy prep (2026-08-03)
+
+**Phase 3 — private GitHub backup.** Pushed to
+`himagna16/honest-backtester` (**private**). Pre-flight checks, all clean:
+`.env` untracked and gitignored, zero `sk-proj-`/`sk-ant-`/`AIza…` matches in
+the entire history *and* the working tree, and `data/` excluded — it holds real
+waitlist email addresses, which should not sit in a repo even a private one.
+
+**Content-addressed snapshots (the SAAS_PLAN "fix before launch" item).**
+Panel bytes now live once at `data/panels/<sha256>.parquet` and are shared by
+every run whose panel hashes identically; run directories keep only
+`panel_meta.json` pointing at the blob. Reproducibility is untouched — the
+content hash *is* the identity of the bytes, and the integrity check still
+raises on mismatch.
+
+- Blobs are written to a temp name and `replace()`d, so a crash mid-write can
+  never leave a truncated file that a later run trusts on filename alone.
+- `load_snapshot` prefers a legacy in-run `panel.parquet` when present, so
+  journals written before this change still replay.
+- `routes/runs.py` derived the run directory from `Path(snapshot_path).parent`,
+  which breaks the moment that path points at the shared blob store. It now
+  resolves the directory from the run id.
+- Verified end-to-end against the live API, not just unit tests: a second full
+  backtest of the same spec added **0 bytes** (22,692 KB → 22,692 KB). The old
+  design would have written another ~22 MB.
+
+**Deploy prep (Phase 4), written but deliberately NOT executed.**
+`deploy/Dockerfile`, `deploy/fly.toml`, `deploy/.dockerignore`,
+`frontend/vercel.json`, and `deploy/README.md`. Deploying needs interactive
+sign-in to accounts I don't hold, and putting the app on the public internet is
+a decision the user should make explicitly rather than inherit from a build.
+
+Caught while writing them: `HONEST_CORS_ORIGINS` as a bare string crashes the
+container at boot — `cors_origins` is `list[str]`, and pydantic-settings raises
+`SettingsError` on anything that isn't a JSON array. Both config files are now
+parse-tested.
+
+**Not done, and honestly not doable by me:** the data licence, the legal
+review, and the Stripe/Clerk/Sentry accounts. Those need a signature, a lawyer,
+and a credit card.

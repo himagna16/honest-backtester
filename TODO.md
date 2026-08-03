@@ -1,9 +1,10 @@
 # The Honest Backtester — build & launch checklist
 
-**You are here:** the product is functionally complete (M0–M6). The `/landing`
-page has the new "Broadsheet" design; the *rest of the app is still on the old
-look*. Nothing is deployed. No LLM key is set, so live translation is off (but
-everything else works). Waitlist: 2 / 50 signups.
+**You are here:** the product is functionally complete (M0–M6). The **whole
+app** now shares one design system. Live AI translation is **on**
+(`gpt-5-nano`). The code is backed up to a **private** GitHub repo. Deploy
+configs are written but **nothing is deployed** — the app is local-only.
+Waitlist: 2 / 50 signups.
 
 This file is the running to-do list. Rationale for the paid-tier items lives in
 [SAAS_PLAN.md](SAAS_PLAN.md); this is the "what to do and where to go" version.
@@ -28,28 +29,16 @@ Legend:  ☐ = to do   ✅ = done   🔑 = needs an account/key you create (I ca
 
 ---
 
-## Phase 1 — Turn on live AI  🔑 (≈10 min · usage-based, cents)
+## Phase 1 — Turn on live AI  ✅ DONE
 
 This enables the "describe a strategy in plain English" box. Everything else
 already works without it.
 
-- 🔑 **Get an OpenAI API key**
-  - Go to **https://platform.openai.com/api-keys** → *Create new secret key*
-  - You must add a payment method first at **https://platform.openai.com/settings/organization/billing**
-    (put a small cap, e.g. $5/month — nano is ~$0.0003 per translation)
-- ☐ **Create your `.env`** (in the repo root):
-  ```bash
-  cp .env.example .env
-  ```
-  Then edit `.env` and set:
-  ```
-  OPENAI_API_KEY=sk-...your key...
-  HONEST_LLM_MODEL=gpt-5-nano
-  ```
-  `.env` is gitignored — the key never gets committed.
-- ☐ **Restart the backend** (Ctrl-C `dev.sh`, run it again).
-- ☐ **Test it:** open the app, type a strategy in plain English, confirm it
-  returns an editable spec.
+- ✅ OpenAI key created, credits added, `.env` written (gitignored)
+- ✅ `HONEST_LLM_MODEL=gpt-5-nano` — the cheapest model in the catalogue
+- ✅ Verified with a live translation: "buy the 5 S&P 500 stocks with the
+  highest 12-month return" → correct spec, 252-day lookback, monthly, equal weight
+- ✅ Fixed `/health`, which reported "no API key" for non-Anthropic providers
 - ☐ *(optional)* compare models on cost + accuracy before committing:
   ```bash
   make bench
@@ -57,32 +46,26 @@ already works without it.
 
 ---
 
-## Phase 2 — Make the whole app look like the landing  (local build · free)
+## Phase 2 — One design system across the app  ✅ DONE
 
-Right now `/landing` is premium and the inner pages are the old blue-on-slate
-look. These pages still need the Broadsheet treatment:
-
-- ☐ `/` — the workbench (home / strategy input)  ← most visible, do first
-- ☐ `/report/[id]` — the Truth Report
-- ☐ `/journal` — run history
-- ☐ `/compare` — strategy vs benchmark
-- ☐ `/strategy/[id]` — a saved strategy
-- ☐ `/glossary` — the terms page
-
-This is a "just ask me" item — no accounts, no cost. I'll do it whenever you say.
+- ✅ `/` workbench · `/report/[id]` · `/journal` · `/compare` · `/strategy/[id]` · `/glossary`
+- ✅ Shared palette/fonts/geometry with the landing, but a denser type ramp —
+  one system, two densities. Fonts load once in the root layout.
+- ✅ Measured: 7 type sizes, one 2px radius, zero shadows, zero WCAG failures,
+  no horizontal overflow at 414px.
+- ✅ Bugs found and fixed: `/health` provider check, a test that silently
+  stopped testing once a real key existed, and a 2px mobile overflow from the
+  result tab bar.
 
 ---
 
-## Phase 3 — Back up the code to GitHub  🔑 (≈5 min · free)
+## Phase 3 — Code backed up to GitHub  ✅ DONE
 
-Doesn't make the site public — just saves the source safely.
-
-- 🔑 Your `gh` CLI is already logged in (as `himagna16`).
-- ☐ Decide **private** (recommended) or public.
-- ☐ Say the word and I'll run `gh repo create` + push. Or do it yourself:
-  ```bash
-  gh repo create honest-backtester --private --source=. --push
-  ```
+- ✅ **https://github.com/himagna16/honest-backtester** — **private**
+- ✅ Verified before pushing: `.env` untracked and gitignored, no key patterns
+  anywhere in history or the working tree, and `data/` (which holds real
+  waitlist email addresses) excluded.
+- To push future work: `git push`
 
 ---
 
@@ -91,16 +74,23 @@ Doesn't make the site public — just saves the source safely.
 The goal here is a shareable link and **50 waitlist signups** (the go/no-go bar).
 Don't build the paid tier before this clears.
 
+**Configs are written and validated — see [deploy/README.md](deploy/README.md)
+for the exact steps.** I stopped short of deploying: it needs your Vercel and
+Fly accounts (interactive sign-in), and putting the app on the public internet
+is your call, not a build side-effect.
+
 - 🔑 **Frontend → Vercel** (free tier, gives a public URL)
-  - Requires Phase 3 first (Vercel deploys from a GitHub repo).
-  - Go to **https://vercel.com** → sign in with GitHub → *Add New Project* →
-    import the repo → set **Root Directory = `frontend`** → Deploy.
-  - Add env var `NEXT_PUBLIC_API_BASE` = your backend URL (see next step).
-- 🔑 **Backend → a host** (needed only so the waitlist form works)
-  - **https://fly.io** or **https://railway.app** — deploy the FastAPI app.
-  - The demo, charts, and all visuals work *without* the backend; only the
-    waitlist POST needs it. (You could launch frontend-only first and wire the
-    backend later.)
+  - **https://vercel.com** → sign in with GitHub → *Add New Project* → import
+    `himagna16/honest-backtester` → set **Root Directory = `frontend`** → Deploy.
+  - `frontend/vercel.json` is already committed (framework + security headers).
+- 🔑 **Backend → Fly.io** (needed only so the waitlist form works)
+  - `deploy/Dockerfile` + `deploy/fly.toml` are ready; volume-backed so the
+    journal survives redeploys. `fly auth login && fly launch --no-deploy`.
+  - The landing demo, charts and copy work *without* the backend — you can ship
+    frontend-only first and wire the API later.
+  - ⚠️ Set the key as a secret (`fly secrets set OPENAI_API_KEY=...`), never as
+    a `NEXT_PUBLIC_*` var, and rate-limit `/api/translate-strategy` before
+    exposing it — a public LLM endpoint is a public wallet.
 - ☐ Post the +1650% story where your audience is (r/algotrading, r/quant,
   FinTwit) — respecting each venue's self-promo rules. The story is the asset.
 - ☐ Track progress: `GET /api/waitlist/stats` (or the export CSV).
@@ -124,9 +114,11 @@ reasoning in [SAAS_PLAN.md](SAAS_PLAN.md).
   "educational tool vs. investment adviser" line *before* you take money.
   Find one via a startup-attorney referral or your state bar's referral service.
   (I can't give legal advice — this is where to go, not what they'll say.)
-- ☐ **Content-addressed snapshots** — a code change so 1,000 users testing the
-  same universe don't each store a copy of the price panel. Do before real
-  traffic. (Contained change in `engine/data.py`; ask me.)
+- ✅ **Content-addressed snapshots** — DONE. Panel bytes now live once in
+  `data/panels/<sha256>.parquet`, shared by every run that froze an identical
+  panel; run directories keep metadata only. Verified end-to-end: a second full
+  backtest of the same spec added **0 bytes** (was ~22 MB). Old runs still
+  replay, and reproducibility is unchanged — the hash *is* the identity.
 
 ---
 
@@ -162,9 +154,10 @@ Break-even ≈ 10–25 subscribers at $15–29/mo.
 
 ## What I can do for you vs. what only you can do
 
-- **I can:** finish the redesign (Phase 2), create + push the GitHub repo
-  (Phase 3), write the Vercel/Fly config and the content-addressed snapshot
-  change, wire any catalogue model.
+- **I did:** the app-wide redesign (Phase 2), the private GitHub repo
+  (Phase 3), the Vercel/Fly/Docker configs, and content-addressed snapshots.
+- **I can still:** rate limiting, the auth `user_id` scaffolding, Stripe
+  webhook handlers — all buildable before you hold the accounts.
 - **Only you can (🔑):** create accounts and paste keys into `.env`, add
   billing to OpenAI/Stripe, sign the data licence, hire the attorney. I never
   handle keys or credentials.

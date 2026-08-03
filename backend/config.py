@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     db_path: Path = REPO_ROOT / "data" / "honest.db"
     cache_dir: Path = REPO_ROOT / "data" / "price_cache"
     runs_dir: Path = REPO_ROOT / "data" / "runs"
+    # Content-addressed price panels, shared across runs (one blob per hash).
+    panels_dir: Path = REPO_ROOT / "data" / "panels"
     exports_dir: Path = REPO_ROOT / "data" / "exports"
     fixtures_dir: Path = REPO_ROOT / "fixtures"
 
@@ -42,7 +44,8 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     def ensure_dirs(self) -> None:
-        for d in (self.db_path.parent, self.cache_dir, self.runs_dir, self.exports_dir):
+        for d in (self.db_path.parent, self.cache_dir, self.runs_dir,
+                  self.panels_dir, self.exports_dir):
             d.mkdir(parents=True, exist_ok=True)
 
 
