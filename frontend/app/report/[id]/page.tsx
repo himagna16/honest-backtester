@@ -1,7 +1,7 @@
 "use client";
 
-// The Truth Report (Section 1): verdict first, benchmark always, findings
-// ordered by severity, cost sweep, log-scale equity, drawdown, regimes, OOS.
+// Results workstation. Verdict first, benchmark always, then segmented tabs:
+// Overview · Charts · Cost & stress · Holdings · Audit note.
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,21 +9,27 @@ import { API_BASE, api } from "@/lib/api";
 import type { AuditFinding, ReportEnvelope } from "@/lib/types";
 import { startRun } from "@/lib/run";
 import RunProgress from "@/components/RunProgress";
+import { PageDisclaimer, TopBar } from "@/components/Shell";
+import { Notice, Panel, Segmented } from "@/components/ui/Primitives";
 import {
-  AuditList, CostSweepTable, OOSPanel, StatRow, VerdictBanner,
+  IconAudit, IconChart, IconCompare, IconDownload, IconRisk, IconSnapshot,
+} from "@/components/ui/Icons";
+import {
+  AuditList, CostSweepTable, HoldingsLog, MetricCards, OOSPanel,
+  ResearchNote, RiskBadges, StressPanel, VerdictBanner,
 } from "@/components/report/blocks";
 import { DrawdownChart, EquityChart, RegimeBar } from "@/components/report/charts";
 
-export default function ReportPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+type Tab = "overview" | "charts" | "cost" | "holdings" | "note";
+
+export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const [envelope, setEnvelope] = useState<ReportEnvelope | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rerunId, setRerunId] = useState<string | null>(null);
+  const [tab, setTab] = useState<Tab>("overview");
+  const [compare, setCompare] = useState(true);
 
   useEffect(() => {
     api<ReportEnvelope>(`/api/report/${id}`)
@@ -31,78 +37,171 @@ export default function ReportPage({
       .catch((e) => setError(String(e.message ?? e)));
   }, [id]);
 
-  if (error) return <p className="errbox">✕ {error}</p>;
-  if (!envelope) return <p className="faint">Loading the Truth Report…</p>;
-  const r = envelope.report;
+  if (error) {
+    return (
+      <>
+        <TopBar crumb="Report" />
+        <main className="content"><Notice kind="err">{error}</Notice></main>
+      </>
+    );
+  }
+  if (!envelope) {
+    return (
+      <>
+        <TopBar crumb="Report" />
+        <main className="content"><p className="faint">Loading report…</p></main>
+      </>
+    );
+  }
 
-  const handleAction = async (finding: AuditFinding) => {
+  const r = envelope.report;
+  const benchLabel = r.benchmark.label;
+
+  const runVariant = async (check: string) => {
     const spec = structuredClone(r.spec) as Record<string, any>;
-    if (finding.check === "selection_bias") {
+    if (check === "selection_bias") {
       spec.universe = { preset: "sp500" };
-      spec.name = `${spec.name} (S&P 500 re-run)`.slice(0, 80);
-    } else if (finding.check === "benchmark_fit") {
+      spec.name = `${spec.name} · S&P 500 re-run`.slice(0, 80);
+    } else if (check === "benchmark_fit") {
       spec.benchmark = "sixty_forty";
-      spec.name = `${spec.name} (vs 60/40)`.slice(0, 80);
-    } else {
-      return;
-    }
+      spec.name = `${spec.name} · vs 60/40`.slice(0, 80);
+    } else return;
     try {
       const { run_id } = await startRun({ spec });
       setRerunId(run_id);
-    } catch (e: any) {
-      setError(String(e.message ?? e));
+    } catch (e) {
+      setError((e as Error).message);
     }
   };
 
   if (rerunId) {
     return (
-      <RunProgress
-        runId={rerunId}
-        onDone={(reportId) => router.push(`/report/${reportId}`)}
-        onError={(message) => { setRerunId(null); setError(message); }}
-      />
+      <>
+        <TopBar crumb="Report" strategy={String(r.spec.name ?? "")} />
+        <main className="content" style={{ maxWidth: 620 }}>
+          <RunProgress runId={rerunId}
+            onDone={(reportId) => router.push(`/report/${reportId}`)}
+            onError={(m) => { setRerunId(null); setError(m); }} />
+        </main>
+      </>
     );
   }
 
+  const equitySeries = r.equity_curve.map((p) => p[1]).filter((v): v is number => v !== null);
+  const ddSeries = r.drawdown_curve.map((p) => p[1]).filter((v): v is number => v !== null);
+
   return (
-    <div>
-      <p className="faint" style={{ display: "flex", gap: "0.8rem",
-                                    flexWrap: "wrap", alignItems: "center" }}>
-        <span>
-          {r.spec.name as string} · {r.data.effective_start} → {r.data.effective_end} ·
-          data as of {r.data.as_of}{r.data.stale ? " (cached)" : ""} ·
-          run {r.run?.id}{r.run?.replay_of ? ` (snapshot replay of ${r.run.replay_of})` : ""}
-        </span>
-        <a className="btn" href={`${API_BASE}/api/report/${id}/export.png`}>
-          Export PNG
-        </a>
-        <a className="btn" href={`${API_BASE}/api/report/${id}/export.pdf`}>
-          Export PDF
-        </a>
-      </p>
-      <VerdictBanner verdict={r.verdict} />
-      <StatRow metrics={r.metrics} benchmark={r.benchmark} benchLabel={r.benchmark.label} />
-      <p className="faint" style={{ fontStyle: "italic" }}>“{r.readback}”</p>
+    <>
+      <TopBar
+        crumb="Report"
+        strategy={String(r.spec.name ?? "")}
+        actions={
+          <>
+            <a className="btn" href={`${API_BASE}/api/report/${id}/export.png`}>
+              <IconDownload size={13} /> PNG
+            </a>
+            <a className="btn" href={`${API_BASE}/api/report/${id}/export.pdf`}>
+              <IconDownload size={13} /> PDF
+            </a>
+          </>
+        }
+      />
+      <main className="content">
+        <div className="stack">
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <span className="faint">
+              {r.data.effective_start} → {r.data.effective_end} · {r.data.universe_size} tickers ·
+              data as of {r.data.as_of}{r.data.stale ? " (cached)" : ""}
+            </span>
+            <span className="faint mono" title={`snapshot ${r.run?.snapshot_hash}`}>
+              <IconSnapshot size={12} /> {r.run?.snapshot_hash?.slice(0, 10)}
+            </span>
+          </div>
 
-      <AuditList findings={r.audit} onAction={handleAction} />
-      <CostSweepTable rows={r.cost_sweep} />
-      <EquityChart points={r.equity_curve} oosStart={r.oos.out_of_sample.start} />
-      <DrawdownChart points={r.drawdown_curve} />
-      <RegimeBar segments={r.regimes.segments} hasBear={r.regimes.has_bear_market} />
-      <OOSPanel report={r} />
+          <VerdictBanner verdict={r.verdict} report={r} />
+          <RiskBadges report={r} />
+          <MetricCards metrics={r.metrics} benchmark={r.benchmark} benchLabel={benchLabel}
+            equity={equitySeries} drawdown={ddSeries} />
 
-      <section className="card">
-        <h3>Data provenance</h3>
-        <p className="muted">
-          {r.data.universe_size} universe tickers · snapshot{" "}
-          <code>{r.run?.snapshot_hash?.slice(0, 12)}</code> · source{" "}
-          {r.run?.data_source} · risk-free: {r.data.rf_source === "^IRX"
-            ? "13-week T-bill (^IRX)" : "0% (disclosed)"}
-        </p>
-        {r.data.notes.map((n) => <p key={n} className="faint">· {n}</p>)}
-      </section>
+          <div className="row" style={{ marginTop: 4 }}>
+            <Segmented<Tab>
+              label="Report sections"
+              value={tab}
+              onChange={setTab}
+              options={[
+                { value: "overview", label: "Overview" },
+                { value: "charts", label: "Charts", icon: <IconChart size={12} /> },
+                { value: "cost", label: "Cost & stress", icon: <IconRisk size={12} /> },
+                { value: "holdings", label: "Holdings" },
+                { value: "note", label: "Audit note", icon: <IconAudit size={12} /> },
+              ]}
+            />
+            {tab === "charts" && (
+              <button className="ghost" onClick={() => setCompare(!compare)}
+                aria-pressed={compare}>
+                <IconCompare size={13} /> {compare ? "Hide" : "Show"} gross line
+              </button>
+            )}
+          </div>
 
-      <p className="faint" style={{ marginTop: "1.5rem" }}>{r.disclaimer}</p>
-    </div>
+          {tab === "overview" && (
+            <div className="stack">
+              <p className="faint" style={{ fontStyle: "italic", maxWidth: "84ch" }}>
+                {r.readback}
+              </p>
+              <StressPanel report={r} />
+              <RegimeBar segments={r.regimes.segments} hasBear={r.regimes.has_bear_market} />
+              <OOSPanel report={r} />
+            </div>
+          )}
+
+          {tab === "charts" && (
+            <div className="stack">
+              <EquityChart points={r.equity_curve} oosStart={r.oos.out_of_sample.start}
+                benchLabel={benchLabel} showGross={compare} />
+              <DrawdownChart points={r.drawdown_curve} benchLabel={benchLabel} />
+              <RegimeBar segments={r.regimes.segments} hasBear={r.regimes.has_bear_market} />
+            </div>
+          )}
+
+          {tab === "cost" && (
+            <div className="stack">
+              <CostSweepTable rows={r.cost_sweep} />
+              <StressPanel report={r} />
+            </div>
+          )}
+
+          {tab === "holdings" && (
+            <div className="stack">
+              <HoldingsLog report={r} />
+              <Panel title="Data provenance" icon={<IconSnapshot size={15} />} tight>
+                <table>
+                  <tbody>
+                    <tr><td>Universe size</td><td>{r.data.universe_size}</td></tr>
+                    <tr><td>Snapshot hash</td><td className="mono">{r.run?.snapshot_hash?.slice(0, 16)}</td></tr>
+                    <tr><td>Source</td><td>{r.run?.data_source}</td></tr>
+                    <tr><td>Risk-free rate</td><td>{r.data.rf_source === "^IRX" ? "13-week T-bill" : "0% (disclosed)"}</td></tr>
+                    <tr><td>Excluded tickers</td><td>{r.data.missing.length}</td></tr>
+                  </tbody>
+                </table>
+                {r.data.notes.map((n) => (
+                  <p key={n} className="faint" style={{ marginTop: 8 }}>{n}</p>
+                ))}
+              </Panel>
+            </div>
+          )}
+
+          {tab === "note" && (
+            <div className="stack">
+              <ResearchNote report={r} onAction={runVariant} />
+              <Panel title="All findings" icon={<IconAudit size={15} />} tight>
+                <AuditList findings={r.audit} onAction={(f) => runVariant(f.check)} />
+              </Panel>
+            </div>
+          )}
+        </div>
+        <PageDisclaimer />
+      </main>
+    </>
   );
 }

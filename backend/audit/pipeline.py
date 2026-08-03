@@ -262,7 +262,8 @@ def build_report(
         },
         "spec": spec.model_dump(mode="json"),
         "readback": readback(spec),
-        "holdings_recent": result.holdings[-3:],
+        # Rebalance log for the report's holdings table (most recent first).
+        "holdings_recent": list(reversed(result.holdings[-24:])),
         "disclaimer": DISCLAIMER,
     }
     return report

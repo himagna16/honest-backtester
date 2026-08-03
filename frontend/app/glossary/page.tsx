@@ -6,6 +6,8 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { PageDisclaimer, TopBar } from "@/components/Shell";
+import { Panel } from "@/components/ui/Primitives";
 
 const METRICS: { name: string; formula: string; gloss: string }[] = [
   { name: "CAGR", formula: "(1 + total_return)^(252/days) − 1",
@@ -100,16 +102,17 @@ export default function Glossary() {
   }, []);
 
   return (
-    <div>
-      <h1>Glossary</h1>
-      <p className="muted">
+    <>
+      <TopBar crumb="Glossary" />
+      <main className="content" style={{ maxWidth: 900 }}>
+      <p className="muted" style={{ marginTop: 0 }}>
         The audit is a curriculum: every finding on a Truth Report links to an
         entry here.
       </p>
 
       <h2>Metrics</h2>
       {METRICS.map((m) => (
-        <div className="card" key={m.name}>
+        <div className="panel" style={{ padding: "14px 16px", marginBottom: 10 }} key={m.name}>
           <h3 style={{ marginTop: 0 }}>{m.name}</h3>
           <p className="mono" style={{ color: "var(--accent)" }}>{m.formula}</p>
           <p className="muted">{m.gloss}</p>
@@ -118,7 +121,7 @@ export default function Glossary() {
 
       <h2>The biases the audit hunts</h2>
       {EXPLAINERS.map((e) => (
-        <div className="card" key={e.id} id={e.id}>
+        <div className="panel" style={{ padding: "14px 16px", marginBottom: 10 }} key={e.id} id={e.id}>
           <h3 style={{ marginTop: 0 }}>{e.title}</h3>
           <p className="muted">{e.body}</p>
         </div>
@@ -144,6 +147,8 @@ export default function Glossary() {
           </tbody>
         </table>
       </div>
-    </div>
+      <PageDisclaimer />
+      </main>
+    </>
   );
 }

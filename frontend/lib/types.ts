@@ -79,6 +79,11 @@ export interface Report {
   spec: Record<string, unknown>;
   readback: string;
   disclaimer: string;
+  holdings_recent: {
+    date: string;
+    eligible: number;
+    picks: { ticker: string; weight: number; score: number | null }[];
+  }[];
   run?: { id: string; snapshot_hash: string; data_source: string; replay_of: string | null };
 }
 

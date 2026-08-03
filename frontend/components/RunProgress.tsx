@@ -1,31 +1,39 @@
 "use client";
 
-// The loading state IS the audit working (Section 1): an honest checklist,
-// not a fake spinner.
+// Loading state = analysis in progress, not a generic spinner. Each stage is a
+// real backend event streamed over SSE.
 
 import { useEffect, useRef, useState } from "react";
 import { subscribeRun, type RunEvent } from "@/lib/run";
+import { Panel } from "@/components/ui/Primitives";
+import { IconAudit, IconCheck } from "@/components/ui/Icons";
 
-const STEPS: { key: string; label: string }[] = [
+const STEPS = [
   { key: "queued", label: "Queued" },
-  { key: "fetching", label: "Fetching prices" },
-  { key: "snapshot", label: "Freezing the data snapshot (content-hashed)" },
-  { key: "simulating", label: "Simulating with costs (0 / 5 / 20 bps)" },
+  { key: "fetching", label: "Loading price panel" },
+  { key: "snapshot", label: "Freezing data snapshot" },
+  { key: "simulating", label: "Simulating with costs" },
   { key: "auditing", label: "Running the honesty audit" },
-  { key: "finalizing", label: "Writing the Truth Report" },
+  { key: "finalizing", label: "Composing the report" },
 ];
 
 export default function RunProgress({
-  runId,
-  onDone,
-  onError,
+  runId, onDone, onError,
 }: {
   runId: string;
   onDone: (reportId: string) => void;
   onError: (message: string) => void;
 }) {
   const [events, setEvents] = useState<RunEvent[]>([]);
+  const [elapsed, setElapsed] = useState(0);
   const doneRef = useRef(false);
+
+  // A long stage must look like work, not a hang: the neutral-universe re-run
+  // can fetch hundreds of tickers.
+  useEffect(() => {
+    const t = setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = subscribeRun(runId, (event) => {
@@ -43,35 +51,43 @@ export default function RunProgress({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runId]);
 
-  const seen = new Set(events.map((e) => e.stage));
   const current = events[events.length - 1];
-  const auditDetails = events
-    .filter((e) => e.stage === "auditing")
-    .map((e) => e.detail);
+  const currentIndex = STEPS.findIndex((s) => s.key === current?.stage);
+  const auditDetails = events.filter((e) => e.stage === "auditing").map((e) => e.detail);
+  const pct = current?.pct ?? 0;
 
   return (
-    <div className="card" aria-live="polite">
-      <h2>Running the gauntlet…</h2>
-      <ul className="checklist">
+    <Panel title="Analysis in progress" icon={<IconAudit size={15} />}>
+      <ul className="checklist" aria-live="polite">
         {STEPS.map((step, i) => {
-          const done =
-            seen.has(step.key) &&
-            (current?.stage !== step.key ||
-              STEPS.findIndex((s) => s.key === current?.stage) > i);
-          const active = current?.stage === step.key;
+          const done = currentIndex > i;
+          const active = currentIndex === i;
           return (
             <li key={step.key} className={active ? "active" : done ? "done" : ""}>
-              {done ? "✓" : active ? "▸" : "○"} {step.label}
+              <span className="dot">
+                {done ? <IconCheck size={13} /> : active ? <span className="pulse" /> : null}
+              </span>
+              {step.label}
             </li>
           );
         })}
       </ul>
+      <div className="progresstrack"><i style={{ width: `${pct}%` }} /></div>
       {auditDetails.length > 0 && (
         <p className="progressnote">{auditDetails[auditDetails.length - 1]}</p>
       )}
-      <p className="faint">
-        The audit always runs — there is no toggle. Typical run: 10–60&nbsp;s.
+      <p className="faint" style={{ marginTop: 8, display: "flex", justifyContent: "space-between" }}>
+        <span>Every run is fully audited — there is no fast path.</span>
+        <span className="mono">
+          {Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, "0")}
+        </span>
       </p>
-    </div>
+      {elapsed > 45 && (
+        <p className="faint" style={{ marginTop: 4 }}>
+          Still working — a neutral-universe re-run can fetch several hundred
+          tickers on first use.
+        </p>
+      )}
+    </Panel>
   );
 }

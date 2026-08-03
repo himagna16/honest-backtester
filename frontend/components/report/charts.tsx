@@ -1,25 +1,21 @@
 "use client";
 
-// Hand-rolled SVG charts: log-scale equity (net-of-costs primary, gross
-// visually subordinate), underwater drawdown, and the regime timeline.
-// Every chart ships a table fallback (Gap #12).
+// Hand-rolled SVG charts, light analyst theme. Log-scale equity (net-of-costs
+// primary, gross visually subordinate), underwater drawdown, regime timeline.
+// Every chart ships a table/list fallback and an aria description.
 
 import type { RegimeSegment } from "@/lib/types";
 import { pct } from "@/lib/format";
+import { IconChart, IconTimeline } from "@/components/ui/Icons";
 
-const W = 720;
-const H = 300;
-const PAD = { l: 52, r: 12, t: 12, b: 24 };
+const W = 760;
+const H = 250;
+const PAD = { l: 44, r: 10, t: 10, b: 22 };
 
-function xScale(n: number) {
-  return (i: number) => PAD.l + (i / Math.max(n - 1, 1)) * (W - PAD.l - PAD.r);
-}
+const xScale = (n: number) => (i: number) =>
+  PAD.l + (i / Math.max(n - 1, 1)) * (W - PAD.l - PAD.r);
 
-function buildPath(
-  values: (number | null)[],
-  x: (i: number) => number,
-  y: (v: number) => number,
-): string {
+function buildPath(values: (number | null)[], x: (i: number) => number, y: (v: number) => number) {
   let d = "";
   values.forEach((v, i) => {
     if (v === null || Number.isNaN(v)) return;
@@ -30,164 +26,161 @@ function buildPath(
 
 function sample<T>(rows: T[], every: number): T[] {
   const out = rows.filter((_, i) => i % every === 0);
-  if (rows.length && out[out.length - 1] !== rows[rows.length - 1])
-    out.push(rows[rows.length - 1]);
+  if (rows.length && out[out.length - 1] !== rows[rows.length - 1]) out.push(rows[rows.length - 1]);
   return out;
 }
 
-// ---------------- equity curve ----------------
+/* ---------------- equity ---------------- */
 
 export function EquityChart({
-  points,
-  oosStart,
+  points, oosStart, benchLabel, showGross = true,
 }: {
   points: [string, number | null, number | null, number | null][];
   oosStart: string;
+  benchLabel: string;
+  showGross?: boolean;
 }) {
   if (points.length < 2) return null;
   const dates = points.map((p) => p[0]);
-  const all = points.flatMap((p) => [p[1], p[2], p[3]]).filter(
-    (v): v is number => v !== null && v > 0,
-  );
+  const all = points.flatMap((p) => [p[1], showGross ? p[2] : null, p[3]])
+    .filter((v): v is number => v !== null && v > 0);
   const lo = Math.min(...all);
   const hi = Math.max(...all);
-  const yLog = (v: number) =>
-    PAD.t +
-    (1 - (Math.log(v) - Math.log(lo)) / (Math.log(hi) - Math.log(lo) || 1)) *
-      (H - PAD.t - PAD.b);
+  const y = (v: number) =>
+    PAD.t + (1 - (Math.log(v) - Math.log(lo)) / (Math.log(hi) - Math.log(lo) || 1)) * (H - PAD.t - PAD.b);
   const x = xScale(points.length);
-
-  // Log-axis ticks at 1-2-5 wealth multiples
-  const ticks: number[] = [];
-  for (const base of [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500]) {
-    if (base >= lo * 0.95 && base <= hi * 1.05) ticks.push(base);
-  }
+  const ticks = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500]
+    .filter((t) => t >= lo * 0.95 && t <= hi * 1.05);
   const oosIdx = dates.findIndex((d) => d >= oosStart);
 
-  const netPath = buildPath(points.map((p) => p[1]), x, yLog);
-  const grossPath = buildPath(points.map((p) => p[2]), x, yLog);
-  const benchPath = buildPath(points.map((p) => p[3]), x, yLog);
-
   return (
-    <figure className="chartbox" role="img"
-      aria-label="Equity curve, log scale: strategy net of 5 basis points, gross, and benchmark.">
-      <h3>Growth of $1 (log scale)</h3>
-      <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
-        {oosIdx > 0 && (
-          <rect x={x(oosIdx)} y={PAD.t} width={x(points.length - 1) - x(oosIdx)}
-            height={H - PAD.t - PAD.b} fill="var(--amber-bg)" opacity="0.7" />
-        )}
-        {ticks.map((t) => (
-          <g key={t}>
-            <line x1={PAD.l} x2={W - PAD.r} y1={yLog(t)} y2={yLog(t)}
-              stroke="var(--line)" strokeWidth="1" />
-            <text x={PAD.l - 6} y={yLog(t) + 4} textAnchor="end" fontSize="11"
-              fill="var(--ink-faint)">{t < 1 ? `${t}x` : `${t}x`}</text>
-          </g>
-        ))}
-        <path d={grossPath} fill="none" stroke="var(--ink-faint)"
-          strokeWidth="1" strokeDasharray="4 4" />
-        <path d={benchPath} fill="none" stroke="var(--accent)" strokeWidth="1.8" />
-        <path d={netPath} fill="none" stroke="var(--ink)" strokeWidth="2.4" />
-        {oosIdx > 0 && (
-          <text x={x(oosIdx) + 4} y={PAD.t + 14} fontSize="11" fill="var(--amber)">
-            out-of-sample →
-          </text>
-        )}
-        <text x={PAD.l} y={H - 6} fontSize="11" fill="var(--ink-faint)">{dates[0]}</text>
-        <text x={W - PAD.r} y={H - 6} fontSize="11" textAnchor="end"
-          fill="var(--ink-faint)">{dates[dates.length - 1]}</text>
-      </svg>
-      <div className="legend">
-        <span><span className="sw" style={{ background: "var(--ink)" }} />Strategy, net of 5 bps (the honest line)</span>
-        <span><span className="sw" style={{ background: "var(--ink-faint)", height: 1 }} />Gross (flattering — dashed on purpose)</span>
-        <span><span className="sw" style={{ background: "var(--accent)" }} />Benchmark</span>
-        <span><span className="sw" style={{ background: "var(--amber-bg)", border: "1px solid var(--amber-line)", height: 10 }} />Holdout (30%)</span>
-      </div>
-      <details className="fallback">
-        <summary>View as table (accessible fallback)</summary>
-        <div className="scroll-x">
-          <table>
-            <thead><tr><th>Date</th><th>Net of 5 bps</th><th>Gross</th><th>Benchmark</th></tr></thead>
-            <tbody>
-              {sample(points, Math.ceil(points.length / 24)).map((p) => (
-                <tr key={p[0]}>
-                  <td>{p[0]}</td>
-                  <td>{p[1] === null ? "—" : `${p[1].toFixed(2)}x`}</td>
-                  <td>{p[2] === null ? "—" : `${p[2].toFixed(2)}x`}</td>
-                  <td>{p[3] === null ? "—" : `${p[3].toFixed(2)}x`}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <figure className="chartbox" style={{ margin: 0 }}>
+      <header><IconChart size={15} /><h3>Growth of $1 · log scale</h3></header>
+      <div className="body">
+        <svg viewBox={`0 0 ${W} ${H}`} role="img"
+          aria-label={`Equity curve. Strategy net of 5 basis points ends at ${points[points.length - 1][1]?.toFixed(2)} times capital; ${benchLabel} ends at ${points[points.length - 1][3]?.toFixed(2)} times.`}>
+          {oosIdx > 0 && (
+            <rect x={x(oosIdx)} y={PAD.t} width={x(points.length - 1) - x(oosIdx)}
+              height={H - PAD.t - PAD.b} fill="#fefce8" />
+          )}
+          {ticks.map((t) => (
+            <g key={t}>
+              <line x1={PAD.l} x2={W - PAD.r} y1={y(t)} y2={y(t)} stroke="var(--line)" />
+              <text x={PAD.l - 7} y={y(t) + 3.5} textAnchor="end" fontSize="10"
+                fill="var(--ink-3)">{t}×</text>
+            </g>
+          ))}
+          {showGross && (
+            <path d={buildPath(points.map((p) => p[2]), x, y)} fill="none"
+              stroke="var(--line-2)" strokeWidth="1" strokeDasharray="3 3" />
+          )}
+          <path d={buildPath(points.map((p) => p[3]), x, y)} fill="none"
+            stroke="var(--ink-3)" strokeWidth="1.3" />
+          <path d={buildPath(points.map((p) => p[1]), x, y)} fill="none"
+            stroke="var(--accent)" strokeWidth="1.9" strokeLinejoin="round" />
+          {oosIdx > 0 && (
+            <text x={x(oosIdx) + 5} y={PAD.t + 11} fontSize="10" fill="var(--warn)">
+              holdout →
+            </text>
+          )}
+          <text x={PAD.l} y={H - 5} fontSize="10" fill="var(--ink-3)">{dates[0]}</text>
+          <text x={W - PAD.r} y={H - 5} fontSize="10" textAnchor="end"
+            fill="var(--ink-3)">{dates[dates.length - 1]}</text>
+        </svg>
+        <div className="legend">
+          <span><span className="sw" style={{ background: "var(--accent)", height: 2 }} />Strategy · net 5 bps</span>
+          {showGross && <span><span className="sw" style={{ background: "var(--line-2)" }} />Gross</span>}
+          <span><span className="sw" style={{ background: "var(--ink-3)" }} />{benchLabel}</span>
+          <span><span className="sw" style={{ background: "#fefce8", height: 9, border: "1px solid var(--warn-line)" }} />Holdout</span>
         </div>
-      </details>
+        <details className="fallback">
+          <summary>View as table</summary>
+          <div className="scroll-x">
+            <table>
+              <thead><tr><th>Date</th><th>Net 5 bps</th><th>Gross</th><th>Benchmark</th></tr></thead>
+              <tbody>
+                {sample(points, Math.ceil(points.length / 20)).map((p) => (
+                  <tr key={p[0]}>
+                    <td>{p[0]}</td>
+                    <td>{p[1] === null ? "—" : `${p[1].toFixed(2)}×`}</td>
+                    <td>{p[2] === null ? "—" : `${p[2].toFixed(2)}×`}</td>
+                    <td>{p[3] === null ? "—" : `${p[3].toFixed(2)}×`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
     </figure>
   );
 }
 
-// ---------------- drawdown ----------------
+/* ---------------- drawdown ---------------- */
 
 export function DrawdownChart({
-  points,
+  points, benchLabel,
 }: {
   points: [string, number | null, number | null][];
+  benchLabel: string;
 }) {
   if (points.length < 2) return null;
   const dates = points.map((p) => p[0]);
-  const values = points.flatMap((p) => [p[1], p[2]]).filter(
-    (v): v is number => v !== null,
-  );
-  const lo = Math.min(...values, -0.02);
-  const y = (v: number) => PAD.t + (v / lo) * (H - PAD.t - PAD.b);
+  const vals = points.flatMap((p) => [p[1], p[2]]).filter((v): v is number => v !== null);
+  const lo = Math.min(...vals, -0.02);
+  const h = 190;
+  const y = (v: number) => PAD.t + (v / lo) * (h - PAD.t - PAD.b);
   const x = xScale(points.length);
-  const stratPath = buildPath(points.map((p) => p[1]), x, y);
-  const benchPath = buildPath(points.map((p) => p[2]), x, y);
-  const gridTicks = [-0.1, -0.2, -0.3, -0.5, -0.7].filter((t) => t > lo);
+  const grid = [-0.1, -0.2, -0.3, -0.5, -0.7].filter((t) => t > lo);
+  const area = buildPath(points.map((p) => p[1]), x, y) +
+    `L${x(points.length - 1).toFixed(1)},${y(0).toFixed(1)}L${x(0).toFixed(1)},${y(0).toFixed(1)}Z`;
 
   return (
-    <figure className="chartbox" role="img"
-      aria-label="Drawdown chart: peak-to-trough losses for strategy and benchmark.">
-      <h3>Drawdown (underwater plot)</h3>
-      <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
-        <line x1={PAD.l} x2={W - PAD.r} y1={y(0)} y2={y(0)} stroke="var(--ink-faint)" />
-        {gridTicks.map((t) => (
-          <g key={t}>
-            <line x1={PAD.l} x2={W - PAD.r} y1={y(t)} y2={y(t)} stroke="var(--line)" />
-            <text x={PAD.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11"
-              fill="var(--ink-faint)">{pct(t, 0)}</text>
-          </g>
-        ))}
-        <path d={benchPath} fill="none" stroke="var(--accent)" strokeWidth="1.6" />
-        <path d={stratPath} fill="none" stroke="var(--red)" strokeWidth="2" />
-        <text x={PAD.l} y={H - 6} fontSize="11" fill="var(--ink-faint)">{dates[0]}</text>
-        <text x={W - PAD.r} y={H - 6} fontSize="11" textAnchor="end"
-          fill="var(--ink-faint)">{dates[dates.length - 1]}</text>
-      </svg>
-      <div className="legend">
-        <span><span className="sw" style={{ background: "var(--red)" }} />Strategy (net of 5 bps)</span>
-        <span><span className="sw" style={{ background: "var(--accent)" }} />Benchmark</span>
-      </div>
-      <details className="fallback">
-        <summary>View as table (accessible fallback)</summary>
-        <div className="scroll-x">
-          <table>
-            <thead><tr><th>Date</th><th>Strategy</th><th>Benchmark</th></tr></thead>
-            <tbody>
-              {sample(points, Math.ceil(points.length / 24)).map((p) => (
-                <tr key={p[0]}>
-                  <td>{p[0]}</td><td>{pct(p[1])}</td><td>{pct(p[2])}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <figure className="chartbox" style={{ margin: 0 }}>
+      <header><IconChart size={15} /><h3>Drawdown · underwater</h3></header>
+      <div className="body">
+        <svg viewBox={`0 0 ${W} ${h}`} role="img"
+          aria-label={`Drawdown chart. Strategy worst drawdown ${pct(Math.min(...points.map((p) => p[1] ?? 0)))}.`}>
+          {grid.map((t) => (
+            <g key={t}>
+              <line x1={PAD.l} x2={W - PAD.r} y1={y(t)} y2={y(t)} stroke="var(--line)" />
+              <text x={PAD.l - 7} y={y(t) + 3.5} textAnchor="end" fontSize="10"
+                fill="var(--ink-3)">{pct(t, 0)}</text>
+            </g>
+          ))}
+          <path d={area} fill="var(--neg-soft)" stroke="none" />
+          <path d={buildPath(points.map((p) => p[2]), x, y)} fill="none"
+            stroke="var(--ink-3)" strokeWidth="1.2" />
+          <path d={buildPath(points.map((p) => p[1]), x, y)} fill="none"
+            stroke="var(--neg)" strokeWidth="1.6" />
+          <line x1={PAD.l} x2={W - PAD.r} y1={y(0)} y2={y(0)} stroke="var(--line-2)" />
+          <text x={PAD.l} y={h - 5} fontSize="10" fill="var(--ink-3)">{dates[0]}</text>
+          <text x={W - PAD.r} y={h - 5} fontSize="10" textAnchor="end"
+            fill="var(--ink-3)">{dates[dates.length - 1]}</text>
+        </svg>
+        <div className="legend">
+          <span><span className="sw" style={{ background: "var(--neg)" }} />Strategy</span>
+          <span><span className="sw" style={{ background: "var(--ink-3)" }} />{benchLabel}</span>
         </div>
-      </details>
+        <details className="fallback">
+          <summary>View as table</summary>
+          <div className="scroll-x">
+            <table>
+              <thead><tr><th>Date</th><th>Strategy</th><th>Benchmark</th></tr></thead>
+              <tbody>
+                {sample(points, Math.ceil(points.length / 20)).map((p) => (
+                  <tr key={p[0]}><td>{p[0]}</td><td>{pct(p[1])}</td><td>{pct(p[2])}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
     </figure>
   );
 }
 
-// ---------------- regime bar ----------------
+/* ---------------- regime timeline ---------------- */
 
 const KIND_LABEL: Record<string, string> = {
   bull: "bull", bear: "bear market", correction: "correction",
@@ -195,8 +188,7 @@ const KIND_LABEL: Record<string, string> = {
 };
 
 export function RegimeBar({
-  segments,
-  hasBear,
+  segments, hasBear,
 }: {
   segments: RegimeSegment[];
   hasBear: boolean;
@@ -205,42 +197,48 @@ export function RegimeBar({
   const t0 = Date.parse(segments[0].start);
   const t1 = Date.parse(segments[segments.length - 1].end);
   const span = Math.max(t1 - t0, 1);
-
   return (
-    <figure className="chartbox">
-      <h3>Regime coverage</h3>
-      <div className="regimebar" role="img"
-        aria-label={`Market regimes across the test window: ${segments
-          .map((s) => `${s.label} (${s.start} to ${s.end})`).join("; ")}.`}>
-        {segments.map((s, i) => (
-          <div key={i} className={`rg-${s.kind}`}
-            style={{ width: `${(100 * (Date.parse(s.end) - Date.parse(s.start))) / span}%` }}
-            title={`${s.label}: ${s.start} → ${s.end}`} />
-        ))}
-      </div>
-      <div className="legend">
-        <span><span className="sw" style={{ background: "var(--green-line)", height: 10 }} />bull</span>
-        <span><span className="sw" style={{ background: "var(--amber-line)", height: 10 }} />correction</span>
-        <span><span className="sw" style={{ background: "var(--red)", height: 10 }} />bear</span>
-        <span><span className="sw" style={{ background: "var(--line)", height: 10 }} />sideways</span>
-      </div>
-      {!hasBear && (
-        <p className="warnbox">
-          ▲ This window contains <strong>no sustained bear market</strong> —
-          results may not survive one.
-        </p>
-      )}
-      <details className="fallback">
-        <summary>View as list (accessible fallback)</summary>
-        <ul>
+    <figure className="chartbox" style={{ margin: 0 }}>
+      <header><IconTimeline size={15} /><h3>Market periods covered</h3></header>
+      <div className="body">
+        <div className="regimebar" role="img"
+          aria-label={`Regime timeline: ${segments.map((s) => `${s.label} from ${s.start} to ${s.end}`).join("; ")}.`}>
           {segments.map((s, i) => (
-            <li key={i}>
-              {s.start} → {s.end}: {s.label}
-              {KIND_LABEL[s.kind] !== s.label ? ` (${KIND_LABEL[s.kind]})` : ""}
-            </li>
+            <div key={i} className={`rg-${s.kind}`}
+              style={{ width: `${(100 * (Date.parse(s.end) - Date.parse(s.start))) / span}%` }}
+              title={`${s.label}: ${s.start} → ${s.end}`} />
           ))}
-        </ul>
-      </details>
+        </div>
+        <div className="timeline-axis">
+          <span>{segments[0].start}</span>
+          <span>{segments[segments.length - 1].end}</span>
+        </div>
+        <div className="legend">
+          <span><span className="sw" style={{ background: "#bbf7d0", height: 9 }} />bull</span>
+          <span><span className="sw" style={{ background: "#fde68a", height: 9 }} />correction</span>
+          <span><span className="sw" style={{ background: "#fda4af", height: 9 }} />bear</span>
+          <span><span className="sw" style={{ background: "var(--surface-3)", height: 9 }} />sideways</span>
+        </div>
+        {!hasBear && (
+          <div className="notice notice-warn" style={{ marginTop: 12 }}>
+            <span>
+              This window contains no sustained bear market — results may not
+              survive one.
+            </span>
+          </div>
+        )}
+        <details className="fallback">
+          <summary>View as list</summary>
+          <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontSize: 12.5, color: "var(--ink-2)" }}>
+            {segments.map((s, i) => (
+              <li key={i}>
+                {s.start} → {s.end}: {s.label}
+                {KIND_LABEL[s.kind] !== s.label ? ` (${KIND_LABEL[s.kind]})` : ""}
+              </li>
+            ))}
+          </ul>
+        </details>
+      </div>
     </figure>
   );
 }

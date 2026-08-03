@@ -1,29 +1,37 @@
 "use client";
 
 // Strategy detail: version history, run history with verdict badges,
-// replay-by-default re-runs (Gap #2), spec export, compare-runs diff.
+// replay-by-default re-runs, spec export, compare selection.
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { API_BASE, api } from "@/lib/api";
 import { startRun } from "@/lib/run";
 import RunProgress from "@/components/RunProgress";
+import { PageDisclaimer, TopBar } from "@/components/Shell";
+import { Notice, Panel } from "@/components/ui/Primitives";
+import {
+  IconCheck, IconCompare, IconDownload, IconRefresh, IconSnapshot,
+  IconWarning, IconX,
+} from "@/components/ui/Icons";
 
 interface RunRow {
   id: string; version: number; status: string; created_at: string;
   data_as_of: string | null; data_source: string | null; error: string | null;
-  report_id: string | null; verdict_color: string | null;
-  verdict_headline: string | null;
+  report_id: string | null; verdict_color: string | null; verdict_headline: string | null;
 }
-
 interface Detail {
   id: string; name: string; created_at: string;
-  versions: { id: string; version: number; spec: Record<string, unknown>;
-              created_at: string }[];
+  versions: { id: string; version: number; spec: Record<string, unknown>; created_at: string }[];
   runs: RunRow[];
 }
 
-const BADGE: Record<string, string> = { red: "✕ Killed", amber: "▲ Wounded", green: "✓ Survived" };
+const BADGE = {
+  red: { label: "Killed", Icon: IconX },
+  amber: { label: "Wounded", Icon: IconWarning },
+  green: { label: "Survived", Icon: IconCheck },
+} as const;
 
 export default function StrategyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -33,24 +41,37 @@ export default function StrategyPage({ params }: { params: Promise<{ id: string 
   const [runId, setRunId] = useState<string | null>(null);
   const [compare, setCompare] = useState<string[]>([]);
 
-  const load = () =>
+  useEffect(() => {
     api<Detail>(`/api/strategies/${id}`)
       .then(setDetail)
       .catch((e) => setError(String(e.message ?? e)));
-  useEffect(() => { load(); /* eslint-disable-line */ }, [id]);
+  }, [id]);
 
-  if (error) return <p className="errbox">✕ {error}</p>;
-  if (!detail) return <p className="faint">Loading…</p>;
+  if (error && !detail) {
+    return (
+      <>
+        <TopBar crumb="Journal" />
+        <main className="content"><Notice kind="err">{error}</Notice></main>
+      </>
+    );
+  }
+  if (!detail) {
+    return (
+      <>
+        <TopBar crumb="Journal" />
+        <main className="content"><p className="faint">Loading…</p></main>
+      </>
+    );
+  }
 
   const latestSpec = detail.versions[0]?.spec;
-  const lastDoneRun = detail.runs.find((r) => r.status === "done");
+  const lastDone = detail.runs.find((r) => r.status === "done");
 
   const rerun = async (mode: "replay" | "refresh") => {
     try {
-      const body =
-        mode === "replay" && lastDoneRun
-          ? { rerun_of: lastDoneRun.id }
-          : { spec: latestSpec, strategy_id: detail.id, refresh_data: mode === "refresh" };
+      const body = mode === "replay" && lastDone
+        ? { rerun_of: lastDone.id }
+        : { spec: latestSpec, strategy_id: detail.id, refresh_data: true };
       const { run_id } = await startRun(body);
       setRunId(run_id);
     } catch (e) {
@@ -58,102 +79,124 @@ export default function StrategyPage({ params }: { params: Promise<{ id: string 
     }
   };
 
-  const toggleCompare = (reportId: string) => {
+  const toggle = (reportId: string) =>
     setCompare((prev) =>
-      prev.includes(reportId)
-        ? prev.filter((x) => x !== reportId)
-        : [...prev.slice(-1), reportId],
-    );
-  };
+      prev.includes(reportId) ? prev.filter((x) => x !== reportId) : [...prev.slice(-1), reportId]);
 
   if (runId) {
     return (
-      <RunProgress runId={runId}
-        onDone={(reportId) => router.push(`/report/${reportId}`)}
-        onError={(message) => { setRunId(null); setError(message); }} />
+      <>
+        <TopBar crumb="Journal" strategy={detail.name} />
+        <main className="content" style={{ maxWidth: 620 }}>
+          <RunProgress runId={runId}
+            onDone={(reportId) => router.push(`/report/${reportId}`)}
+            onError={(m) => { setRunId(null); setError(m); }} />
+        </main>
+      </>
     );
   }
 
   return (
-    <div>
-      <h1>{detail.name}</h1>
-      <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
-        {lastDoneRun && (
-          <button className="primary" onClick={() => rerun("replay")}>
-            Re-run from frozen snapshot
-          </button>
-        )}
-        <button onClick={() => rerun("refresh")}>
-          Refresh data &amp; run (new numbers)
-        </button>
-        <a className="btn" href={`${API_BASE}/api/strategies/${detail.id}/spec.json`}>
-          Export spec JSON
-        </a>
-      </div>
-      <p className="faint">
-        Re-runs replay the run&apos;s frozen, content-hashed data snapshot by
-        default — identical numbers, byte for byte. &ldquo;Refresh data&rdquo;
-        is the only path to new numbers.
-      </p>
+    <>
+      <TopBar
+        crumb="Journal"
+        strategy={detail.name}
+        actions={
+          <>
+            {lastDone && (
+              <button onClick={() => rerun("replay")}>
+                <IconSnapshot size={13} /> Replay snapshot
+              </button>
+            )}
+            <button onClick={() => rerun("refresh")}>
+              <IconRefresh size={13} /> Refresh &amp; run
+            </button>
+            <a className="btn" href={`${API_BASE}/api/strategies/${detail.id}/spec.json`}>
+              <IconDownload size={13} /> Spec
+            </a>
+          </>
+        }
+      />
+      <main className="content">
+        <div className="stack">
+          {error && <Notice kind="err">{error}</Notice>}
+          <Notice kind="info">
+            Re-runs replay the frozen, content-hashed snapshot by default —
+            identical numbers. &ldquo;Refresh &amp; run&rdquo; is the only path to new data.
+          </Notice>
 
-      <h2>Run history</h2>
-      {detail.runs.length === 0 && <p className="muted">No runs yet.</p>}
-      <div className="scroll-x">
-        <table>
-          <thead>
-            <tr><th>When</th><th>Spec v</th><th>Data</th><th>Verdict</th>
-                <th>Report</th><th>Compare</th></tr>
-          </thead>
-          <tbody>
-            {detail.runs.map((r) => (
-              <tr key={r.id}>
-                <td>{r.created_at}</td>
-                <td>v{r.version}</td>
-                <td className="faint">
-                  {r.status === "error" ? `error: ${r.error?.slice(0, 60)}` :
-                    `${r.data_source ?? ""} ${r.data_as_of ? `as of ${r.data_as_of}` : ""}`}
-                </td>
-                <td>
-                  {r.verdict_color ? (
-                    <span style={{
-                      color: `var(--${r.verdict_color === "amber" ? "amber" : r.verdict_color})`,
-                      fontWeight: 650 }}>
-                      {BADGE[r.verdict_color]}
-                    </span>
-                  ) : r.status}
-                </td>
-                <td>{r.report_id &&
-                  <a href={`/report/${r.report_id}`}>open</a>}</td>
-                <td>{r.report_id && (
-                  <input type="checkbox" aria-label="select for comparison"
-                    checked={compare.includes(r.report_id)}
-                    onChange={() => toggleCompare(r.report_id!)} />
-                )}</td>
-              </tr>
+          <Panel title="Run history" tight
+            right={compare.length === 2 ? (
+              <Link className="btn primary" href={`/compare?a=${compare[0]}&b=${compare[1]}`}>
+                <IconCompare size={13} /> Compare
+              </Link>
+            ) : <span className="faint">select two to compare</span>}>
+            <div className="scroll-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th>When</th><th>Spec</th><th>Data</th><th>Verdict</th>
+                    <th>Report</th><th>Compare</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detail.runs.map((r) => {
+                    const badge = r.verdict_color
+                      ? BADGE[r.verdict_color as keyof typeof BADGE] : null;
+                    return (
+                      <tr key={r.id}>
+                        <td className="faint">{r.created_at.slice(0, 16)}</td>
+                        <td>v{r.version}</td>
+                        <td className="faint">
+                          {r.status === "error"
+                            ? `error: ${r.error?.slice(0, 40)}`
+                            : `${r.data_source ?? ""}${r.data_as_of ? ` · ${r.data_as_of}` : ""}`}
+                        </td>
+                        <td>
+                          {badge ? (
+                            <span className={`pill pill-${r.verdict_color}`}>
+                              <badge.Icon size={11} /> {badge.label}
+                            </span>
+                          ) : <span className="faint">{r.status}</span>}
+                        </td>
+                        <td>{r.report_id && <Link href={`/report/${r.report_id}`}>open</Link>}</td>
+                        <td>
+                          {r.report_id && (
+                            <input type="checkbox" aria-label={`Select run ${r.created_at} for comparison`}
+                              checked={compare.includes(r.report_id)}
+                              onChange={() => toggle(r.report_id!)} />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
+
+          <Panel title="Version history" tight>
+            {detail.versions.map((v) => (
+              <details key={v.id} style={{ borderBottom: "1px solid var(--line)", padding: "8px 0" }}>
+                <summary style={{ cursor: "pointer", fontSize: 13 }}>
+                  v{v.version}
+                  <span className="faint" style={{ marginLeft: 8 }}>
+                    {v.created_at.slice(0, 16)}
+                    {v.version === detail.versions[0].version ? " · current" : ""}
+                  </span>
+                </summary>
+                <pre className="scroll-x mono" style={{
+                  background: "var(--surface-2)", border: "1px solid var(--line)",
+                  borderRadius: "var(--r-sm)", padding: 12, fontSize: 11.5, marginTop: 8,
+                }}>
+                  {JSON.stringify(v.spec, null, 2)}
+                </pre>
+              </details>
             ))}
-          </tbody>
-        </table>
-      </div>
-      {compare.length === 2 && (
-        <p>
-          <a className="btn" href={`/compare?a=${compare[0]}&b=${compare[1]}`}>
-            Compare selected runs →
-          </a>
-        </p>
-      )}
-
-      <h2>Version history</h2>
-      {detail.versions.map((v) => (
-        <details key={v.id} className="card">
-          <summary>
-            v{v.version} · {v.created_at}
-            {v.version === detail.versions[0].version ? " (current)" : ""}
-          </summary>
-          <pre className="scroll-x" style={{ fontSize: "0.78rem" }}>
-            {JSON.stringify(v.spec, null, 2)}
-          </pre>
-        </details>
-      ))}
-    </div>
+          </Panel>
+        </div>
+        <PageDisclaimer />
+      </main>
+    </>
   );
 }

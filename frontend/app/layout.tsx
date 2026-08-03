@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { DISCLAIMER } from "@/lib/constants";
+import Shell from "@/components/Shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,21 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="shell">
-          <nav className="topnav" aria-label="Main">
-            <Link href="/" className="brand">
-              The <span>Honest</span> Backtester
-            </Link>
-            <Link href="/journal" className="navlink">
-              Journal
-            </Link>
-            <Link href="/glossary" className="navlink">
-              Glossary
-            </Link>
-          </nav>
-          <main className="content">{children}</main>
-          <footer className="disclaimer-footer">{DISCLAIMER}</footer>
-        </div>
+        <Shell>{children}</Shell>
       </body>
     </html>
   );

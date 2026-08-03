@@ -5,6 +5,8 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
+import { PageDisclaimer, TopBar } from "@/components/Shell";
+import { Notice, Panel } from "@/components/ui/Primitives";
 import type { ReportEnvelope } from "@/lib/types";
 import { num, pct } from "@/lib/format";
 
@@ -41,8 +43,8 @@ function CompareInner() {
       .catch((e) => setError(String(e.message ?? e)));
   }, [a, b]);
 
-  if (error) return <p className="errbox">✕ {error}</p>;
-  if (!reports) return <p className="faint">Loading comparison…</p>;
+  if (error) return <main className="content"><Notice kind="err">{error}</Notice></main>;
+  if (!reports) return <main className="content"><p className="faint">Loading comparison…</p></main>;
   const [ra, rb] = reports;
 
   const specA = flatten(ra.report.spec);
@@ -66,58 +68,66 @@ function CompareInner() {
   ];
 
   return (
-    <div>
-      <h1>Compare runs</h1>
-      <div className="scroll-x">
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th><a href={`/report/${ra.id}`}>{ra.id}</a><br />
-                <span className="faint">{ra.created_at}</span></th>
-              <th><a href={`/report/${rb.id}`}>{rb.id}</a><br />
-                <span className="faint">{rb.created_at}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            {statRows.map(([label, get]) => (
-              <tr key={label}>
-                <td>{label}</td><td>{get(ra)}</td><td>{get(rb)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <>
+      <TopBar crumb="Compare" strategy={String(ra.report.spec.name ?? "")} />
+      <main className="content">
+        <div className="stack">
+          <Panel title="Side by side" tight>
+            <div className="scroll-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th><a href={`/report/${ra.id}`}>Run A</a><br />
+                      <span className="faint">{ra.created_at.slice(0, 16)}</span></th>
+                    <th><a href={`/report/${rb.id}`}>Run B</a><br />
+                      <span className="faint">{rb.created_at.slice(0, 16)}</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {statRows.map(([label, get]) => (
+                    <tr key={label}>
+                      <td>{label}</td><td>{get(ra)}</td><td>{get(rb)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
 
-      <h2>Spec differences</h2>
-      {diffs.length === 0 ? (
-        <p className="muted">
-          The specs are identical — any metric difference comes from the data
-          (check the snapshot hashes and &ldquo;data as of&rdquo; above).
-        </p>
-      ) : (
-        <div className="scroll-x">
-          <table>
-            <thead><tr><th>Field</th><th>Run A</th><th>Run B</th></tr></thead>
-            <tbody>
-              {diffs.map((k) => (
-                <tr key={k}>
-                  <td className="mono">{k}</td>
-                  <td>{specA[k] ?? "—"}</td>
-                  <td>{specB[k] ?? "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Panel title="Spec differences" tight>
+            {diffs.length === 0 ? (
+              <p className="faint" style={{ margin: 0 }}>
+                The specs are identical — any metric difference comes from the
+                data. Compare the snapshot hashes above.
+              </p>
+            ) : (
+              <div className="scroll-x">
+                <table>
+                  <thead><tr><th>Field</th><th>Run A</th><th>Run B</th></tr></thead>
+                  <tbody>
+                    {diffs.map((k) => (
+                      <tr key={k}>
+                        <td className="mono" style={{ textAlign: "left" }}>{k}</td>
+                        <td>{specA[k] ?? "—"}</td>
+                        <td>{specB[k] ?? "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Panel>
         </div>
-      )}
-    </div>
+        <PageDisclaimer />
+      </main>
+    </>
   );
 }
 
 export default function ComparePage() {
   return (
-    <Suspense fallback={<p className="faint">Loading…</p>}>
+    <Suspense fallback={<main className="content"><p className="faint">Loading…</p></main>}>
       <CompareInner />
     </Suspense>
   );

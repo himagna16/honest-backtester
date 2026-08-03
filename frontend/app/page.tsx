@@ -1,14 +1,20 @@
 "use client";
 
-// Describe → confirm the spec → run the gauntlet → Truth Report.
+// Workbench: strategy input (left) + configuration (right). No marketing hero —
+// the first screen is the actual backtesting workflow.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
-import type { TranslateResult as TR } from "@/lib/types";
+import type { TranslateResult as TR, ValidateResult } from "@/lib/types";
 import SpecReview from "@/components/SpecReview";
 import RunProgress from "@/components/RunProgress";
 import { startRun } from "@/lib/run";
+import { PageDisclaimer, TopBar } from "@/components/Shell";
+import { Notice, Panel, Segmented } from "@/components/ui/Primitives";
+import {
+  IconDescribe, IconEmptyChart, IconSettings, IconUpload,
+} from "@/components/ui/Icons";
 
 const CHIPS = [
   "12-1 momentum, top 10 in the S&P 500, monthly",
@@ -17,188 +23,258 @@ const CHIPS = [
   "60/40 stocks and bonds, rebalanced yearly",
 ];
 
-type Phase =
-  | { kind: "idle" }
-  | { kind: "translating" }
-  | { kind: "clarify"; result: TR }
-  | { kind: "spec"; result: TR }
-  | { kind: "unsupported"; reason: string }
-  | { kind: "error"; message: string; canPasteJson?: boolean }
-  | { kind: "running"; runId: string };
+type Mode = "describe" | "import";
 
-export default function Home() {
+export default function Workbench() {
   const router = useRouter();
+  const [mode, setMode] = useState<Mode>("describe");
   const [text, setText] = useState("");
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [phase, setPhase] = useState<Phase>({ kind: "idle" });
-  const [llmConfigured, setLlmConfigured] = useState<boolean | null>(null);
   const [jsonDraft, setJsonDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [spec, setSpec] = useState<Record<string, unknown> | null>(null);
+  const [assumptions, setAssumptions] = useState<string[]>([]);
+  const [questions, setQuestions] = useState<TR["questions"]>([]);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [unsupported, setUnsupported] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [runId, setRunId] = useState<string | null>(null);
+  const [llmReady, setLlmReady] = useState<boolean | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    api<{ status: string; llm_configured: boolean }>("/health")
-      .then((h) => setLlmConfigured(h.llm_configured))
-      .catch(() => setLlmConfigured(null));
+    api<{ llm_configured: boolean }>("/health")
+      .then((h) => {
+        setLlmReady(h.llm_configured);
+        if (!h.llm_configured) setMode("import");
+      })
+      .catch(() => setLlmReady(null));
   }, []);
 
+  const reset = () => {
+    setSpec(null); setAssumptions([]); setQuestions([]);
+    setUnsupported(null); setError(null);
+  };
+
   const translate = async (input: string) => {
-    setPhase({ kind: "translating" });
+    reset(); setBusy(true);
     try {
-      const result = await api<TR>("/api/translate-strategy", {
-        method: "POST",
-        json: { text: input },
+      const r = await api<TR>("/api/translate-strategy", {
+        method: "POST", json: { text: input },
       });
-      if (result.status === "spec") setPhase({ kind: "spec", result });
-      else if (result.status === "needs_clarification") {
-        setAnswers({});
-        setPhase({ kind: "clarify", result });
-      } else if (result.status === "unsupported")
-        setPhase({ kind: "unsupported", reason: result.unsupported_reason ?? "" });
-      else
-        setPhase({
-          kind: "error",
-          message: result.message ?? (result.errors ?? []).join("; "),
-        });
+      if (r.status === "spec" && r.spec) {
+        setSpec(r.spec); setAssumptions(r.assumptions ?? []);
+      } else if (r.status === "needs_clarification") {
+        setQuestions(r.questions ?? []); setAnswers({});
+      } else if (r.status === "unsupported") {
+        setUnsupported(r.unsupported_reason ?? "");
+      } else {
+        setError(r.message ?? (r.errors ?? []).join("; "));
+      }
     } catch (e) {
-      const err = e as ApiError;
-      setPhase({
-        kind: "error",
-        message: err.message,
-        canPasteJson: err.code === "llm_not_configured",
+      setError((e as ApiError).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const loadJson = async (raw: string) => {
+    reset(); setBusy(true);
+    try {
+      const parsed = JSON.parse(raw);
+      const r = await api<ValidateResult>("/api/import-spec", {
+        method: "POST", json: { spec: parsed },
       });
-    }
-  };
-
-  const submitAnswers = (result: TR) => {
-    const lines = (result.questions ?? []).map(
-      (q, i) => `${q.question} ${answers[i] ?? ""}`,
-    );
-    translate(`${text}\n\nClarifications: ${lines.join(" | ")}`);
-  };
-
-  const runSpec = async (spec: Record<string, unknown>) => {
-    try {
-      const { run_id } = await startRun({ spec });
-      setPhase({ kind: "running", runId: run_id });
+      if (r.valid && r.expanded_spec) setSpec(r.expanded_spec);
+      else setError(r.errors.join(" · "));
     } catch (e) {
-      setPhase({ kind: "error", message: (e as Error).message });
+      setError(e instanceof SyntaxError ? "That file isn't valid JSON." : (e as Error).message);
+    } finally {
+      setBusy(false);
     }
   };
 
-  const runPastedJson = () => {
+  const onFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const raw = String(reader.result ?? "");
+      setJsonDraft(raw);
+      loadJson(raw);
+    };
+    reader.readAsText(file);
+  };
+
+  const run = async (finalSpec: Record<string, unknown>) => {
     try {
-      runSpec(JSON.parse(jsonDraft));
-    } catch {
-      setPhase({ kind: "error", message: "that isn't valid JSON", canPasteJson: true });
+      const { run_id } = await startRun({ spec: finalSpec });
+      setRunId(run_id);
+    } catch (e) {
+      setError((e as Error).message);
     }
   };
+
+  const answered = questions && Object.keys(answers).length >= questions.length;
 
   return (
-    <div className="describe">
-      <h1>Describe your strategy</h1>
-      <p className="muted">
-        Be specific about what you buy, when, and when you sell. The backtest
-        will try to kill it — that&apos;s the point.
-      </p>
-
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder='e.g. "Buy the 5 strongest S&P 500 stocks by 12-month momentum, rebalance monthly"'
-        aria-label="Strategy description"
+    <>
+      <TopBar
+        crumb="Workbench"
+        strategy={spec ? String(spec.name ?? "") : undefined}
+        actions={
+          spec && !runId ? (
+            <button className="ghost" onClick={reset}>Clear</button>
+          ) : null
+        }
       />
-      <div className="chips" role="list">
-        {CHIPS.map((chip) => (
-          <button key={chip} className="chip" role="listitem"
-            onClick={() => setText(chip)}>
-            {chip}
-          </button>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: "0.7rem", alignItems: "center", flexWrap: "wrap" }}>
-        <button className="primary" disabled={!text.trim() || phase.kind === "translating"}
-          onClick={() => translate(text)}>
-          {phase.kind === "translating" ? "Translating…" : "Translate to a spec"}
-        </button>
-        {llmConfigured === false && (
-          <span className="faint">
-            No ANTHROPIC_API_KEY configured — you can still paste a spec JSON below.
-          </span>
-        )}
-      </div>
-
-      {phase.kind === "clarify" && (
-        <div className="card">
-          <h2>A few things you didn&apos;t specify</h2>
-          <p className="faint">
-            The translator never guesses material parameters — answer these and
-            it will re-translate.
-          </p>
-          {(phase.result.questions ?? []).map((q, i) => (
-            <div key={i} style={{ margin: "0.7rem 0" }}>
-              <p style={{ margin: "0 0 0.3rem" }}>{q.question}</p>
-              <div className="chips">
-                {q.options.map((option) => (
-                  <button key={option}
-                    className="chip"
-                    style={answers[i] === option
-                      ? { borderColor: "var(--accent)", color: "var(--accent)" }
-                      : undefined}
-                    onClick={() => setAnswers({ ...answers, [i]: option })}>
-                    {option}
+      <main className="content">
+        <div className="grid-2">
+          {/* ---------------- strategy input ---------------- */}
+          <Panel
+            title="Strategy"
+            icon={<IconDescribe size={15} />}
+            right={
+              <Segmented<Mode>
+                label="Strategy input mode"
+                value={mode}
+                onChange={setMode}
+                options={[
+                  { value: "describe", label: "Describe", icon: <IconDescribe size={13} /> },
+                  { value: "import", label: "Import spec", icon: <IconUpload size={13} /> },
+                ]}
+              />
+            }
+          >
+            {mode === "describe" ? (
+              <div className="describe">
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder='Describe what you buy, when, and when you sell — e.g. "Buy the 5 strongest S&P 500 stocks by 12-month momentum, rebalance monthly"'
+                  aria-label="Strategy description"
+                />
+                <div className="row" style={{ marginTop: 10 }}>
+                  <button className="primary" disabled={!text.trim() || busy}
+                    onClick={() => translate(text)}>
+                    {busy ? "Translating…" : "Translate to spec"}
                   </button>
-                ))}
+                  {llmReady === false && (
+                    <span className="faint">
+                      No API key — use Import spec, or set ANTHROPIC_API_KEY.
+                    </span>
+                  )}
+                </div>
+                <p className="eyebrow" style={{ marginTop: 18 }}>Starting points</p>
+                <div className="chips">
+                  {CHIPS.map((c) => (
+                    <button key={c} className="chip" type="button"
+                      aria-pressed={text === c} onClick={() => setText(c)}>
+                      {c}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          <button className="primary"
-            disabled={Object.keys(answers).length < (phase.result.questions ?? []).length}
-            onClick={() => submitAnswers(phase.result)}>
-            Re-translate with answers
-          </button>
+            ) : (
+              <div className="describe">
+                <div className="row" style={{ marginBottom: 10 }}>
+                  <button onClick={() => fileRef.current?.click()}>
+                    <IconUpload size={14} /> Choose .json file
+                  </button>
+                  <input ref={fileRef} type="file" accept=".json,application/json"
+                    style={{ display: "none" }}
+                    onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
+                  <span className="faint">or paste below</span>
+                </div>
+                <textarea
+                  value={jsonDraft}
+                  onChange={(e) => setJsonDraft(e.target.value)}
+                  spellCheck={false}
+                  className="mono"
+                  placeholder='{"name": "...", "universe": {"preset": "sp500"}, ...}'
+                  aria-label="Strategy spec JSON"
+                />
+                <div className="row" style={{ marginTop: 10 }}>
+                  <button className="primary" disabled={!jsonDraft.trim() || busy}
+                    onClick={() => loadJson(jsonDraft)}>
+                    Validate spec
+                  </button>
+                  <span className="faint">
+                    Exported specs round-trip exactly.
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* clarification is part of the input conversation */}
+            {questions && questions.length > 0 && (
+              <div style={{ marginTop: 20, borderTop: "1px solid var(--line)", paddingTop: 16 }}>
+                <p className="eyebrow">Needs clarification</p>
+                <p className="faint" style={{ marginTop: 0 }}>
+                  The translator never guesses a material parameter.
+                </p>
+                {questions.map((q, i) => (
+                  <div key={i} style={{ marginTop: 12 }}>
+                    <p style={{ margin: "0 0 6px", fontSize: 13 }}>{q.question}</p>
+                    <div className="chips">
+                      {q.options.map((o) => (
+                        <button key={o} className="chip" type="button"
+                          aria-pressed={answers[i] === o}
+                          onClick={() => setAnswers({ ...answers, [i]: o })}>
+                          {o}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <button className="primary" style={{ marginTop: 14 }} disabled={!answered}
+                  onClick={() =>
+                    translate(
+                      `${text}\n\nClarifications: ${questions
+                        .map((q, i) => `${q.question} ${answers[i] ?? ""}`)
+                        .join(" | ")}`,
+                    )
+                  }>
+                  Re-translate with answers
+                </button>
+              </div>
+            )}
+
+            {unsupported && (
+              <div style={{ marginTop: 16 }}>
+                <Notice kind="warn">
+                  <strong>Not supported in V0.</strong> {unsupported}
+                </Notice>
+              </div>
+            )}
+            {error && (
+              <div style={{ marginTop: 16 }}>
+                <Notice kind="err">{error}</Notice>
+              </div>
+            )}
+          </Panel>
+
+          {/* ---------------- configuration / run ---------------- */}
+          {runId ? (
+            <RunProgress
+              runId={runId}
+              onDone={(reportId) => router.push(`/report/${reportId}`)}
+              onError={(m) => { setRunId(null); setError(m); }}
+            />
+          ) : spec ? (
+            <SpecReview initialSpec={spec} assumptions={assumptions} onRun={run} />
+          ) : (
+            <Panel title="Configuration" icon={<IconSettings size={15} />}>
+              <div className="empty">
+                <IconEmptyChart size={34} />
+                <p>No strategy loaded.</p>
+                <p className="faint">
+                  Describe one or import a spec — settings appear here for review
+                  before anything runs.
+                </p>
+              </div>
+            </Panel>
+          )}
         </div>
-      )}
-
-      {phase.kind === "spec" && phase.result.spec && (
-        <SpecReview
-          initialSpec={phase.result.spec}
-          assumptions={phase.result.assumptions ?? []}
-          onRun={runSpec}
-        />
-      )}
-
-      {phase.kind === "unsupported" && (
-        <div className="card">
-          <h2>Not supported in V0 — honestly</h2>
-          <p className="muted">{phase.reason}</p>
-          <p className="faint">The request was logged for the roadmap.</p>
-        </div>
-      )}
-
-      {phase.kind === "error" && (
-        <div>
-          <p className="errbox">✕ {phase.message}</p>
-        </div>
-      )}
-
-      {(phase.kind === "error" && phase.canPasteJson) || llmConfigured === false ? (
-        <details className="card" open={phase.kind === "error" && phase.canPasteJson}>
-          <summary>Paste a spec JSON directly (offline mode)</summary>
-          <textarea value={jsonDraft} onChange={(e) => setJsonDraft(e.target.value)}
-            placeholder='{"name": "...", "universe": {"preset": "sp500"}, ...}'
-            style={{ fontFamily: "var(--mono)", fontSize: "0.85rem" }} />
-          <button onClick={runPastedJson} disabled={!jsonDraft.trim()}>
-            Validate &amp; run
-          </button>
-        </details>
-      ) : null}
-
-      {phase.kind === "running" && (
-        <RunProgress
-          runId={phase.runId}
-          onDone={(reportId) => router.push(`/report/${reportId}`)}
-          onError={(message) => setPhase({ kind: "error", message })}
-        />
-      )}
-    </div>
+        <PageDisclaimer />
+      </main>
+    </>
   );
 }

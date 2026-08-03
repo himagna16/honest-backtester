@@ -188,3 +188,39 @@ the flat per-day cost in `reversal.py` overstated its drag, and the
 turnover-scaled formula (Section 3, which wins) is gentler on slow-rolling
 cohorts. Both variants ship as tests; the report shows the flip wherever it
 exists.
+
+## UI redesign — analyst workstation (post-V0)
+
+Design system derived with the ui-ux-pro-max skill: **Data-Dense Dashboard ×
+Swiss Modernism 2.0** structure on the **B2B Service** palette (navy `#0F172A`,
+blue `#0369A1`, off-white `#F8FAFC`). Every text/background pair was contrast-
+checked before adoption; the one weak pair (muted label on tinted fill, 4.34:1)
+was darkened to `--ink-label #475569`.
+
+- **No webfont.** The skill recommended Fira Sans/Fira Code, but this is a
+  local-first tool that must render instantly and work fully offline — a
+  Google Fonts dependency (or a `next/font` build-time fetch) trades that away.
+  System stack + `font-variant-numeric: tabular-nums` gives the analytical feel
+  with zero network cost.
+- **The generated "pattern" was rejected.** `--design-system` matched a
+  marketing "Real-Time / Operations Landing" with an "Exaggerated Minimalism"
+  style — both contradict the brief's "first screen is the workflow, not a
+  hero". Only the colour/typography/density dimensions were taken from it.
+- **The audit panel is labelled "Audit note · deterministic, not
+  model-generated", NOT "AI analysis".** The requested direction asked for an
+  AI-analyst research note; our findings come from deterministic Python, and
+  labelling them AI in a product whose thesis is honesty would be a lie in the
+  chrome. The research-note *form* (What worked / What failed / Main risks /
+  Suggested next tests) is implemented exactly as asked; only the attribution
+  is truthful.
+- **Risk badges, evidence strength, stress cells are derived, never invented**
+  (`frontend/lib/insights.ts`): each maps to a real finding or metric — e.g.
+  "High drawdown risk" from `max_drawdown ≤ −30%`, "Regime-sensitive" from
+  `regimes.has_bear_market === false`. "Confidence" is deliberately
+  *evidence strength* (sample size + regime coverage), not a model-confidence
+  score, which we have no basis to report.
+- **Features in the direction with no honest data source were not faked.**
+  There is no per-trade log (the DSL has no trade concept) — it became a
+  **rebalance log** from real `holdings` rows; there is no capital/fees/
+  slippage input (costs are a fixed product-rule sweep) — the settings panel
+  shows the real DSL fields instead.
