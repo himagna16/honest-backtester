@@ -224,3 +224,36 @@ was darkened to `--ink-label #475569`.
   **rebalance log** from real `holdings` rows; there is no capital/fees/
   slippage input (costs are a fixed product-rule sweep) — the settings panel
   shows the real DSL fields instead.
+
+## Multi-provider translator + cost bench
+
+The translator is now provider-agnostic: `backend/llm/providers.py` holds
+Anthropic / OpenAI / Gemini adapters behind one `call_model()`, and
+`backend/llm/pricing.py` is the single catalogue of model IDs and prices
+(fetched 2026-08-03 from each provider's own pricing page — they go stale, so
+re-check before trusting a comparison).
+
+- **Accuracy is the gate; cost only breaks ties.** `make bench` replays the
+  same 30 eval cases through each candidate and reports spec accuracy, gate
+  accuracy (clarify/refuse), measured $/1k runs, and p50 latency. It refuses
+  to name a winner unless a model clears ≥90% spec AND 100% gate accuracy.
+  This ordering is the whole point: a translator that reads "6-month" as 26
+  days answers the wrong question at any price.
+- **Cost is measured, not estimated.** Every adapter returns real token counts
+  including cached-prefix tokens, and `ModelSpec.cost()` applies the provider's
+  cached-input rate. This matters because prompt caching, not list price,
+  dominates: our ~2.4K-token system prompt caches on Sonnet 5 (≥1024 min) and
+  on OpenAI, but NOT on Haiku 4.5 (≥4096 min), and Gemini has no equivalent
+  discount in the catalogue.
+- **A JSON-mode fallback exists per provider.** If a provider's strict
+  structured-output mode rejects our schema (nested unions + `extra=forbid`
+  are a common tripwire), the adapter retries in JSON mode and validates with
+  Pydantic ourselves, recording `path="json_fallback"`. Without this the bench
+  would score SDK schema quirks as "this model can't translate strategies".
+  The deterministic validator still gates everything downstream either way.
+- **Models are skipped, never silently dropped,** when their key is absent —
+  the table says `skipped · no OPENAI_API_KEY`.
+- **Untested against live endpoints.** No provider key exists on this machine,
+  so the adapters' wire behaviour is unverified; the plumbing, usage
+  accounting, cost math, fallback path, and effort gate are covered by 18
+  mocked tests (`test_providers.py`).

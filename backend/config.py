@@ -18,9 +18,19 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # The API key deliberately has no HONEST_ prefix — it's the standard name.
+    # API keys deliberately have no HONEST_ prefix — they're the standard names.
     anthropic_api_key: str = ""
+    openai_api_key: str = ""
+    gemini_api_key: str = ""
+    # Any key from llm/pricing.py CATALOGUE (any provider).
     llm_model: str = "claude-sonnet-5"
+
+    def key_for(self, provider: str) -> str:
+        return {
+            "anthropic": self.anthropic_api_key,
+            "openai": self.openai_api_key,
+            "google": self.gemini_api_key,
+        }.get(provider, "")
 
     db_path: Path = REPO_ROOT / "data" / "honest.db"
     cache_dir: Path = REPO_ROOT / "data" / "price_cache"
@@ -37,7 +47,7 @@ class Settings(BaseSettings):
 
 
 class _KeyFallback(BaseSettings):
-    """Reads the unprefixed ANTHROPIC_API_KEY from env/.env."""
+    """Reads the unprefixed provider keys from env/.env."""
 
     model_config = SettingsConfigDict(
         env_file=(REPO_ROOT / ".env", REPO_ROOT / "backend" / ".env"),
@@ -45,8 +55,16 @@ class _KeyFallback(BaseSettings):
         extra="ignore",
     )
     anthropic_api_key: str = ""
+    openai_api_key: str = ""
+    gemini_api_key: str = ""
+    google_api_key: str = ""   # common alternate name for Gemini
 
 
 settings = Settings()
+_fallback = _KeyFallback()
 if not settings.anthropic_api_key:
-    settings.anthropic_api_key = _KeyFallback().anthropic_api_key
+    settings.anthropic_api_key = _fallback.anthropic_api_key
+if not settings.openai_api_key:
+    settings.openai_api_key = _fallback.openai_api_key
+if not settings.gemini_api_key:
+    settings.gemini_api_key = _fallback.gemini_api_key or _fallback.google_api_key

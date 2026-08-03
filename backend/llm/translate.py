@@ -1,4 +1,9 @@
-"""English → strategy spec translation via the Claude API.
+"""English → strategy spec translation, provider-agnostic.
+
+The model is chosen by HONEST_LLM_MODEL against the catalogue in
+llm/pricing.py; llm/providers.py owns the Anthropic / OpenAI / Gemini
+adapters. `make bench` scores every candidate on the same eval set for
+accuracy AND measured cost.
 
 Hard rules (Section 2 + non-negotiables):
 - The LLM returns a spec, clarifying questions, or a scope refusal — never a
@@ -17,34 +22,24 @@ import hashlib
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
 
-from pydantic import Field
 from sqlalchemy import text as sql
 
 from config import settings
 from dsl.conventions import conventions_markdown
 from dsl.readback import readback
-from dsl.schema import StrategySpec, StrictModel
+from dsl.schema import StrategySpec  # noqa: F401  (kept for type re-export)
+from llm.pricing import BY_KEY
+from llm.providers import ProviderError, Usage, call_model, supports_effort  # noqa: F401
+from llm.reply import ClarifyingQuestion, TranslatorReply  # noqa: F401
 from dsl.validator import validate_spec
 from store.db import get_engine
 from store.events import log_event
 
+_LAST_USAGE: list = []
+
 PROMPT_VERSION = "translator_v1"
 PROMPT_PATH = Path(__file__).parent / "prompts" / "translator_v1.md"
-
-
-class ClarifyingQuestion(StrictModel):
-    question: str
-    options: list[str] = Field(default_factory=list)
-
-
-class TranslatorReply(StrictModel):
-    status: Literal["spec", "needs_clarification", "unsupported"]
-    spec: StrategySpec | None = None
-    assumptions: list[str] = Field(default_factory=list)
-    questions: list[ClarifyingQuestion] = Field(default_factory=list)
-    unsupported_reason: str | None = None
 
 
 class TranslateError(Exception):
@@ -84,48 +79,26 @@ def _cache_put(input_hash: str, input_text: str, status: str, result: dict) -> N
         )
 
 
-# The effort parameter is rejected (400) by the cheaper/older tiers — notably
-# claude-haiku-4-5, which is the intended cost step-down. Gate it by model so
-# switching HONEST_LLM_MODEL never breaks the endpoint.
-_NO_EFFORT_PREFIXES = ("claude-haiku", "claude-sonnet-4-5", "claude-3")
-
-
-def supports_effort(model: str) -> bool:
-    return not model.startswith(_NO_EFFORT_PREFIXES)
-
-
 def _call_model(messages: list[dict]) -> TranslatorReply:
-    import anthropic
+    """Route to whichever provider owns settings.llm_model."""
+    reply, usage = call_model_with_usage(messages)
+    _LAST_USAGE.append(usage)
+    return reply
 
-    client = anthropic.Anthropic(
-        api_key=settings.anthropic_api_key, timeout=90.0, max_retries=2
-    )
-    kwargs: dict = {}
-    if supports_effort(settings.llm_model):
-        # Low effort keeps the spec card feeling instant; the eval harness is
-        # the instrument for checking this is still accurate enough.
-        kwargs["output_config"] = {"effort": "low"}
-    response = client.messages.parse(
-        model=settings.llm_model,
-        max_tokens=4000,
-        system=[{
-            "type": "text",
-            "text": system_prompt(),
-            "cache_control": {"type": "ephemeral"},
-        }],
-        messages=messages,
-        output_format=TranslatorReply,
-        **kwargs,
-    )
-    if response.stop_reason == "refusal":
+
+def call_model_with_usage(messages: list[dict]) -> tuple[TranslatorReply, Usage]:
+    spec = BY_KEY.get(settings.llm_model)
+    if spec is None:
         raise TranslateError(
-            "model_refusal",
-            "the model declined this request — rephrase the strategy idea",
+            "unknown_model",
+            f"HONEST_LLM_MODEL={settings.llm_model} is not in the catalogue "
+            f"(backend/llm/pricing.py)",
         )
-    parsed = response.parsed_output
-    if parsed is None:
-        raise TranslateError("parse_failed", "the model returned an unparsable reply")
-    return parsed
+    try:
+        return call_model(spec.key, settings.key_for(spec.provider),
+                          system_prompt(), messages)
+    except ProviderError as exc:
+        raise TranslateError(exc.code, str(exc)) from exc
 
 
 def _finalize_spec(reply: TranslatorReply, user_text: str) -> dict:
@@ -186,11 +159,19 @@ def translate(text: str, use_cache: bool = True) -> dict:
         raise TranslateError("empty_input", "describe a strategy first")
     if len(text) > 4000:
         raise TranslateError("input_too_long", "keep the description under 4000 characters")
-    if not settings.anthropic_api_key:
+    spec = BY_KEY.get(settings.llm_model)
+    if spec is None:
+        raise TranslateError(
+            "unknown_model",
+            f"HONEST_LLM_MODEL={settings.llm_model} is not in the catalogue",
+        )
+    if not settings.key_for(spec.provider):
+        env = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY",
+               "google": "GEMINI_API_KEY"}[spec.provider]
         raise TranslateError(
             "llm_not_configured",
-            "plain-English translation needs ANTHROPIC_API_KEY in .env — "
-            "everything else (engine, audits, journal) works without it",
+            f"translating with {spec.key} needs {env} in .env — everything "
+            f"else (engine, audits, journal) works without it",
         )
 
     h = _input_hash(text)

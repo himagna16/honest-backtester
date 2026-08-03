@@ -21,9 +21,17 @@ test: venv
 	$(PY) -m pytest backend/tests -q
 	cd frontend && npm run typecheck
 
-# Live LLM eval harness — requires ANTHROPIC_API_KEY in .env
+# Live LLM eval harness for the CONFIGURED model — needs that provider's key
 eval: venv
 	HONEST_RUN_LLM_EVALS=1 $(PY) -m pytest backend/tests/test_llm_evals.py -q -rs
+
+# Compare models across providers on accuracy AND measured cost.
+#   make bench
+#   make bench MODELS=gpt-5-nano,claude-sonnet-5
+#   make bench CASES=8
+bench: venv
+	$(PY) scripts/bench_models.py \
+	  $(if $(MODELS),--models $(MODELS),) $(if $(CASES),--cases $(CASES),)
 
 # Import the frozen fixture CSVs into the parquet price cache and build the
 # symbol master, so first run works offline.
