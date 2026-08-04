@@ -7,6 +7,7 @@ produces both formats.
 """
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 
 import matplotlib
@@ -15,9 +16,52 @@ matplotlib.use("Agg")
 import matplotlib.dates as mdates  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import pandas as pd  # noqa: E402
+from matplotlib import font_manager as _fmgr  # noqa: E402
 
-VERDICT_COLORS = {"red": "#b42318", "amber": "#92600a", "green": "#1c7a43"}
-VERDICT_BG = {"red": "#fef3f2", "amber": "#fffaeb", "green": "#f0faf4"}
+# ---------------------------------------------------------------------------
+# Fonts: the export must look like the app, not like matplotlib. We ship the
+# same Montserrat (display) + Inter (UI/body) the web uses as static TTFs in
+# assets/fonts/, register them, and reference them BY FILE so the exact weight
+# renders regardless of the family name the file reports. Bundled (not
+# system-loaded) so the Linux backend renders identically to local.
+# ---------------------------------------------------------------------------
+_FONT_DIR = Path(__file__).parent / "assets" / "fonts"
+_FONT_FILES = {
+    ("display", 600): "Montserrat-600.ttf",
+    ("display", 700): "Montserrat-700.ttf",
+    ("display", 800): "Montserrat-800.ttf",
+    ("body", 400): "Inter-400.ttf",
+    ("body", 500): "Inter-500.ttf",
+    ("body", 600): "Inter-600.ttf",
+}
+_FONTS_OK = all((_FONT_DIR / f).exists() for f in _FONT_FILES.values())
+if _FONTS_OK:
+    for _f in _FONT_FILES.values():
+        _fmgr.fontManager.addfont(str(_FONT_DIR / _f))
+    # Baseline for anything drawn without an explicit face (ticks, legend).
+    matplotlib.rcParams["font.family"] = "Inter"
+
+
+@lru_cache(maxsize=None)
+def _fp(kind: str, weight: int, size: float):
+    """A sized FontProperties for our bundled faces (falls back to the default
+    sans if the files are somehow missing, so exports never crash)."""
+    if not _FONTS_OK:
+        return _fmgr.FontProperties(size=size,
+                                    weight="bold" if weight >= 700 else "normal")
+    fp = _fmgr.FontProperties(fname=str(_FONT_DIR / _FONT_FILES[(kind, weight)]))
+    fp.set_size(size)
+    return fp
+
+
+# Warm paper-and-ink palette, matching the web app (globals.css) rather than
+# the old slate scheme, so the exported card is the same design.
+INK = "#1a1815"
+INK_2 = "#4a453e"
+INK_3 = "#6e675d"
+RULE = "#ddd8ce"
+VERDICT_COLORS = {"red": "#8c2f2f", "amber": "#7a5a18", "green": "#2f5d3a"}
+VERDICT_BG = {"red": "#f7eded", "amber": "#f8f2e2", "green": "#edf3ee"}
 
 
 def _fmt_pct(v: float | None) -> str:
@@ -62,8 +106,16 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
                                 facecolor=VERDICT_BG[verdict["color"]],
                                 edgecolor=color, linewidth=2))
     label = {"red": "KILLED", "amber": "WOUNDED", "green": "SURVIVED"}[verdict["color"]]
-    ax0.text(0.03, 0.78, f"{verdict['icon']}  {label} — {verdict['color'].upper()} VERDICT",
-             fontsize=10, fontweight="bold", color=color, transform=ax0.transAxes)
+    # Stamp label in the verdict colour; headline in ink — same as the web
+    # verdict scene (only the stamp carries colour, the headline reads dark).
+    # The ▲/✓/✕ icon is drawn in DejaVu Sans, which has those glyphs (Montserrat
+    # doesn't — it would render an empty tofu box).
+    ax0.text(0.03, 0.78, verdict["icon"],
+             fontproperties=_fmgr.FontProperties(family="DejaVu Sans", size=9),
+             color=color, transform=ax0.transAxes, va="baseline")
+    ax0.text(0.058, 0.78, f"{label} — {verdict['color'].upper()} VERDICT",
+             fontproperties=_fp("display", 700, 10), color=color,
+             transform=ax0.transAxes, va="baseline")
     # Wrap inside the banner: from the 0.03 text inset to a mirrored right
     # inset — NOT at the figure edge, which lies beyond the box border.
     banner_px = ax0.get_position().width * fig.get_figwidth() * fig.dpi
@@ -71,14 +123,14 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
     # Top-anchored so extra wrapped lines grow DOWNWARD into known-clear space:
     # headline may take 2 lines (0.71 → ~0.36), the sub starts below the
     # worst case (0.32) and 180 chars caps it at 2 lines above the border.
-    _wrap_to(ax0.text(0.03, 0.71, verdict["headline"], fontsize=15,
-                      fontweight="bold", color=color, transform=ax0.transAxes,
-                      va="top"), inner_px)
-    _wrap_to(ax0.text(0.03, 0.32, verdict["sub"][:180], fontsize=8.5,
-                      color="#4b5563", transform=ax0.transAxes, va="top"),
-             inner_px)
+    _wrap_to(ax0.text(0.03, 0.71, verdict["headline"],
+                      fontproperties=_fp("display", 700, 15),
+                      color=INK, transform=ax0.transAxes, va="top"), inner_px)
+    _wrap_to(ax0.text(0.03, 0.32, verdict["sub"][:180],
+                      fontproperties=_fp("body", 400, 8.5),
+                      color=INK_2, transform=ax0.transAxes, va="top"), inner_px)
     ax0.text(0.03, 1.06, f"The Honest Backtester — {report['spec'].get('name', '')}",
-             fontsize=9, color="#8a919c", transform=ax0.transAxes)
+             fontproperties=_fp("body", 500, 9), color=INK_3, transform=ax0.transAxes)
 
     # ---- stat row ----
     ax1 = fig.add_subplot(grid[1])
@@ -93,16 +145,19 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
     ]
     for i, (k, v, b) in enumerate(stats):
         x = i / 4 + 0.01
-        ax1.text(x, 0.85, k.upper(), fontsize=7, color="#8a919c",
+        ax1.text(x, 0.85, k.upper(), fontproperties=_fp("body", 600, 7),
+                 color=INK_3, transform=ax1.transAxes)
+        ax1.text(x, 0.45, v, fontproperties=_fp("display", 700, 14),
+                 color=INK, transform=ax1.transAxes)
+        ax1.text(x, 0.12, f"{bench.get('label', 'benchmark')}: {b}",
+                 fontproperties=_fp("body", 400, 7.5), color=INK_3,
                  transform=ax1.transAxes)
-        ax1.text(x, 0.45, v, fontsize=13, fontweight="bold", transform=ax1.transAxes)
-        ax1.text(x, 0.12, f"{bench.get('label', 'benchmark')}: {b}", fontsize=7.5,
-                 color="#4b5563", transform=ax1.transAxes)
 
     # ---- cost sweep table ----
     ax2 = fig.add_subplot(grid[2])
     ax2.axis("off")
-    ax2.set_title("Cost sweep", loc="left", fontsize=11, fontweight="bold")
+    ax2.set_title("Cost sweep", loc="left", fontproperties=_fp("display", 700, 12),
+                  color=INK)
     rows = []
     for row in report["cost_sweep"]:
         name = row.get("label") or f"{row['bps']:.0f} bps"
@@ -116,14 +171,16 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
         loc="center", cellLoc="center",
     )
     table.auto_set_font_size(False)
-    table.set_fontsize(8.5)
     table.scale(1, 1.35)
     for (r, c), cell in table.get_celld().items():
-        cell.set_edgecolor("#e4e2dc")
+        cell.set_edgecolor(RULE)
         if r == 0:
-            cell.set_text_props(fontweight="bold", color="#4b5563")
+            cell.set_text_props(fontproperties=_fp("body", 600, 8.5), color=INK_2)
         elif rows[r - 1][4] == "LOSES" and c in (1, 4):
-            cell.set_text_props(color=VERDICT_COLORS["red"], fontweight="bold")
+            cell.set_text_props(fontproperties=_fp("body", 600, 8.5),
+                                color=VERDICT_COLORS["red"])
+        else:
+            cell.set_text_props(fontproperties=_fp("body", 400, 8.5), color=INK)
 
     # ---- equity curve (log) ----
     ax3 = fig.add_subplot(grid[3])
@@ -132,45 +189,50 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
     net = [p[1] for p in curve]
     gross = [p[2] for p in curve]
     bench_curve = [p[3] for p in curve]
-    ax3.plot(dates, gross, color="#8a919c", linewidth=0.8, linestyle="--",
+    ax3.plot(dates, gross, color=INK_3, linewidth=0.8, linestyle="--",
              label="Gross (flattering)")
-    ax3.plot(dates, bench_curve, color="#1f4e5f", linewidth=1.2,
+    ax3.plot(dates, bench_curve, color=INK_3, linewidth=1.2,
              label=bench.get("label", "benchmark"))
-    ax3.plot(dates, net, color="#1a1d21", linewidth=1.8, label="Net of 5 bps")
+    ax3.plot(dates, net, color=INK, linewidth=1.8, label="Net of 5 bps")
     oos_start = pd.Timestamp(report["oos"]["out_of_sample"]["start"])
-    ax3.axvspan(oos_start, dates[-1], color="#fffaeb", zorder=0)
+    ax3.axvspan(oos_start, dates[-1], color=VERDICT_BG["amber"], zorder=0)
     ax3.set_yscale("log")
     ax3.set_title("Growth of $1 (log scale — shaded = 30% holdout)",
-                  loc="left", fontsize=11, fontweight="bold")
-    ax3.legend(fontsize=7.5, loc="upper left")
+                  loc="left", fontproperties=_fp("display", 700, 12), color=INK)
+    ax3.legend(prop=_fp("body", 400, 7.5), loc="upper left")
     ax3.grid(True, alpha=0.25)
     ax3.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+    for lbl in (*ax3.get_xticklabels(), *ax3.get_yticklabels()):
+        lbl.set_fontproperties(_fp("body", 400, 8))
+        lbl.set_color(INK_3)
 
     # ---- findings summary ----
     ax4 = fig.add_subplot(grid[4])
     ax4.axis("off")
-    ax4.set_title("Audit findings", loc="left", fontsize=11, fontweight="bold")
+    ax4.set_title("Audit findings", loc="left", fontproperties=_fp("display", 700, 12),
+                  color=INK)
     y = 0.88
     shown = [f for f in report["audit"] if f["severity"] != "pass"][:6]
     for f in shown:
         sev_color = {"fatal": VERDICT_COLORS["red"],
                      "warning": VERDICT_COLORS["amber"],
-                     "note": "#4b5563"}[f["severity"]]
-        ax4.text(0.0, y, f"[{f['severity'].upper()}]", fontsize=8,
-                 fontweight="bold", color=sev_color, transform=ax4.transAxes)
-        ax4.text(0.12, y, f["name"][:90], fontsize=8.5, transform=ax4.transAxes)
+                     "note": INK_3}[f["severity"]]
+        ax4.text(0.0, y, f"[{f['severity'].upper()}]", fontproperties=_fp("body", 600, 8),
+                 color=sev_color, transform=ax4.transAxes)
+        ax4.text(0.12, y, f["name"][:90], fontproperties=_fp("body", 400, 8.5),
+                 color=INK, transform=ax4.transAxes)
         y -= 0.14
     passes = sum(1 for f in report["audit"] if f["severity"] == "pass")
-    ax4.text(0.0, y, f"+ {passes} checks passed", fontsize=8, color="#1c7a43",
-             transform=ax4.transAxes)
+    ax4.text(0.0, y, f"+ {passes} checks passed", fontproperties=_fp("body", 500, 8),
+             color=VERDICT_COLORS["green"], transform=ax4.transAxes)
 
     # ---- the baked-in disclaimer footer ----
     # Same wrap fix: centered text wrapped at the raw figure edge produces
     # margin-to-margin lines; wrap at 88% so the footer keeps side margins.
-    _wrap_to(fig.text(0.5, 0.022, disclaimer, fontsize=6.8, color="#4b5563",
-                      ha="center", va="bottom",
+    _wrap_to(fig.text(0.5, 0.022, disclaimer, fontproperties=_fp("body", 400, 6.8),
+                      color=INK_3, ha="center", va="bottom",
                       bbox=dict(boxstyle="square,pad=0.6", facecolor="#faf9f6",
-                                edgecolor="#e4e2dc")),
+                                edgecolor=RULE)),
              fig.get_figwidth() * fig.dpi * 0.88)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
