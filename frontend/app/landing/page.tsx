@@ -153,8 +153,13 @@ export default function Landing() {
                 <div className="chrome"><i /><i /><i /></div>
                 <div className="shot">
                   {/* Below the fold (the demo now precedes it) — lazy-load
-                      rather than compete with the hero and fonts. */}
-                  <Image src="/truth-report-sample.png" width={1500} height={1875}
+                      rather than compete with the hero and fonts.
+                      quality=95: this is a page of fine 8pt type, and the
+                      default q=75 re-encode visibly softens the glyph edges —
+                      the whole point of the shot is that it reads crisply. */}
+                  <Image src="/truth-report-sample.png" width={3000} height={3750}
+                    quality={95}
+                    sizes="(max-width: 760px) 100vw, 1060px"
                     alt="An exported Truth Report: an amber verdict reading “Beats the benchmark — but your universe is hand-picked”, above the strategy's return and Sharpe shown next to the SPY benchmark and the full cost sweep table." />
                 </div>
               </div>

@@ -54,6 +54,15 @@ def _fp(kind: str, weight: int, size: float):
     return fp
 
 
+# Raster density. The card is 10in wide, so 150 dpi produced a 1500px image —
+# but it displays ~1030 CSS px inside the landing plate, and on a 2x (Retina)
+# screen that needs ~2060 device pixels. The browser was upscaling 1500 -> 2060,
+# which is exactly why the export looked soft next to the live demo (crisp DOM
+# text). 300 dpi yields 3000px: enough to DOWNscale at 2x, which stays sharp,
+# and it makes downloaded cards genuinely print-quality. Layout is unaffected —
+# figsize and point-based font sizes are dpi-independent, only pixels change.
+EXPORT_DPI = 300
+
 # Warm paper-and-ink palette, matching the web app (globals.css) rather than
 # the old slate scheme, so the exported card is the same design.
 INK = "#1a1815"
@@ -91,7 +100,7 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
     bench = report["benchmark"]
     disclaimer = report["disclaimer"]
 
-    fig = plt.figure(figsize=(10, 12.5), dpi=150)
+    fig = plt.figure(figsize=(10, 12.5), dpi=EXPORT_DPI)
     fig.patch.set_facecolor("white")
     grid = fig.add_gridspec(
         5, 1, height_ratios=[1.35, 0.8, 1.3, 2.2, 1.6], hspace=0.55,
