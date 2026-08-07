@@ -98,43 +98,47 @@ def render_report(report: dict, out_path: Path, fmt: str) -> Path:
         left=0.09, right=0.96, top=0.95, bottom=0.075,
     )
 
-    # ---- verdict banner ----
+    # ---- verdict block ----
+    # Matches the web verdict scene exactly: NO filled box — a bordered stamp
+    # pill (verdict colour), an ink headline, then a 2px ink rule above the
+    # metrics. The old amber-filled banner is what made the export look unlike
+    # the app.
     ax0 = fig.add_subplot(grid[0])
     ax0.axis("off")
     color = VERDICT_COLORS[verdict["color"]]
-    ax0.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax0.transAxes,
-                                facecolor=VERDICT_BG[verdict["color"]],
-                                edgecolor=color, linewidth=2))
     label = {"red": "KILLED", "amber": "WOUNDED", "green": "SURVIVED"}[verdict["color"]]
-    # Stamp label in the verdict colour; headline in ink — same as the web
-    # verdict scene (only the stamp carries colour, the headline reads dark).
-    # The ▲/✓/✕ icon is drawn in DejaVu Sans, which has those glyphs (Montserrat
-    # doesn't — it would render an empty tofu box).
-    ax0.text(0.03, 0.78, verdict["icon"],
-             fontproperties=_fmgr.FontProperties(family="DejaVu Sans", size=9),
-             color=color, transform=ax0.transAxes, va="baseline")
-    ax0.text(0.058, 0.78, f"{label} — {verdict['color'].upper()} VERDICT",
-             fontproperties=_fp("display", 700, 10), color=color,
-             transform=ax0.transAxes, va="baseline")
-    # Wrap inside the banner: from the 0.03 text inset to a mirrored right
-    # inset — NOT at the figure edge, which lies beyond the box border.
-    banner_px = ax0.get_position().width * fig.get_figwidth() * fig.dpi
-    inner_px = banner_px * (1 - 2 * 0.03)
-    # Top-anchored so extra wrapped lines grow DOWNWARD into known-clear space:
-    # headline may take 2 lines (0.71 → ~0.36), the sub starts below the
-    # worst case (0.32) and 180 chars caps it at 2 lines above the border.
-    _wrap_to(ax0.text(0.03, 0.71, verdict["headline"],
-                      fontproperties=_fp("display", 700, 15),
-                      color=INK, transform=ax0.transAxes, va="top"), inner_px)
-    _wrap_to(ax0.text(0.03, 0.32, verdict["sub"][:180],
+
+    ax0.text(0.0, 1.02, f"The Honest Backtester — {report['spec'].get('name', '')}",
+             fontproperties=_fp("body", 500, 9), color=INK_3,
+             transform=ax0.transAxes, va="top")
+
+    # Bordered stamp pill (transparent fill, coloured border) — .ld-stamp. The
+    # label sits in Montserrat; the ▲/✓/✕ glyph is drawn in DejaVu (Montserrat
+    # lacks it) into the leading-space gap so both live inside one border.
+    ax0.text(0.0, 0.74, f"       {label} — {verdict['color'].upper()} VERDICT",
+             fontproperties=_fp("display", 700, 9), color=color,
+             va="center", ha="left",
+             bbox=dict(boxstyle="square,pad=0.62", fc="none", ec=color, lw=1.3),
+             transform=ax0.transAxes)
+    ax0.text(0.011, 0.742, verdict["icon"],
+             fontproperties=_fmgr.FontProperties(family="DejaVu Sans", size=8),
+             color=color, va="center", ha="center", transform=ax0.transAxes)
+
+    # Headline in ink, no box (.ld-verdict). Wrap at the full content width.
+    content_px = ax0.get_position().width * fig.get_figwidth() * fig.dpi
+    _wrap_to(ax0.text(0.0, 0.50, verdict["headline"],
+                      fontproperties=_fp("display", 700, 16),
+                      color=INK, transform=ax0.transAxes, va="top"), content_px)
+    _wrap_to(ax0.text(0.0, 0.14, verdict["sub"][:180],
                       fontproperties=_fp("body", 400, 8.5),
-                      color=INK_2, transform=ax0.transAxes, va="top"), inner_px)
-    ax0.text(0.03, 1.06, f"The Honest Backtester — {report['spec'].get('name', '')}",
-             fontproperties=_fp("body", 500, 9), color=INK_3, transform=ax0.transAxes)
+                      color=INK_2, transform=ax0.transAxes, va="top"), content_px)
 
     # ---- stat row ----
     ax1 = fig.add_subplot(grid[1])
     ax1.axis("off")
+    # 2px ink rule above the metrics — .ld-metrics border-top.
+    ax1.plot([0, 1], [1.06, 1.06], color=INK, linewidth=1.6,
+             transform=ax1.transAxes, clip_on=False)
     stats = [
         ("Total return (net 5 bps)", _fmt_pct(metrics.get("total_return")),
          _fmt_pct(bench.get("total_return"))),
