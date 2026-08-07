@@ -3,13 +3,6 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "installCommand": "npm ci",
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/landing",
-      "permanent": false
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",

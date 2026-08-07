@@ -61,7 +61,7 @@ export default function Journal() {
               <p className="faint">
                 Most ideas don&apos;t survive the audit — that&apos;s the point.
               </p>
-              <Link className="btn primary" href="/" style={{ marginTop: 12 }}>
+              <Link className="btn primary" href="/workbench" style={{ marginTop: 12 }}>
                 Describe your first
               </Link>
             </div>

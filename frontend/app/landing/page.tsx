@@ -71,7 +71,7 @@ export default function Landing() {
               <a href="#audit">The audit</a>
               <a href="#terms">Terms</a>
               <a href="#waitlist">Waitlist</a>
-              <Link href="/">Open the app →</Link>
+              <Link href="/workbench">Open the app →</Link>
             </nav>
           </div>
         </div>
@@ -214,7 +214,7 @@ export default function Landing() {
                   <li className="off"><span className="mark">—</span> Current index membership only</li>
                   <li className="off"><span className="mark">—</span> Monthly backtest allowance</li>
                 </ul>
-                <Link className="bs-btn quiet" href="/">Use it now — no account</Link>
+                <Link className="bs-btn quiet" href="/workbench">Use it now — no account</Link>
               </Reveal>
 
               <Reveal as="div" className="bs-term featured" delay={90}>

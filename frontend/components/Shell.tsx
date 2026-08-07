@@ -11,13 +11,13 @@ import { DISCLAIMER } from "@/lib/constants";
 import { IconGlossary, IconJournal, IconWorkbench } from "@/components/ui/Icons";
 
 const NAV = [
-  { href: "/", label: "Workbench", Icon: IconWorkbench },
+  { href: "/workbench", label: "Workbench", Icon: IconWorkbench },
   { href: "/journal", label: "Journal", Icon: IconJournal },
   { href: "/glossary", label: "Glossary", Icon: IconGlossary },
 ];
 
 function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  return pathname === href || pathname.startsWith(href + "/");
 }
 
 // Public marketing routes render bare — no sidebar, no app chrome.
@@ -42,7 +42,7 @@ export default function Shell({ children }: { children: ReactNode }) {
     <div className="shell">
       <aside className="sidebar">
         {/* Same mark as the landing masthead — one product, one signature. */}
-        <Link href="/" className="brand">
+        <Link href="/workbench" className="brand">
           <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M3 20 9 11l4 4 8-12" stroke="#7a2e2e" strokeWidth="2.6"
               fill="none" strokeLinecap="square" />
