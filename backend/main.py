@@ -24,6 +24,16 @@ from store.db import get_engine
 async def lifespan(app: FastAPI):
     settings.ensure_dirs()
     get_engine()  # applies migrations
+    # Self-seed the price cache from the shipped fixtures on first boot, so a
+    # fresh deploy (empty volume) can run backtests offline. No-op once seeded.
+    try:
+        from seed import seed_if_empty
+
+        n = seed_if_empty()
+        if n:
+            print(f"seeded price cache from fixtures: {n} tickers")
+    except Exception as exc:  # never block startup — waitlist/health still serve
+        print(f"cache seed skipped: {exc}")
     yield
 
 

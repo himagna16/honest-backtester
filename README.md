@@ -14,6 +14,43 @@ corrections. This one shows the corrections first.
 > **Educational research tool. Past performance does not predict future
 > results. Not investment advice.** No trade execution, no signals — ever.
 
+**Live:** [honest-backtester-six.vercel.app](https://honest-backtester-six.vercel.app)
+ · **Stack:** Next.js 15 (React 19, TypeScript) · FastAPI · pandas/NumPy ·
+SQLite · matplotlib · an LLM translation layer (multi-provider)
+
+Every run ends in a **Truth Report** — the verdict first, the benchmark always,
+the flattering number second:
+
+![A Truth Report: an amber "WOUNDED" verdict, the strategy's return and Sharpe next to SPY, the cost sweep, the equity curve, and the audit findings](docs/screenshots/truth-report.png)
+
+## Engineering highlights
+
+- **The honesty audit is the product, and it can't be turned off.** Every result
+  runs a gauntlet — selection-bias re-run on the full index, a cost sweep at
+  0/5/20 bps, a 70/30 train/holdout split the verdict is computed on, regime
+  coverage, parameter-sensitivity, capacity, and a multiple-testing counter —
+  and the benchmark is shown on every single result.
+- **A constrained JSON DSL is the security boundary.** Plain English is
+  translated by an LLM into a strict, validated spec (`extra="forbid"`); the
+  engine executes *that*, never model output or arbitrary code, so there is no
+  eval/exec surface. The LLM never silently guesses a material parameter — it
+  asks, or refuses.
+- **Point-in-time correct by construction.** Signals at day *t* earn returns
+  from *t+1* (the shift lives inside the engine, not in convention), so altering
+  future prices cannot change past weights — verified by a regression test.
+- **Byte-for-byte reproducible.** Every run freezes its exact price panel under
+  a content hash and replays it; panels are content-addressed, so identical
+  runs share one stored blob instead of duplicating megabytes.
+- **Deterministic, not model-generated, prose.** The plain-English readback and
+  the audit findings are rendered by template code from the same day-count
+  conventions the engine uses — one source of truth, no hallucinated numbers.
+- **Measured, not vibes.** A provider-agnostic LLM layer with a cost/accuracy
+  bench; 130+ backend tests including hand-computed golden fixtures and an
+  adversarial audit of the engine's own arithmetic (see `DECISIONS.md`).
+
+> The live link's landing page includes a self-playing 30-second replay of a
+> real run. The interactive app runs locally — the hosted engine may be asleep.
+
 ## Quickstart (macOS)
 
 Prereqs: Python 3.11 (`brew install python@3.11`), Node 18+ (`brew install node`).
@@ -23,7 +60,7 @@ Prereqs: Python 3.11 (`brew install python@3.11`), Node 18+ (`brew install node`
 make seed
 
 # 2. Optional — only needed for plain-English → spec translation:
-cp .env.example .env    # put your ANTHROPIC_API_KEY inside
+cp .env.example .env    # add any provider key: OpenAI / Anthropic / Gemini
 
 # 3. Run everything (backend :8000, frontend :3000) with one command
 make dev
@@ -42,7 +79,7 @@ port `dev.sh` prints (8000, or the first free fallback).
 
 ```bash
 make test    # golden + property + audit + API tests, then frontend typecheck
-make eval    # live LLM translation eval harness (needs ANTHROPIC_API_KEY):
+make eval    # live LLM translation eval harness (needs a provider API key):
              # ≥90% exact-match on spec cases, 100% on clarify/refuse cases
 ```
 
@@ -52,7 +89,7 @@ and were independently recomputed by a separate audit (see `DECISIONS.md`).
 ## How it works
 
 ```
-plain English ──Claude (Sonnet)──▶ spec JSON or clarifying questions
+plain English ──LLM (any provider)─▶ spec JSON or clarifying questions
                                       │  (never guesses material params)
                         deterministic validator  ← the security boundary
                                       │  (only validated DSL ever runs)
@@ -88,7 +125,7 @@ plain English ──Claude (Sonnet)──▶ spec JSON or clarifying questions
 ├── Makefile / dev.sh          # dev, test, eval, seed
 ├── backend/
 │   ├── main.py                # FastAPI app + routers
-│   ├── config.py              # settings; ANTHROPIC_API_KEY via .env only
+│   ├── config.py              # settings; provider API key via .env only
 │   ├── dsl/                   # schema (Pydantic), validator, conventions
 │   │   │                      #   (single source of truth for day counts),
 │   │   ├── readback.py        #   deterministic English readback
@@ -153,7 +190,7 @@ is the only path to new numbers. yfinance restates adjusted prices over time
 ## Troubleshooting
 
 - **"no price data available"** → run `make seed`.
-- **Translation returns 503** → set `ANTHROPIC_API_KEY` in `.env`; everything
+- **Translation returns 503** → set a provider key (`OPENAI_API_KEY` etc.) in `.env`; everything
   except translation works without it.
 - **yfinance rate-limited** → runs fall back to the cache automatically and
   the report is stamped "data as of <date> (cached)".

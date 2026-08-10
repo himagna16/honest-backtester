@@ -39,15 +39,17 @@ export default function Workbench() {
   const [error, setError] = useState<string | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
   const [llmReady, setLlmReady] = useState<boolean | null>(null);
+  const [backendUp, setBackendUp] = useState<boolean | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     api<{ llm_configured: boolean }>("/health")
       .then((h) => {
+        setBackendUp(true);
         setLlmReady(h.llm_configured);
         if (!h.llm_configured) setMode("import");
       })
-      .catch(() => setLlmReady(null));
+      .catch(() => { setBackendUp(false); setLlmReady(null); });
   }, []);
 
   const reset = () => {
@@ -126,6 +128,22 @@ export default function Workbench() {
         }
       />
       <main className="content">
+        {backendUp === false && (
+          <div style={{ marginBottom: "var(--s4)" }}>
+            <Notice kind="info">
+              <span>
+                <strong>The engine is offline right now.</strong> This is the
+                live UI — the backtest engine runs on a separate service that
+                isn&apos;t reachable at the moment. To try it yourself, run it
+                locally (see the{" "}
+                <a href="https://github.com/himagna16/honest-backtester"
+                  target="_blank" rel="noreferrer">README</a>), or watch the
+                30-second replay of a real run on the{" "}
+                <a href="/landing#replay">home page</a>.
+              </span>
+            </Notice>
+          </div>
+        )}
         <div className="grid-2">
           {/* ---------------- strategy input ---------------- */}
           <Panel

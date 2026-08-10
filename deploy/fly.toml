@@ -13,6 +13,9 @@ primary_region = "iad"
   # pydantic-settings raises SettingsError on boot for anything else.
   HONEST_CORS_ORIGINS = '["https://honest-backtester-six.vercel.app"]'
   HONEST_LLM_MODEL = "gpt-5-nano"
+  # Serve backtests from the fixture-seeded cache only; never call
+  # yfinance from the hosted instance (deterministic + ToS-safe).
+  HONEST_OFFLINE = "1"
 
 # Secrets are NOT set here. Use:  fly secrets set OPENAI_API_KEY=...
 # (encrypted at rest; never committed.)
