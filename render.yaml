@@ -1,0 +1,41 @@
+# Render Blueprint — hosts the FastAPI backend on Render's free tier (no card).
+#
+# Deploy: render.com → New + → Blueprint → connect this repo → Apply.
+# Render reads this file, provisions the service, and prompts you for the one
+# secret (OPENAI_API_KEY) in its dashboard — it is never stored in the repo.
+#
+# Free-tier caveats (fine for a demo): the instance sleeps after ~15 min idle
+# and takes ~30-60s to wake on the next request; the filesystem is ephemeral,
+# so the waitlist/journal reset when it sleeps. The price cache is seeded at
+# BUILD time from the frozen fixtures, so backtests run offline and fast.
+services:
+  - type: web
+    name: honest-backtester-api
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: .
+    # Install deps, then bake the offline price cache into the build so cold
+    # starts don't pay for seeding. (lifespan also seeds-if-empty as a fallback.)
+    buildCommand: "pip install -r backend/requirements.txt && python scripts/seed_cache.py"
+    startCommand: "uvicorn main:app --app-dir backend --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      # Serve backtests from the fixture-seeded cache only — never call yfinance
+      # from the hosted instance (deterministic + ToS-safe).
+      - key: HONEST_OFFLINE
+        value: "1"
+      - key: HONEST_LLM_MODEL
+        value: gpt-5-nano
+      # The browser origin allowed to call this API. JSON array — not a bare
+      # string (pydantic-settings requires it).
+      - key: HONEST_CORS_ORIGINS
+        value: '["https://honest-backtester-six.vercel.app"]'
+      # Set this in the Render dashboard, not here. Without it the app still
+      # serves (translation returns a clean 503); with it, English→spec works.
+      - key: OPENAI_API_KEY
+        sync: false
