@@ -119,6 +119,49 @@ plain English ──LLM (any provider)─▶ spec JSON or clarifying questions
 - The verdict always quotes the pessimistic cell: net-of-costs, holdout
   segment. A ranked strategy on a hand-picked universe can never earn green.
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph FE["Next.js 15 / React 19  ·  Vercel"]
+        LP["Landing<br/>+ 30s self-playing replay"]
+        WB["Workbench<br/>describe · import · confirm"]
+        TRp["Truth Report<br/>verdict · charts · audit"]
+    end
+
+    subgraph BE["FastAPI + pandas / NumPy  ·  Fly.io"]
+        TX["/api/translate-strategy/<br/>(rate-limited)"]
+        VAL{{"DSL validator<br/>strict schema — the security boundary"}}
+        ENG["vectorized engine<br/>signals at t → returns from t+1"]
+        AUD["honesty audit pipeline<br/>the ONLY path to a result"]
+        EXP["PNG / PDF export<br/>disclaimer baked in"]
+        SQL[("SQLite<br/>runs · journal · waitlist")]
+        PAN[("content-addressed<br/>price panels")]
+    end
+
+    OAI(["OpenAI · gpt-5-nano"])
+    FIX(["frozen fixtures →<br/>seeded price cache"])
+
+    WB -->|"plain English"| TX
+    TX <-->|"spec / question / refusal"| OAI
+    TX --> VAL
+    WB -->|"paste spec JSON"| VAL
+    VAL -->|"validated spec only"| ENG
+    FIX --> ENG
+    ENG --> AUD
+    ENG --> PAN
+    AUD --> TRp
+    AUD --> SQL
+    TRp --> EXP
+```
+
+The frontend is a static Next.js deploy; the FastAPI backend holds the engine,
+the audit, and the data. The **validator is the trust boundary** — the LLM only
+ever emits JSON against a closed schema, and only a *validated* spec reaches the
+engine, so there is no arbitrary-code path. Price data is served from
+fixture-seeded parquet (deterministic, offline), and every run freezes a
+content-hashed panel it can replay byte-for-byte.
+
 ## Repository layout
 
 ```
