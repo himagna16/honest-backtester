@@ -1,10 +1,13 @@
 # The Honest Backtester — build & launch checklist
 
-**You are here:** product complete (M0–M6), one design system, live AI
-(`gpt-5-nano`), private GitHub backup. **The landing page is DEPLOYED and public:
-https://honest-backtester-six.vercel.app** — but the waitlist form needs the
-backend, which is not deployed yet (Fly.io, below). Don't share the link until
-signups record. Waitlist: 2 / 50.
+**You are here:** ✅ **FULLY LIVE end-to-end.** Frontend on Vercel, backend on
+Render (free), wired together. Public **repo**, live **site**:
+https://honest-backtester-six.vercel.app · repo:
+https://github.com/himagna16/honest-backtester (public). Translate → run →
+Truth Report → PNG export and the waitlist all work on the live site. Only
+caveat: a full S&P 500 run is too heavy for Render's free 512 MB (light
+universes like Dow 30 run fine); the hosted instance also sleeps after ~15 min
+idle. Portfolio-ready today.
 
 This file is the running to-do list. Rationale for the paid-tier items lives in
 [SAAS_PLAN.md](SAAS_PLAN.md); this is the "what to do and where to go" version.
