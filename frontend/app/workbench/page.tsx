@@ -16,11 +16,13 @@ import {
   IconDescribe, IconEmptyChart, IconSettings, IconUpload,
 } from "@/components/ui/Icons";
 
+// The first two are light (Dow 30 / 60-40) so they complete on a small hosted
+// instance; the S&P 500 examples are the flagship but heavier to run.
 const CHIPS = [
+  "Each month, buy the 5 strongest Dow 30 stocks by 6-month return, equal weight",
+  "60/40 stocks and bonds, rebalanced yearly",
   "12-1 momentum, top 10 in the S&P 500, monthly",
   "Buy S&P stocks that dropped 5%+ yesterday, hold 5 days",
-  "Hold the 20 least volatile S&P stocks, quarterly",
-  "60/40 stocks and bonds, rebalanced yearly",
 ];
 
 type Mode = "describe" | "import";
