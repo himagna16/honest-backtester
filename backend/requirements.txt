@@ -8,6 +8,9 @@ pandas>=2.2
 numpy>=1.26
 yfinance>=0.2.50
 pyarrow>=17.0
+# LLM providers for the translation layer. openai is the default (gpt-5-nano);
+# anthropic is also supported. The Gemini path additionally needs `google-genai`.
+openai>=2.0
 anthropic>=0.40
 jsonschema>=4.23
 matplotlib>=3.9
