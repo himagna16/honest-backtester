@@ -196,7 +196,7 @@ input:hover, select:hover, textarea:hover { border-color: var(--ink-3); }
 }
 .segmented button {
   border: none; background: transparent; color: var(--ink-2);
-  border-radius: 2px; padding: 5px 12px; min-height: 28px; font-size: 12px;
+  border-radius: var(--r-sm); padding: 5px 12px; min-height: 28px; font-size: 12px;
   font-weight: 550;
 }
 .segmented button:hover { background: rgba(26, 24, 21, 0.05); }
@@ -278,7 +278,7 @@ input:hover, select:hover, textarea:hover { border-color: var(--ink-3); }
 .badge-risk {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 11px; font-weight: 600; padding: 3px 8px;
-  border-radius: 2px; border: 1px solid var(--line-2);
+  border-radius: var(--r-sm); border: 1px solid var(--line-2);
   background: var(--surface-2); color: var(--ink-2);
 }
 .badge-risk.warn { background: var(--warn-soft); border-color: var(--warn-line); color: var(--warn); }
@@ -289,7 +289,7 @@ input:hover, select:hover, textarea:hover { border-color: var(--ink-3); }
 /* verdict pill for journal rows */
 .pill {
   display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
-  padding: 3px 9px; border-radius: 2px; border: 1px solid var(--line-2);
+  padding: 3px 9px; border-radius: var(--r-sm); border: 1px solid var(--line-2);
 }
 .pill-red { background: var(--neg-soft); border-color: var(--neg-line); color: var(--neg); }
 .pill-amber { background: var(--warn-soft); border-color: var(--warn-line); color: var(--warn); }
@@ -305,7 +305,7 @@ input:hover, select:hover, textarea:hover { border-color: var(--ink-3); }
 .finding .head { display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; }
 .finding .sev {
   font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
-  padding: 2px 6px; border-radius: 2px; display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 6px; border-radius: var(--r-sm); display: inline-flex; align-items: center; gap: 4px;
 }
 .finding .title { font-weight: 600; font-size: 13px; }
 .finding .msg { margin: 6px 0 0; color: var(--ink-2); font-size: 13px; max-width: 82ch; }
@@ -387,12 +387,20 @@ details.fallback summary { cursor: pointer; color: var(--accent); font-size: 12p
 .mobilenav a[aria-current="page"] .navlabel { font-weight: 600; }
 details.fallback[open] summary { margin-bottom: var(--s2); }
 
-/* regime timeline */
+/* regime timeline. The band tints are TOKENS because the legend swatches have
+   to match the bar exactly — when they were literals in both places they were
+   free to drift apart. Colour is never the only channel here: each band carries
+   a title, and a "View as list" fallback states every period in words. */
+:root {
+  --rg-bull: #cddbd0;
+  --rg-bear: #e0c2c2;
+  --rg-correction: #e8dcb8;
+}
 .regimebar { display: flex; height: 22px; overflow: hidden; border: 1px solid var(--line-2); }
 .regimebar div { height: 100%; }
-.rg-bull { background: #cddbd0; }
-.rg-bear { background: #e0c2c2; }
-.rg-correction { background: #e8dcb8; }
+.rg-bull { background: var(--rg-bull); }
+.rg-bear { background: var(--rg-bear); }
+.rg-correction { background: var(--rg-correction); }
 .rg-sideways, .rg-down { background: var(--surface-3); }
 .timeline-axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-3); margin-top: 4px; }
 
@@ -413,7 +421,7 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
 .describe textarea { width: 100%; min-height: 104px; font-size: 13px; }
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip {
-  border: 1px solid var(--line-2); border-radius: 2px; padding: 4px 11px;
+  border: 1px solid var(--line-2); border-radius: var(--r-sm); padding: 4px 11px;
   background: var(--surface); cursor: pointer; font-size: 12px; color: var(--ink-2);
   transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
   min-height: 28px;
@@ -433,13 +441,15 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
 /* gentle notices — never aggressive */
 .notice {
   display: flex; gap: var(--s2); align-items: flex-start;
-  border-radius: 2px; padding: 8px 11px; font-size: 12px;
+  border-radius: var(--r-sm); padding: 8px 11px; font-size: 12px;
   margin: 6px 0; border: 1px solid var(--line); line-height: 1.5;
 }
 .notice svg { flex: none; margin-top: 1px; }
 .notice-warn { background: var(--warn-soft); border-color: var(--warn-line); color: var(--warn); }
 .notice-err { background: var(--neg-soft); border-color: var(--neg-line); color: var(--neg); }
 .notice-info { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }
+/* The one place a statistic CLEARS its bar. Semantic green, on data only. */
+.notice-pass { background: var(--pos-soft); border-color: var(--pos-line); color: var(--pos); }
 
 /* ===================== glossary: ruled entries, not boxes ===================== */
 
@@ -1274,4 +1284,126 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   .broadsheet .bs-rule[data-motion]::before { display: none; }
   .broadsheet .bs-count[data-stamp] { opacity: 1; animation: none; }
   .broadsheet .bs-count[data-strike]::after { transform: scaleX(1); transition: none; }
+}
+
+/* ============================================================================
+   WORKSTATION THEME — the analyst surfaces only (/workbench, /report, /journal,
+   /compare, /strategy, /glossary). Scoped to `.shell`, which Shell.tsx renders
+   for every app route and deliberately does NOT render for /landing — so the
+   Broadsheet marketing identity above is untouched by everything below.
+
+   Direction: "Linear meets a lighter Bloomberg" — calm, light, data-dense.
+   Palette is the Banking/Traditional-Finance row from the design database
+   (#0F172A / #F8FAFC / #E2E8F0 / #64748B), retuned where it failed contrast.
+
+   Every pair below was MEASURED, not eyeballed (scratchpad/contrast.py):
+     ink      #0F172A  16.93 / 17.85 / 16.30  (bg / surface / surface-2)
+     ink-2    #475569   7.18 /  7.58 /  6.92
+     ink-3    #5E6E82   4.94 /  5.21 /  4.76   <- #64748B failed at 4.34, darkened
+     accent   #1E3A5F  10.91 / 11.50 / 10.50   (white on accent: 11.50)
+     pos      #2E6B4F   5.98 /  6.30 /  5.75
+     neg      #B04A42   5.10 /  5.38 /  4.91
+     warn     #8A6320   5.12 /  5.40 /  4.93
+   All >= 4.5:1 (WCAG AA). --line-input #7F8DA2 is 3.37:1 on white because an
+   input boundary is a UI component (3:1), not decoration — --line at 1.4:1
+   would have failed that bar.
+   ========================================================================== */
+
+.shell {
+  /* surfaces: cool paper, faint blue — not the warm stock of the landing */
+  --bg: #f7f9fc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --surface-3: #e8edf3;
+
+  /* ink: deep navy, never pure black */
+  --ink: #0f172a;
+  --ink-2: #475569;
+  --ink-3: #5e6e82;
+  --ink-label: #475569;
+
+  /* rules: thin and quiet */
+  --line: #e4e9f0;
+  --line-2: #cbd5e1;
+  --line-input: #7f8da2;   /* 3:1 — control boundaries only */
+
+  /* accent: institutional navy, the single accent */
+  --accent: #1e3a5f;
+  --accent-ink: #16304f;
+  --accent-soft: #eef3f9;
+  --accent-line: #c9d8e8;
+
+  /* semantic: muted green / muted coral, only ever on DATA */
+  --pos: #2e6b4f;
+  --pos-soft: #edf5f0;
+  --pos-line: #c5ddd0;
+  --neg: #b04a42;
+  --neg-soft: #fbefee;
+  --neg-line: #ecd0cd;
+  --warn: #8a6320;
+  --warn-soft: #fbf4e6;
+  --warn-line: #e8dab8;
+
+  /* geometry: modest radii per the brief, still no drop shadows */
+  --r: 6px;
+  --r-sm: 4px;
+  --r-lg: 8px;
+
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* The body paints behind the grid; without this the warm landing paper shows
+   through on overscroll and under short pages. */
+body:has(.shell) { background: #f7f9fc; }
+
+/* ---- de-broadsheet: the app uses quiet rules, not heavy black ones ---- */
+.shell .sidebar .brand { border-bottom: 1px solid var(--line-2); }
+.shell .panel > header { border-bottom: 1px solid var(--line); }
+.shell .panel { border-radius: var(--r); overflow: hidden; }
+
+/* nav: a soft filled pill reads calmer than an inset rule at this density */
+.shell .navlink { border-radius: var(--r-sm); padding-left: var(--s3); }
+.shell .navlink[aria-current="page"] {
+  background: var(--accent-soft); color: var(--accent-ink);
+  font-weight: 600; box-shadow: none;
+}
+.shell .segmented button:hover { background: rgba(15, 23, 42, 0.05); }
+.shell .segmented button { border-radius: var(--r-sm); }
+
+/* controls: primary is navy, not ink; inputs get the 3:1 boundary */
+.shell button.primary, .shell .btn.primary {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.shell button.primary:hover, .shell .btn.primary:hover {
+  background: var(--accent-ink); border-color: var(--accent-ink);
+}
+.shell textarea, .shell input[type="text"], .shell input[type="number"],
+.shell input[type="date"], .shell select { border-color: var(--line-input); }
+.shell button, .shell .btn { border-color: var(--line-2); }
+.shell :focus-visible { outline-color: var(--accent); }
+.shell .sidebar .brand svg { color: var(--accent); }
+
+/* Workstation regime tints: the same three signals, restated in the cool
+   palette so the timeline doesn't read as a warm patch on a navy page. */
+.shell {
+  --rg-bull: #d6e7dd;
+  --rg-bear: #efd3d0;
+  --rg-correction: #f0e3c2;
+}
+
+/* Touch targets. The workstation is deliberately dense with a mouse — 28px
+   segmented tabs are right at a desk. On a coarse pointer that is a miss, so
+   the density relaxes for touch only, rather than being given up everywhere.
+   (Measured on /report at 375px: 8 controls were 20-34px tall.) */
+@media (pointer: coarse) {
+  .shell button,
+  .shell .btn,
+  .shell .chip,
+  .shell .segmented button,
+  .shell .see-all { min-height: 44px; }   /* .see-all pins min-height:0 itself */
+  .shell .segmented button { padding-inline: 14px; }
+  .shell .mobilenav a { min-height: 48px; }
+  /* inline text links in prose keep their flow; give them room instead */
+  .shell .report-detail a:not(.btn) { padding-block: 6px; display: inline-block; }
 }

@@ -7,6 +7,16 @@
 
 The literal expected values below were derived by hand with exact fraction
 arithmetic (see derivations in comments) — NOT by running the engine.
+
+Every run() call here passes execution_lag_days=0 EXPLICITLY. These fixtures
+pin the segment/cohort arithmetic itself, and the derivations above assume a
+fill at the signal close; the engine's honest DEFAULT is a 1-day lag, whose
+behaviour is pinned separately in test_execution_costs.py. Stating the
+convention at the call site is the point — it is the difference between a
+convention you chose and one you inherited by accident.
+
+Costs are charged on TRADED NOTIONAL (Σ|Δw| = 2 × one-way turnover), so the
+cost-drag expectations below are per dollar traded, not per unit of turnover.
 """
 import numpy as np
 import pandas as pd
@@ -55,7 +65,7 @@ def momentum_spec(**kw) -> StrategySpec:
 def test_spy_buy_and_hold_exact(sp500_panel):
     panel = sp500_panel[["SPY"]].dropna()
     start, end = "2016-01-04", "2025-12-31"
-    res = run(spy_spec(start, end), panel, ["SPY"])
+    res = run(spy_spec(start, end), panel, ["SPY"], execution_lag_days=0)
 
     # Strategy accrues from the second trading day of the window; SPY's own
     # total return over the identical accrual days:
@@ -69,9 +79,14 @@ def test_spy_buy_and_hold_exact(sp500_panel):
     assert float(res.turnover.iloc[1:].sum()) == pytest.approx(0.0, abs=1e-12)
     # At zero cost, net == gross exactly.
     assert (res.net_returns[0.0] - res.gross_returns).abs().max() == 0.0
-    # At 20 bps the ONLY cost is the initial deployment: 0.5 × 20bps once.
+    # At 20 bps the ONLY cost is the initial deployment. That deployment moves
+    # 100% of NAV from cash into SPY — one dollar of stock bought per dollar of
+    # NAV — so it is charged 1 × 20 bps, not 0.5 × (the old half-notional bug).
     drag = (res.gross_returns - res.net_returns[20.0]).sum()
-    assert drag == pytest.approx(0.5 * 20 / 10_000, abs=1e-12)
+    assert drag == pytest.approx(1.0 * 20 / 10_000, abs=1e-12)
+    # The reported turnover STATISTIC stays one-way: 0.5 for that deployment.
+    assert res.turnover.iloc[0] == pytest.approx(0.5, abs=1e-12)
+    assert res.traded_notional.iloc[0] == pytest.approx(1.0, abs=1e-12)
 
 
 # ------------------------------------------------- (b) 3-ticker momentum
@@ -90,11 +105,14 @@ V1_EXPECTED = 1.2013302752293578
 V2_EXPECTED = 1.0252722306955628
 TOTAL_GROSS_EXPECTED = 0.231690571086518
 FIRST_DAY_GROSS = 0.009587155963302752   # 0.5·(110/109) + 0.5·(50.5/50) − 1
-FIRST_DAY_NET5 = 0.009337155963302752    # minus initial deployment 0.5·5bps
+# Initial deployment trades 1.0 of notional (0.5 into A + 0.5 into B), charged
+# at 5 bps per dollar traded → 5e-4 × 1.0.
+FIRST_DAY_NET5 = 0.009087155963302752
 
 
 def test_three_ticker_momentum_hand_computed(three_ticker_panel):
-    res = run(momentum_spec(), three_ticker_panel, ["A", "B", "C"])
+    res = run(momentum_spec(), three_ticker_panel, ["A", "B", "C"],
+              execution_lag_days=0)
 
     sig_dates = [str(d.date()) for d in res.target_weights.index]
     assert sig_dates == ["2024-02-29", "2024-03-29"]
@@ -114,11 +132,15 @@ def test_three_ticker_momentum_hand_computed(three_ticker_panel):
     assert res.gross_returns.iloc[0] == pytest.approx(FIRST_DAY_GROSS, abs=1e-9)
     assert res.net_returns[5.0].iloc[0] == pytest.approx(FIRST_DAY_NET5, abs=1e-9)
 
-    # Turnover: initial deployment 0.5, then exactly 0.5 at the Apr 1 roll.
+    # Turnover (one-way statistic): initial deployment 0.5, then exactly 0.5
+    # at the Apr 1 roll. Traded notional — what costs are charged on — is
+    # double each: 1.0 of NAV deployed, then a 1.0 sell + 1.0 buy rotation.
     apr1 = pd.Timestamp("2024-04-01")
     assert res.turnover.loc[apr1] == pytest.approx(0.5, abs=1e-9)
     assert res.turnover.iloc[0] == pytest.approx(0.5, abs=1e-12)
     assert res.turnover.sum() == pytest.approx(1.0, abs=1e-9)
+    assert res.traded_notional.loc[apr1] == pytest.approx(1.0, abs=1e-9)
+    assert res.traded_notional.sum() == pytest.approx(2.0, abs=1e-9)
 
     # Segment-level equity checkpoints
     eq = metrics.equity_curve(res.gross_returns)
@@ -207,7 +229,7 @@ def dip_spec() -> StrategySpec:
 
 
 def test_cohort_dip_buy_hand_computed(cohort_panel):
-    res = run(dip_spec(), cohort_panel, ["A", "B", "C"])
+    res = run(dip_spec(), cohort_panel, ["A", "B", "C"], execution_lag_days=0)
 
     assert [str(d.date()) for d in res.accrual_index] == list(COHORT_EXPECTED_GROSS)
     for d, exp in COHORT_EXPECTED_GROSS.items():
@@ -215,11 +237,83 @@ def test_cohort_dip_buy_hand_computed(cohort_panel):
     for d, exp in COHORT_EXPECTED_TURNOVER.items():
         assert res.turnover.loc[pd.Timestamp(d)] == pytest.approx(exp, abs=1e-12), d
 
-    # Net at 20 bps: gross − turnover × 0.002, day by day.
+    # Net at 20 bps: gross − traded_notional × 0.002, day by day, where the
+    # notional is 2 × the one-way turnover above (both sides of every trade).
     for d in COHORT_EXPECTED_GROSS:
         ts = pd.Timestamp(d)
-        exp_net = COHORT_EXPECTED_GROSS[d] - COHORT_EXPECTED_TURNOVER[d] * 20 / 10_000
+        notional = 2.0 * COHORT_EXPECTED_TURNOVER[d]
+        assert res.traded_notional.loc[ts] == pytest.approx(notional, abs=1e-12), d
+        exp_net = COHORT_EXPECTED_GROSS[d] - notional * 20 / 10_000
         assert res.net_returns[20.0].loc[ts] == pytest.approx(exp_net, abs=1e-12), d
+
+
+# ------------------------------------------- (c2) the DEFAULT execution lag
+
+# Every fixture above runs at execution_lag_days=0, which is NOT what a user
+# run does. The default is the convention every real report is computed under,
+# so it gets the same hand-arithmetic pin the non-default gets.
+#
+# Derivation (exact, by hand; no engine involved):
+#   12 business days from 2024-01-01. One ticker, static 100% allocation,
+#   annual rebalance, so there is exactly one signal — the static day-one buy
+#   at the close of day 0 — and no later rebalance inside the window.
+#   Closes: 100 125 100 80 100 125 100 80 100 125 150 120
+#   At the DEFAULT lag of 1 that signal FILLS at the close of day 1 (125) and
+#   the position earns from day 2 onward. Day 1 is uninvested: cash, and with
+#   no rf supplied that is exactly 0.0.
+#   Daily gross, days 2..11:
+#     100/125−1 = −0.20   80/100−1 = −0.20   100/80−1 = +0.25
+#     125/100−1 = +0.25   100/125−1 = −0.20   80/100−1 = −0.20
+#     100/80−1  = +0.25   125/100−1 = +0.25   150/125−1 = +0.20
+#     120/150−1 = −0.20
+#   Total = 120/125 − 1 = −0.04 exactly (0.8·0.8·1.25·1.25 = 1 twice over,
+#   then 1.2·0.8 = 0.96).
+#   At lag 0 the same decision fills at day 0's close of 100 instead, so the
+#   total is 120/100 − 1 = +0.20. The 24-point gap between those two numbers
+#   is the entire content of the fill convention on this fixture.
+LAG1_CLOSES = [100.0, 125.0, 100.0, 80.0, 100.0, 125.0,
+               100.0, 80.0, 100.0, 125.0, 150.0, 120.0]
+LAG1_DAILY = [0.0, -0.20, -0.20, 0.25, 0.25, -0.20, -0.20, 0.25, 0.25, 0.20, -0.20]
+LAG1_TOTAL = -0.04
+LAG0_TOTAL = 0.20
+
+
+def test_default_execution_lag_nav_path_hand_computed():
+    idx = pd.bdate_range("2024-01-01", periods=12)
+    panel = pd.DataFrame({"A": LAG1_CLOSES}, index=idx)
+    spec = StrategySpec(
+        name="default-lag pin",
+        universe=Universe(preset="user_watchlist", resolved_tickers=["A"]),
+        selection=Selection(static_allocation=[StaticPosition(ticker="A", weight=1.0)]),
+        weighting="equal",
+        rebalance="annual",
+        costs=Costs(sweep_bps=[0, 20]),
+        benchmark="SPY",
+        window=Window(start=str(idx[0].date()), end=str(idx[-1].date())),
+    )
+    # NO execution_lag_days argument — this is exactly what a user run does.
+    res = run(spec, panel, ["A"])
+
+    assert res.execution_lag_days == 1
+    assert res.fill_dates[0] == idx[1]          # signal day 0, filled day 1
+    assert list(res.accrual_index) == list(idx[1:])
+    assert res.rf_used is None                   # no rate supplied → 0% cash
+
+    assert res.gross_returns.round(12).tolist() == LAG1_DAILY
+    assert metrics.total_return(res.gross_returns) == pytest.approx(
+        LAG1_TOTAL, abs=1e-12)
+
+    # The deployment is charged on the first day the new weights earn — day 2,
+    # not the pre-fill day — and it is 1.0 of NAV (cash into stock, one side).
+    assert res.traded_notional.loc[idx[1]] == 0.0
+    assert res.traded_notional.loc[idx[2]] == pytest.approx(1.0, abs=1e-12)
+    assert res.net_returns[20.0].loc[idx[2]] == pytest.approx(
+        -0.20 - 1.0 * 20 / 10_000, abs=1e-12)
+
+    # The same decisions filled at the signal close instead: +20%, not −4%.
+    at_zero = run(spec, panel, ["A"], execution_lag_days=0)
+    assert metrics.total_return(at_zero.gross_returns) == pytest.approx(
+        LAG0_TOTAL, abs=1e-12)
 
 
 # ------------------------------------------------- (d) lookahead impossibility

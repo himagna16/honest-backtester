@@ -23,3 +23,6 @@ frontend/out/
 # Vercel project link (contains project/org ids)
 .vercel/
 frontend/.vercel/
+
+# Claude Code local tooling (launch config, local permissions)
+.claude/

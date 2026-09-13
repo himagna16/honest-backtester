@@ -587,3 +587,283 @@ full findings one click away and still baked into the PNG export.
 Measured on the new Overview: 6 type sizes (11/12/13/15/19/28), one 2px radius,
 zero shadows, zero WCAG failures, no overflow at 414px. Build clean; backend
 suite 126 passed, 1 skipped (unchanged).
+
+---
+
+# Institutional-grade rebuild (Sept 2026)
+
+Four adversarial workflow rounds against the engine, metrics, significance,
+validation and attribution modules, plus the pipeline integration. Test count
+**131 → 483 passed, 1 skipped**.
+
+Every round had the same structure: a builder that owned a disjoint set of
+files, then a FRESH reviewer given a different lens, required to reproduce the
+original counter-example and to prove each new test dies under a stated mutant.
+That structure is the reason the numbers below exist at all — four of five
+modules came back SERIOUS-ISSUES after the first build round, and the defects
+were found by running counter-examples, not by reading code.
+
+## The single most important lesson: over-scoped guards
+
+**Three separate regressions in this effort were introduced by a fix, not by
+the original defect, and all three had the same shape: a guard applied one
+level too high.**
+
+1. `INVERSE_VOL_FLOOR_ANNUAL = 0.05` was calibrated ~250× above the threat it
+   existed to stop. It bound on **AGG — this project's own 60/40 bond leg — on
+   72.7% of days**, distorting target weights by up to 18.5 percentage points,
+   and emitted "check the feed: AGG (2.02%)" about a perfectly healthy bond
+   ETF. A false data finding is a house-rule violation. Only 4 of 504 S&P names
+   ever dip below 5%: the floor was inert where it was aimed and decisive where
+   it was not. Recalibrated to 0.005, pinned from BOTH sides (must not bind on
+   AGG; must bind on a near-frozen feed).
+2. `_check_prices_usable` scanned the ENTIRE panel instead of the simulated
+   window, so one vendor zero anywhere in ~500 columns across the full fetched
+   history refused a run whose own window was clean. Scoped to the lead-in +
+   window actually read; refusal semantics kept.
+3. `alpha_testable` was folded INTO `alpha_significant`, which several call
+   sites consume. That silenced the fabricated pass and simultaneously created
+   a fabricated *refutation*: a strategy with a real +5.0%/yr premium was told
+   it added nothing, in a message carrying a 15-digit t-statistic.
+
+**Rule going forward: gate at the site that RENDERS the claim, not at a shared
+predicate.** A false refutation is worse than a false pass — it misleads in the
+other direction while looking rigorous.
+
+## Tests that cannot fail
+
+Mutation testing found **16** across the modules. The worst: deleting the
+Bonferroni multiple-testing haircut (`p_bonf = min(1, attempts * p_raw)` →
+`min(1, p_raw)`) left **all 50 attribution tests green**, while
+multiple-testing is a headline honesty claim of this product.
+
+A test that shares a constant with the implementation is not evidence. The
+purge module's leak invariant pinned `REACH = 21` *equal to*
+`STALENESS_LOOKBACK_DAYS`, so the staleness term was permanently masked and
+zero of the 8 engine-level leak tests could detect its removal. The module also
+*claimed in three comments* that those tests were the evidence. In a module
+whose thesis is "a test that restates the formula is not evidence", an
+overclaim about which tests ARE evidence is the same defect one level up.
+
+## Corrected numbers
+
+- **60/40 benchmark** silently inherited the new 1-day execution lag while
+  SPY/QQQ still used raw `pct_change`, so the benchmarks were mutually
+  inconsistent. All benchmarks are now lag-0 (a passive buy-and-hold benchmark
+  has no signal, so no fill lag applies). Verified against a from-scratch
+  share-count simulator (max abs diff 4.4e-16) and a hand pin
+  `0.6·r_SPY + 0.4·r_AGG = 0.00120004`.
+- **VaR/CVaR annualization** was wrong by ~1.7×: √252-scaling a *quantile* is
+  invalid. A true 1-year 95% VaR near −16.3% was reported at ~1.7× that.
+- **`breakeven_cost_bps`** was 2× too high — it divided by one-way turnover
+  after the engine moved to charging per dollar of traded notional
+  (= 2 × turnover). It now imports the convention rather than re-deriving it.
+- **The purge leaked.** `REBALANCE_CARRY_DAYS` understated the true maximum
+  gap, RSI's Wilder smoothing is IIR (no finite reach — a perturbation at t−15
+  is LARGER than at the claimed maximum), and `execution_lag_days` was ignored.
+- **Staleness false-positive flicker** 32.1% → 9.1%, re-derived from the exact
+  binomial; a genuinely dead feed is still caught with probability 1.0.
+- **A significant NEGATIVE alpha reported as PASS** — every branch keyed on
+  `abs(t)`.
+- **`calendar_rebalance_carry`'s tail term was deleted as "dead code" and was
+  not.** On a tz-aware calendar `rebalance_signal_dates` drops the timezone, so
+  `get_indexer` returns −1 for every signal date; the tail term was the only
+  thing that noticed, converting a loud `SplitError` into a silent 22-bar-short
+  purge (255 vs 277). It now refuses with
+  `reason="signal_dates_not_on_calendar"`. **This deletion was instructed on a
+  wrong premise** — the round-2 reviewer claimed the branch was unreachable and
+  its comment impossible; the comment actually read "Normally 0 … kept so a
+  clipped calendar cannot surprise us", which was correct.
+
+## Where agents were right to refuse
+
+Four reviewer-prescribed fixes were rejected with measurements, and the
+rejections were correct:
+
+- The suggested position cap `min(0.25, 4/n)` is **infeasible**: for k ≤ 4 it
+  demands every weight sit below 1/k while summing to 1. Shipped
+  `max(0.25, 2/k)`.
+- A proposed effective-sample-size gate measured **worse** coverage than no
+  gate (0.915 → 0.838), because a data-conditioned gate admits exactly the
+  replications whose long-run variance came out small.
+- A suggested degeneracy tolerance was **six orders of magnitude** below the
+  threshold it replaced.
+- The prescribed staleness reach of 20 bars is one short: the diff at t−20
+  consumes the closes at t−21 *and* t−20, so the earliest price a verdict at t
+  touches is t−21. Measured: bumping bar b flips bars b…b+21 inclusive.
+
+## Pipeline integration
+
+- **The risk-free rate is a PATH, not a window average.** It is used three ways
+  that must agree — cash accrues it, metrics subtract it, the Sharpe hurdle
+  quotes it. `conventions.py` had been honestly disclosing that the hurdle and
+  the cash yield disagreed; they no longer do. A gap at the window start takes
+  0% and is disclosed rather than carrying a later rate backward onto an
+  earlier day (that would let the future set an earlier day's hurdle).
+- **Trial ledger** (migration `003_trial_ledger.sql`). The Deflated Sharpe
+  prices the search, and the luck threshold scales with **√V[{SRₙ}]** — the
+  *spread* of prior trial Sharpes, which `attempt_counters` never stored. Every
+  completed run now records its Sharpe, keyed by `run_id` so a replay cannot
+  inflate its own haircut, and the ledger is read BEFORE the run is appended so
+  a strategy never has to clear a bar it raised itself.
+  - A **one-entry ledger is not a spread of zero**. Passing it through raised
+    `ValueError` and took down the whole run; treating it as variance 0 would
+    be worse, claiming the search was free. It refuses, and says so.
+  - At `n_trials = 1` the DSR reduces to the PSR and needs no trial variance,
+    so a single-attempt run is computable either way — any test of the ledger
+    path must use ≥ 2 attempts or it hides the bug.
+- **Holdout purge disclosure.** The 70/30 split is a plain date cut. The report
+  now states how far a training bar reaches past it, itemized. On a low-vol
+  quarterly S&P spec: 87 sessions (signal 20 · staleness 21 · carry 64 · lag 1
+  · cost 1). The verdict's split was deliberately NOT moved — that would change
+  every historical number — but the overlap is a data problem, so it surfaces.
+- **A purge that cannot be measured surfaces as a warning**, not as silence.
+  `SplitError` carries a machine-readable reason precisely so a caller can turn
+  the refusal into a Finding; the first integration swallowed it and dropped
+  the disclosure entirely, reporting the most dangerous case the most quietly.
+
+## What this buys, in one run
+
+A low-volatility S&P 500 spec, quarterly, 2016-2025, after 7 recorded attempts:
+
+| statistic | value |
+|---|---|
+| Probabilistic Sharpe (vs zero) | **95.8%** |
+| Deflated Sharpe (vs 7 trials of luck) | **12.3%** |
+| Luck threshold | 0.95 annualized |
+| Observed Sharpe | 0.57 |
+| Margin over SPY | inside the noise (t = −1.45, CI [−11.70%, +2.03%]) |
+
+The strategy looks strong against zero and fails once the search is priced —
+the founding +1650% story, made statistical. The bootstrap's coverage caveat
+(measured 0.90–0.94 against a nominal 0.95) is rendered NEXT TO the verdict
+rather than left in a docstring, because a three-state verdict without its
+coverage is a claim the sample does not support.
+
+## UI: two surfaces, deliberately
+
+`/landing` keeps the Broadsheet identity (warm paper, oxblood, Montserrat).
+Every app route uses a calm analyst-workstation theme scoped to `.shell`, which
+`components/Shell.tsx` renders for app routes and deliberately not for
+`/landing`. Palette from the design database's Banking/Traditional-Finance row,
+**retuned where it failed measurement**: `ink-3` #64748B → **#5E6E82** (4.34:1
+on table bands, below AA), and a separate `--line-input` **#7F8DA2** because an
+input boundary is a UI component needing 3:1 that `--line` at 1.4:1 could not
+carry.
+
+Measured on the rendered page: **0 contrast failures**, radii {4px, 6px, 50%},
+0 drop shadows, **0 touch targets under 44px** at 375px (was 8 — density now
+relaxes only under `@media (pointer: coarse)`, so the desk stays dense), no
+horizontal overflow.
+
+The app UI was never the weak part: risk badges, the regime timeline, the
+stress grid, sparkline metric cards, segmented tabs and the benchmark
+comparison all already existed. What was missing was palette and geometry.
+
+## Deliberately NOT built
+
+The UI brief asked for capital, fees, slippage and risk-limit controls. The DSL
+is a closed schema (`extra="forbid"`) and `Costs` carries a product rule: *the
+0/5/20 bps sweep is not optional and not tunable below the default*. A
+user-tunable fee control would let a user dial costs to zero — the exact
+dishonesty this product exists to expose — and the others have no DSL fields at
+all. Adding them means either faking the control or opening the security
+boundary. Neither was done.
+
+## A fourth guard-shape defect: dust over dust
+
+The "over-scoped guard" lesson above needs a companion, found by the round-5
+reviewer after that section was written. Three of the four bad guards in this
+effort were too HIGH. This one is too NARROW, and it is the most dangerous
+because it survives every test aimed at the family it was built for.
+
+**Every degeneracy guard in `attribution.py` keys on
+`resid_var_share = SSR / SST`, a RATIO.** It catches a vanishing NUMERATOR (an
+exact factor combination). It is blind when the DENOMINATOR collapses: if the
+dependent variable has no variation of its own, SST is rounding dust too, the
+ratio comes out **above 1**, `alpha_testable` is True, and every "gated"
+verdict fires.
+
+Reachable from the product using only committed fixtures — a strategy whose
+filter never qualifies returns 0.0 every day (the engine returns 0, not rf,
+when no rate is supplied), and the fixture rf is **flat at 0.0002 for 793
+consecutive sessions**, so excess = −rf is a nonzero constant. Reproduced by
+hand on the live tree:
+
+| finding | severity | what the reader is told |
+|---|---|---|
+| `factor_alpha` | **warning** | "alpha is −5.0%/yr with a HAC t-statistic of −372352520723111.69 — significantly BELOW zero" |
+| `factor_spanning` | **warning** | "intercept is −5.0%/yr … beta 0.00 and R² **−335126%**" |
+| `factor_reliability` | **pass** | "the regression is well-posed and the loadings are interpretable" |
+
+Three confident findings, all fabricated, one of them a PASS.
+
+**Two free tells were available and neither was checked.** For OLS with an
+intercept, `SSR <= SST` is an identity — so `resid_var_share > 1` (measured
+3507) and `r2 < 0` (measured −3506.51) are each *arithmetically impossible*.
+Either alone would have caught it. The lesson generalizes: when a quantity has
+an algebraic bound, assert the bound; an impossible value is the cheapest
+degeneracy detector there is.
+
+**The grid test could not have caught it, and could not catch its next
+relative.** `DEGENERATE_GRID` sweeps `rf + c*mkt_rf` — varying the coefficient
+drives only the NUMERATOR to dust, so SST stays ~1.0 by construction. Its
+non-vacuity assertion was one-sided (`resid_var_share <= FLOOR`) and satisfied
+by construction on that family. A degeneracy sweep needs **both axes**.
+
+The same `dust / dust` hole exists in `significance.py`'s `newey_west_tstat`:
+`tstat = mean / se if se > 0 else nan` cannot catch dust divided by dust, and
+feeds both a verdict keyed on `abs(t) >= 2.0` and a formatted t in reader-facing
+prose.
+
+**Open at the time of writing** — round 6 is addressing both. The entry above
+describing this rebuild should be read as the state after round 4; rounds 5 and
+6 are recorded here.
+
+## The degeneracy policy (generalized after seven rounds)
+
+Seven rounds each fixed a named degeneracy case and left a sibling. The
+siblings were not bad luck — they were the same defect at a different **level**
+or a different **site**. The instances:
+
+| round | where the guard was | what escaped |
+|---|---|---|
+| 3 | a 250×-miscalibrated absolute floor | bound on AGG, a real asset class, 72.7% of days |
+| 3 | a whole-panel scan | refused runs whose own window was clean |
+| 4 | folded into a shared predicate | flipped a fabricated pass into a fabricated refutation |
+| 5 | a ratio `SSR/SST` | blind to a collapsing denominator (R² = −335126%) |
+| 6 | the entry point only | the renderer fabricated while the entry refused |
+| 6 | whole-series | one bootstrap resample collapsed (`+1.99e14%`) |
+
+**The policy, which is what should be maintained going forward:**
+
+1. **One named degeneracy predicate per module**, checking BOTH the relative
+   share AND the absolute scale. A pure ratio is blind to a collapsing
+   denominator. A pure absolute floor mis-calibrates. You need both, and they
+   must not disagree — in `significance.py` they disagreed by nine orders of
+   magnitude, and the looser one was the site that rendered the claim.
+2. **Applied at every site that RENDERS a claim**, not only at the bundled
+   entry point. A gate at the entry that is missing at the renderer means the
+   entry refuses while the renderer fabricates.
+3. **Applied at every LEVEL the arithmetic happens**, including inside a
+   resampling loop. A whole-series guard cannot see one resample collapse:
+   `se_b > 0` passed on `se_b = 5.089e-21`, and ~14% dust pivots turned a
+   "loses" verdict into "ties_within_noise" while printing an upper bound of
+   +19,879,096,992,716,836.00% into a finding message.
+4. **Where a quantity has an ALGEBRAIC BOUND, assert the bound.** `SSR <= SST`
+   is an identity for OLS with an intercept, so `resid_var_share > 1` and
+   `r2 < 0` are impossible — the cheapest degeneracy detector available, and it
+   needs no calibration at all.
+
+A corollary for tests: a degeneracy sweep must vary **both axes**. The original
+grid swept `rf + c*mkt_rf`, which drives only the numerator to dust; SST stayed
+~1.0 by construction, so the whole family was structurally invisible to it.
+
+### Mutation-testing method note
+
+A mutation mirror built with **symlinks reports every mutant as surviving**,
+because `backend/tests/conftest.py` calls `Path(__file__).resolve()` and a
+symlinked tests directory resolves back to the live module. Use a real copy,
+and prove the mirror is sensitive with a deliberate always-fail mutation before
+trusting any result. One reviewer caught this in its own method and rebuilt —
+which is the only reason its 21/21 kill count means anything.

@@ -53,6 +53,57 @@ export interface RegimeSegment {
   kind: "bull" | "bear" | "correction" | "sideways" | "down";
 }
 
+/** Every inference payload can refuse. `available: false` always travels with
+ *  a reason — a refusal rendered as an omission reads as a pass. */
+interface Refusable {
+  available: boolean;
+  unavailable_reason: string | null;
+}
+
+export interface SharpeSignificance extends Refusable {
+  n_obs: number;
+  interpretation: string;
+  /** Probabilistic Sharpe: P(true Sharpe > 0). */
+  psr: { psr: number | null; sharpe_annual: number } | null;
+  /** Deflated Sharpe: P(true Sharpe beats what `n_trials` of luck produce).
+   *  Needs the SPREAD of prior trial Sharpes, not just the count — without a
+   *  trial ledger it reports itself unavailable rather than guessing. */
+  dsr: {
+    dsr: number | null;
+    n_trials: number;
+    sr0_annual: number | null;
+    available: boolean;
+    interpretation: string;
+  } | null;
+  min_trl: Record<string, unknown> | null;
+  min_btl: Record<string, unknown> | null;
+  bootstrap: Record<string, unknown> | null;
+}
+
+export interface ExcessSignificance extends Refusable {
+  /** Three states plus refusal — "ties_within_noise" is a real answer. */
+  verdict: "beats" | "ties_within_noise" | "loses";
+  verdict_source: "bootstrap" | "hac" | "none";
+  n_obs: number;
+  interpretation: string;
+  /** How far short of nominal the interval behind the verdict actually
+   *  covers. Render it NEXT TO the verdict — it is the honest half. */
+  ci_coverage_caveat: string | null;
+}
+
+/** Bars by which a training observation can still reach a holdout one. The
+ *  70/30 cut is a plain date split, so this is how much of it leaks. */
+export interface HoldoutPurge {
+  signal_reach: number;
+  staleness_reach: number;
+  extra_reach: number;
+  reach: number;
+  carry: number;
+  execution_lag: number;
+  cost_charge: number;
+  total: number;
+}
+
 export interface Report {
   verdict: Verdict;
   metrics: Metrics;
@@ -69,6 +120,16 @@ export interface Report {
     wealth_ratio: number; start: string; end: string;
   } | null;
   multiple_testing: { universe_key: string; attempts: number };
+  significance?: {
+    sharpe: SharpeSignificance;
+    excess: ExcessSignificance;
+    seed: number;
+  };
+  attribution?: Record<string, unknown> & {
+    available: boolean;
+    unavailable_reason?: string | null;
+  };
+  holdout_purge?: HoldoutPurge | null;
   equity_curve: [string, number | null, number | null, number | null][];
   drawdown_curve: [string, number | null, number | null][];
   data: {

@@ -226,9 +226,9 @@ export function RegimeBar({
           <span>{segments[segments.length - 1].end}</span>
         </div>
         <div className="legend">
-          <span><span className="sw" style={{ background: "#cddbd0", height: 9 }} />bull</span>
-          <span><span className="sw" style={{ background: "#e8dcb8", height: 9 }} />correction</span>
-          <span><span className="sw" style={{ background: "#e0c2c2", height: 9 }} />bear</span>
+          <span><span className="sw" style={{ background: "var(--rg-bull)", height: 9 }} />bull</span>
+          <span><span className="sw" style={{ background: "var(--rg-correction)", height: 9 }} />correction</span>
+          <span><span className="sw" style={{ background: "var(--rg-bear)", height: 9 }} />bear</span>
           <span><span className="sw" style={{ background: "var(--surface-3)", height: 9 }} />sideways</span>
         </div>
         {!hasBear && (

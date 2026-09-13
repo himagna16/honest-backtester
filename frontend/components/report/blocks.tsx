@@ -502,3 +502,172 @@ export function HoldingsLog({ report }: { report: Report }) {
     </Panel>
   );
 }
+
+/* ---------------- statistical significance ---------------- */
+
+// Two questions the rest of the report cannot answer on its own:
+//   "is this Sharpe distinguishable from luck, after N attempts?"  (DSR)
+//   "is the margin over the benchmark bigger than the noise?"      (bootstrap)
+// Both can REFUSE, and a refusal is rendered as a refusal — never omitted,
+// because an absent statistic reads as a passed one.
+
+function StatRow({
+  label, value, hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
+  return (
+    <tr>
+      <td style={{ whiteSpace: "nowrap" }}>{label}</td>
+      <td className="num" style={{ fontWeight: 600 }}>{value}</td>
+      <td className="faint">{hint}</td>
+    </tr>
+  );
+}
+
+export function SignificancePanel({ report }: { report: Report }) {
+  const sig = report.significance;
+  if (!sig) return null;
+  const { sharpe, excess } = sig;
+  const dsr = sharpe.dsr;
+
+  // The DSR bar is the same 0.95 the backend uses; it is a probability that
+  // the true Sharpe beats an N-trial luck threshold, NOT a p-value.
+  const dsrOk = dsr?.dsr != null && dsr.dsr >= 0.95;
+
+  const verdictText: Record<string, string> = {
+    beats: "Outside the noise",
+    ties_within_noise: "Inside the noise",
+    loses: "Trails by more than noise",
+  };
+
+  return (
+    <Panel title="Is it real, or is it luck?" icon={<IconRisk size={15} />} tight>
+      {sharpe.available ? (
+        <table>
+          <tbody>
+            {sharpe.psr?.psr != null && (
+              <StatRow
+                label="Probabilistic Sharpe"
+                value={pct(sharpe.psr.psr, 1)}
+                hint="chance the true Sharpe is above zero"
+              />
+            )}
+            {dsr?.dsr != null ? (
+              <StatRow
+                label="Deflated Sharpe"
+                value={pct(dsr.dsr, 1)}
+                hint={`after ${dsr.n_trials} attempt${dsr.n_trials === 1 ? "" : "s"} on this universe`}
+              />
+            ) : (
+              <StatRow
+                label="Deflated Sharpe"
+                value="—"
+                hint={dsr?.interpretation ?? "not computable on this sample"}
+              />
+            )}
+            {dsr?.sr0_annual != null && (
+              <StatRow
+                label="Luck threshold"
+                value={num(dsr.sr0_annual, 2)}
+                hint={`Sharpe ${dsr.n_trials} random tries would beat on their own`}
+              />
+            )}
+            <StatRow label="Observations" value={String(sharpe.n_obs)} hint="trading days" />
+          </tbody>
+        </table>
+      ) : (
+        <p className="faint" style={{ margin: 0 }}>
+          <IconInfo size={12} />{" "}
+          {sharpe.unavailable_reason ?? "Sharpe inference is not available for this run."}
+        </p>
+      )}
+
+      {dsr?.dsr != null && (
+        <div className={`notice ${dsrOk ? "notice-pass" : "notice-warn"}`}
+          style={{ marginTop: 12 }}>
+          {dsrOk ? <IconCheck size={13} /> : <IconWarning size={13} />}
+          <span>{dsr.interpretation}</span>
+        </div>
+      )}
+
+      <h3 style={{ marginTop: 18 }}>Margin over the benchmark</h3>
+      {excess.available ? (
+        <>
+          <p style={{ margin: "0 0 6px" }}>
+            <strong>{verdictText[excess.verdict] ?? excess.verdict}</strong>
+            <span className="faint">
+              {" "}· from the {excess.verdict_source} interval · {excess.n_obs} days
+            </span>
+          </p>
+          <p className="faint" style={{ margin: 0 }}>{excess.interpretation}</p>
+          {/* The caveat is not optional garnish: the interval behind this
+              verdict covers less than nominal, and saying "beats" without it
+              overstates what the sample supports. */}
+          {excess.ci_coverage_caveat && (
+            <div className="notice notice-info" style={{ marginTop: 10 }}>
+              <IconInfo size={13} />
+              <span>{excess.ci_coverage_caveat}</span>
+            </div>
+          )}
+        </>
+      ) : (
+        <p className="faint" style={{ margin: 0 }}>
+          <IconInfo size={12} />{" "}
+          {excess.unavailable_reason
+            ?? "This sample cannot support a verdict on the margin."}
+        </p>
+      )}
+    </Panel>
+  );
+}
+
+/* ---------------- holdout purge disclosure ---------------- */
+
+// The 70/30 split is a plain date cut: no purge, no embargo. With overlapping
+// holds and long lookbacks a training bar can still reach across the boundary.
+// The report states how far, in bars, rather than letting "holdout" imply more
+// independence than the split actually has.
+
+export function PurgePanel({ report }: { report: Report }) {
+  const p = report.holdout_purge;
+  if (!p || !p.total) return null;
+  const terms: [string, number][] = [
+    ["Signal lookback", p.signal_reach],
+    ["Staleness screen", p.staleness_reach],
+    ["Rebalance carry", p.carry],
+    ["Execution lag", p.execution_lag],
+    ["Cost charge", p.cost_charge],
+  ];
+  return (
+    <Panel title="How clean is the holdout?" icon={<IconTimeline size={15} />} tight>
+      <p style={{ margin: "0 0 10px" }}>
+        A training bar can still influence a holdout bar up to{" "}
+        <strong>{p.total} sessions</strong> past the split, so the first{" "}
+        {p.total} holdout sessions are not strictly out-of-sample.
+      </p>
+      <table>
+        <thead>
+          <tr><th>Term</th><th className="num">Bars</th></tr>
+        </thead>
+        <tbody>
+          {terms.filter(([, v]) => v > 0).map(([k, v]) => (
+            <tr key={k}>
+              <td>{k}</td>
+              <td className="num">{v}</td>
+            </tr>
+          ))}
+          <tr>
+            <td style={{ fontWeight: 600 }}>
+              Total
+              <span className="faint"> (longest reach + carry + lag + cost)</span>
+            </td>
+            <td className="num" style={{ fontWeight: 600 }}>{p.total}</td>
+          </tr>
+        </tbody>
+      </table>
+    </Panel>
+  );
+}

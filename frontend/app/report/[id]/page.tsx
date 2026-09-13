@@ -16,11 +16,12 @@ import {
 } from "@/components/ui/Icons";
 import {
   AuditList, AuditSummary, CostSweepTable, HoldingsLog, MetricCards, OOSPanel,
-  ResearchNote, RiskBadges, StressPanel, VerdictBanner,
+  PurgePanel, ResearchNote, RiskBadges, SignificancePanel, StressPanel,
+  VerdictBanner,
 } from "@/components/report/blocks";
 import { DrawdownChart, EquityChart, RegimeBar } from "@/components/report/charts";
 
-type Tab = "overview" | "charts" | "cost" | "holdings" | "note";
+type Tab = "overview" | "charts" | "cost" | "stats" | "holdings" | "note";
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -136,6 +137,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
                 { value: "overview", label: "Overview" },
                 { value: "charts", label: "Charts", icon: <IconChart size={12} /> },
                 { value: "cost", label: "Cost & stress", icon: <IconRisk size={12} /> },
+                { value: "stats", label: "Significance" },
                 { value: "holdings", label: "Holdings" },
                 { value: "note", label: "Audit note", icon: <IconAudit size={12} /> },
               ]}
@@ -169,6 +171,13 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
               <CostSweepTable rows={r.cost_sweep} />
               <StressPanel report={r} />
               <OOSPanel report={r} />
+            </div>
+          )}
+
+          {tab === "stats" && (
+            <div className="stack">
+              <SignificancePanel report={r} />
+              <PurgePanel report={r} />
             </div>
           )}
 

@@ -3,11 +3,25 @@
 sixty_forty is computed by the engine itself (a static 60/40 SPY/AGG spec,
 monthly rebalanced, zero cost) so its math is identical to any other backtest
 — no separate code path to drift out of sync.
+
+TIMING. Every benchmark here is priced at execution lag 0 — close-to-close
+from the first accrual day — via dsl.conventions.BENCHMARK_EXECUTION_LAG_DAYS.
+The SPY/QQQ branch is raw pct_change, which is structurally a zero-lag fill;
+the 60/40 branch goes through run(), so it must pass the lag EXPLICITLY or it
+silently inherits DEFAULT_EXECUTION_LAG_DAYS and becomes a different series
+from its own siblings. That regression shipped once: the 60/40 accrual series
+began with a fabricated 0.0% day and reported a total return ~0.95pp above the
+consistently-timed one on the project's own 2016-2025 fixture.
+
+A passive buy-and-hold benchmark has no signal to be late on — nobody reads a
+close, decides, and then trades — so the strategy's fill lag is not a property
+it shares. See the "Benchmark timing" row in dsl/conventions.py.
 """
 from __future__ import annotations
 
 import pandas as pd
 
+from dsl.conventions import BENCHMARK_EXECUTION_LAG_DAYS
 from dsl.schema import (
     Costs, Selection, StaticPosition, StrategySpec, Universe, Window,
 )
@@ -72,7 +86,11 @@ def benchmark_returns(
         if pos == 0:
             raise EngineError("not enough lead-in data for the 60/40 benchmark")
         spec.window.start = str(prices.index[pos - 1].date())
-        result = run(spec, prices, ["SPY", "AGG"])
+        # execution_lag_days MUST be passed: the default is the strategy lag,
+        # which would time this benchmark differently from the SPY/QQQ branch
+        # above (and from every index the user could actually have bought).
+        result = run(spec, prices, ["SPY", "AGG"],
+                     execution_lag_days=BENCHMARK_EXECUTION_LAG_DAYS)
         out = result.gross_returns.reindex(accrual_index)
         if out.isna().any():
             raise EngineError("60/40 benchmark could not cover the full window")

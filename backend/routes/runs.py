@@ -21,7 +21,7 @@ from pathlib import Path
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from audit.extra import bump_attempts
+from audit.extra import bump_attempts, record_trial_sharpe, trial_sharpes
 from audit.pipeline import build_report
 from config import settings
 from dsl.validator import validate_spec
@@ -103,12 +103,23 @@ def _execute_run(run_id: str, spec_raw: dict, universe: list[str],
         def progress(stage_detail: str) -> None:
             _push(run_id, "auditing", stage_detail)
 
+        # Read the ledger BEFORE this run is added to it: the Deflated Sharpe
+        # prices the search that came before, and a strategy must not be made
+        # to clear a bar it raised itself.
+        prior_trials = trial_sharpes(spec.universe_key())
+
         report = build_report(spec, panel, universe_in_panel, attempts,
-                              progress=progress)
+                              progress=progress,
+                              trial_sharpes_annual=prior_trials)
         report["run"] = {
             "id": run_id, "snapshot_hash": snap_hash, "data_source": data_source,
             "replay_of": replay_of,
         }
+
+        # …then record it, so the NEXT strategy on this universe pays for it.
+        # Keyed by run_id, so replaying a stored run cannot double-count.
+        record_trial_sharpe(run_id, spec.universe_key(),
+                            report["metrics"].get("sharpe"))
 
         _push(run_id, "finalizing", "Writing the Truth Report…")
         report_id = repo.save_report(run_id, report["verdict"], report)

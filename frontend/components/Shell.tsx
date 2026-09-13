@@ -44,7 +44,9 @@ export default function Shell({ children }: { children: ReactNode }) {
         {/* Same mark as the landing masthead — one product, one signature. */}
         <Link href="/workbench" className="brand">
           <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 20 9 11l4 4 8-12" stroke="#7a2e2e" strokeWidth="2.6"
+            {/* currentColor so the mark follows the surface theme — oxblood on
+                the Broadsheet landing, navy in the workstation. */}
+            <path d="M3 20 9 11l4 4 8-12" stroke="currentColor" strokeWidth="2.6"
               fill="none" strokeLinecap="square" />
           </svg>
           Honest Backtester

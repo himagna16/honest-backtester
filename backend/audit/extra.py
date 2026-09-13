@@ -2,6 +2,8 @@
 multiple testing (#7), and data-quality disclosures (Gap #4 / non-neg #7)."""
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import pandas as pd
 from sqlalchemy import text as sql
@@ -95,6 +97,45 @@ def bump_attempts(universe_key: str) -> int:
             "SELECT attempts FROM attempt_counters WHERE universe_key = :k"
         ), {"k": universe_key}).fetchone()
     return int(row[0])
+
+
+def trial_sharpes(universe_key: str) -> list[float]:
+    """Annualized Sharpe of every previously recorded trial on this universe.
+
+    The Deflated Sharpe Ratio prices the search, and the price depends on how
+    much the trials VARIED, not just how many there were (Bailey & López de
+    Prado 2014): the luck threshold scales with √V[{SRₙ}]. `bump_attempts`
+    stores only the count, which is why the audit reported the DSR as not
+    computable. This is the spread it was missing.
+
+    Returns [] when nothing has been recorded yet — the caller must treat that
+    as "no ledger", not as "zero variance", because a zero-variance ledger
+    would claim the search was free.
+    """
+    with get_engine().begin() as conn:
+        rows = conn.execute(sql(
+            "SELECT sharpe_annual FROM trial_sharpes WHERE universe_key = :k "
+            "ORDER BY created_at"
+        ), {"k": universe_key}).fetchall()
+    return [float(r[0]) for r in rows if r[0] is not None
+            and math.isfinite(float(r[0]))]
+
+
+def record_trial_sharpe(run_id: str, universe_key: str,
+                        sharpe_annual: float) -> None:
+    """Add one completed run to the trial ledger.
+
+    Keyed by run_id, so replaying a stored run cannot inflate its own
+    multiple-testing haircut by re-recording the same attempt. A non-finite
+    Sharpe (a degenerate series) is not a trial and is dropped.
+    """
+    if sharpe_annual is None or not math.isfinite(float(sharpe_annual)):
+        return
+    with get_engine().begin() as conn:
+        conn.execute(sql(
+            "INSERT INTO trial_sharpes (run_id, universe_key, sharpe_annual) "
+            "VALUES (:r, :k, :s) ON CONFLICT(run_id) DO NOTHING"
+        ), {"r": run_id, "k": universe_key, "s": float(sharpe_annual)})
 
 
 def check_multiple_testing(universe_key: str, attempts: int) -> Finding:
