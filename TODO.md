@@ -1,9 +1,11 @@
 # The Honest Backtester — build & launch checklist
 
 **You are here:** ✅ **FULLY LIVE end-to-end.** Frontend on Vercel, backend on
-Render (free), wired together. Public **repo**, live **site**:
+Render (free), wired together. **Private** repo, live **site**:
 https://honest-backtester-six.vercel.app · repo:
-https://github.com/himagna16/honest-backtester (public). Translate → run →
+https://github.com/himagna16/honest-backtester (private — the source is closed
+so the engine can become a paid tier later; the live site stays public).
+Translate → run →
 Truth Report → PNG export and the waitlist all work on the live site. Only
 caveat: a full S&P 500 run is too heavy for Render's free 512 MB (light
 universes like Dow 30 run fine); the hosted instance also sleeps after ~15 min

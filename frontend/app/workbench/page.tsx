@@ -134,14 +134,11 @@ export default function Workbench() {
           <div style={{ marginBottom: "var(--s4)" }}>
             <Notice kind="info">
               <span>
-                <strong>The engine is offline right now.</strong> This is the
-                live UI — the backtest engine runs on a separate service that
-                isn&apos;t reachable at the moment. To try it yourself, run it
-                locally (see the{" "}
-                <a href="https://github.com/himagna16/honest-backtester"
-                  target="_blank" rel="noreferrer">README</a>), or watch the
-                30-second replay of a real run on the{" "}
-                <a href="/landing#replay">home page</a>.
+                <strong>The engine is waking up.</strong> This is the live UI —
+                the backtest engine runs on a separate service that sleeps when
+                idle and takes about a minute to start. Reload shortly, or watch
+                the 30-second replay of a real run on the{" "}
+                <a href="/landing#replay">home page</a> in the meantime.
               </span>
             </Notice>
           </div>
