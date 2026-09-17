@@ -1,0 +1,2186 @@
+{
+ "generated": "2026-09-17",
+ "membership": {
+  "index": "sp500",
+  "coverage_start": "2015-01-01",
+  "known_through": "2026-08-18",
+  "anchor_source": "https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&oldid=1370105675",
+  "changes_source": "https://en.wikipedia.org/w/index.php?title=Historical_components_of_the_S%26P_500&oldid=1370891103",
+  "membership_sha256": "c5ee0ab9a6d432658296db1a6e14d0fb61d8c84f43ac8a72de516e31e204e63c"
+ },
+ "saved_runs": [
+  {
+   "run_id": "r_723dddda0a",
+   "report_id": "rep_433acc9eb9",
+   "name": "War list 12mo momentum top-5 (S&P 500 re-run)",
+   "window": [
+    "2023-01-02",
+    "2026-05-29"
+   ],
+   "rank_by": {
+    "type": "return",
+    "lookback_days": 252,
+    "skip_days": 0,
+    "fast": null,
+    "slow": null,
+    "field": null
+   },
+   "n": 5,
+   "rebalance": "monthly",
+   "saved_net5_total_return": 35.53143020298634,
+   "saved_verdict": "green",
+   "today": {
+    "net5_total_return": 35.25478674786855,
+    "net5_cagr": 1.963062278094645,
+    "net5_max_drawdown": -0.4514950531471619,
+    "benchmark_total_return": 0.9365054513499123,
+    "start": "2023-02-01",
+    "end": "2026-05-28",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 2.86411263224054,
+    "net5_cagr": 0.5052023596658977,
+    "net5_max_drawdown": -0.3573996453769337,
+    "benchmark_total_return": 0.9365054513499123,
+    "start": "2023-02-01",
+    "end": "2026-05-28",
+    "universe_size": 540,
+    "coverage": {
+     "signal_dates": 40,
+     "mean_priced_share": 0.9769892549465113,
+     "min_priced_share": 0.9582504970178927,
+     "min_date": "2023-01-31",
+     "mean_members": 503.025,
+     "mean_unpriced": 11.575
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "TPL",
+     "first_pick": "2023-01-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2023-02-28",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 12
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2023-03-31",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "AXON",
+     "first_pick": "2023-03-31",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2023-06-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2023-08-31",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-10-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 20
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2023-11-30",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 20
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-12-29",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2024-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-11-29",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2025-08-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-11-28",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 1
+    }
+   ],
+   "replay_minus_saved": -0.2766434551177923,
+   "direction": "top"
+  },
+  {
+   "run_id": "r_299575a09e",
+   "report_id": "rep_d465bba2f9",
+   "name": "CAS check",
+   "window": [
+    "2024-06-03",
+    "2026-05-29"
+   ],
+   "rank_by": {
+    "type": "return",
+    "lookback_days": 126,
+    "skip_days": 0,
+    "fast": null,
+    "slow": null,
+    "field": null
+   },
+   "n": 5,
+   "rebalance": "monthly",
+   "saved_net5_total_return": 9.497770566626107,
+   "saved_verdict": "amber",
+   "today": {
+    "net5_total_return": 9.15049985986713,
+    "net5_cagr": 2.3846132038251517,
+    "net5_max_drawdown": -0.4704966002109082,
+    "benchmark_total_return": 0.41574931371456025,
+    "start": "2024-07-01",
+    "end": "2026-05-28",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 3.5914580219647103,
+    "net5_cagr": 1.22971622694799,
+    "net5_max_drawdown": -0.3764696074283017,
+    "benchmark_total_return": 0.41574931371456025,
+    "start": "2024-07-01",
+    "end": "2026-05-28",
+    "universe_size": 527,
+    "coverage": {
+     "signal_dates": 23,
+     "mean_priced_share": 0.984788988635475,
+     "min_priced_share": 0.974155069582505,
+     "min_date": "2024-06-28",
+     "mean_members": 503.04347826086956,
+     "mean_unpriced": 7.6521739130434785
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "CVNA",
+     "first_pick": "2024-06-28",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2024-06-28",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-07-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2024-08-30",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2024-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2025-08-29",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-08-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-10-31",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-11-28",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 2
+    }
+   ],
+   "replay_minus_saved": -0.34727070675897664,
+   "direction": "top"
+  },
+  {
+   "run_id": "r_610285e740",
+   "report_id": "rep_efba12d48a",
+   "name": "CAS check 2",
+   "window": [
+    "2024-06-03",
+    "2026-05-29"
+   ],
+   "rank_by": {
+    "type": "return",
+    "lookback_days": 126,
+    "skip_days": 0,
+    "fast": null,
+    "slow": null,
+    "field": null
+   },
+   "n": 5,
+   "rebalance": "monthly",
+   "saved_net5_total_return": 9.497770566626107,
+   "saved_verdict": "amber",
+   "today": {
+    "net5_total_return": 9.15049985986713,
+    "net5_cagr": 2.3846132038251517,
+    "net5_max_drawdown": -0.4704966002109082,
+    "benchmark_total_return": 0.41574931371456025,
+    "start": "2024-07-01",
+    "end": "2026-05-28",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 3.5914580219647103,
+    "net5_cagr": 1.22971622694799,
+    "net5_max_drawdown": -0.3764696074283017,
+    "benchmark_total_return": 0.41574931371456025,
+    "start": "2024-07-01",
+    "end": "2026-05-28",
+    "universe_size": 527,
+    "coverage": {
+     "signal_dates": 23,
+     "mean_priced_share": 0.984788988635475,
+     "min_priced_share": 0.974155069582505,
+     "min_date": "2024-06-28",
+     "mean_members": 503.04347826086956,
+     "mean_unpriced": 7.6521739130434785
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "CVNA",
+     "first_pick": "2024-06-28",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2024-06-28",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-07-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2024-08-30",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2024-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2025-08-29",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-08-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-10-31",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-11-28",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 2
+    }
+   ],
+   "replay_minus_saved": -0.34727070675897664,
+   "direction": "top"
+  },
+  {
+   "run_id": "r_910ac2227b",
+   "report_id": "rep_e9204053db",
+   "name": "Tech momentum fast-growers (SP500 tech)",
+   "window": [
+    "2016-08-05",
+    "2026-08-03"
+   ],
+   "rank_by": {
+    "type": "return",
+    "lookback_days": 63,
+    "skip_days": 0,
+    "fast": null,
+    "slow": null,
+    "field": null
+   },
+   "n": 5,
+   "rebalance": "monthly",
+   "saved_net5_total_return": 119.20413618611134,
+   "saved_verdict": "amber",
+   "today": {
+    "net5_total_return": 108.34505011625006,
+    "net5_cagr": 0.6216687569294139,
+    "net5_max_drawdown": -0.39502506643363333,
+    "benchmark_total_return": 3.0543198641370344,
+    "start": "2016-09-01",
+    "end": "2026-05-28",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 8.892861270738104,
+    "net5_cagr": 0.26619758488144707,
+    "net5_max_drawdown": -0.3925717278498356,
+    "benchmark_total_return": 3.0543198641370344,
+    "start": "2016-09-01",
+    "end": "2026-05-28",
+    "universe_size": 593,
+    "coverage": {
+     "signal_dates": 117,
+     "mean_priced_share": 0.9278734004015974,
+     "min_priced_share": 0.8316831683168316,
+     "min_date": "2016-08-31",
+     "mean_members": 504.1880341880342,
+     "mean_unpriced": 36.401709401709404
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "AMD",
+     "first_pick": "2016-08-31",
+     "joined": "2017-03-20",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2016-08-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2016-10-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 16
+    },
+    {
+     "ticker": "STLD",
+     "first_pick": "2016-11-30",
+     "joined": "2022-12-22",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2016-11-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "TTD",
+     "first_pick": "2017-02-28",
+     "joined": "2025-07-18",
+     "non_member_rebalances": 13
+    },
+    {
+     "ticker": "DXCM",
+     "first_pick": "2017-03-31",
+     "joined": "2020-05-12",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "ANET",
+     "first_pick": "2017-03-31",
+     "joined": "2018-08-28",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ALGN",
+     "first_pick": "2017-04-28",
+     "joined": "2017-06-19",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2017-04-28",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "VEEV",
+     "first_pick": "2017-05-31",
+     "joined": "2026-05-07",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "FSLR",
+     "first_pick": "2017-06-30",
+     "joined": "2022-12-19",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "XYZ",
+     "first_pick": "2017-06-30",
+     "joined": "2025-07-23",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2017-07-31",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 26
+    },
+    {
+     "ticker": "PODD",
+     "first_pick": "2017-08-31",
+     "joined": "2023-03-15",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "TTWO",
+     "first_pick": "2017-09-29",
+     "joined": "2018-03-19",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "ON",
+     "first_pick": "2017-09-29",
+     "joined": "2022-06-21",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "GNRC",
+     "first_pick": "2017-10-31",
+     "joined": "2021-03-22",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "IR",
+     "first_pick": "2017-11-30",
+     "joined": "2020-03-02",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "AXON",
+     "first_pick": "2018-02-28",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "TKO",
+     "first_pick": "2018-02-28",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "ZBRA",
+     "first_pick": "2018-03-29",
+     "joined": "2019-12-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "LULU",
+     "first_pick": "2018-04-30",
+     "joined": "2023-10-18",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "FTNT",
+     "first_pick": "2018-09-28",
+     "joined": "2018-10-11",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2018-10-31",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "TSLA",
+     "first_pick": "2018-12-31",
+     "joined": "2020-12-21",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "WDAY",
+     "first_pick": "2019-01-31",
+     "joined": "2024-12-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "NOW",
+     "first_pick": "2019-01-31",
+     "joined": "2019-11-21",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "PANW",
+     "first_pick": "2019-02-28",
+     "joined": "2023-06-20",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "MRNA",
+     "first_pick": "2019-04-30",
+     "joined": "2021-07-21",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "PCG",
+     "first_pick": "2019-04-30",
+     "joined": "2022-10-03",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "ERIE",
+     "first_pick": "2019-06-28",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "FICO",
+     "first_pick": "2019-07-31",
+     "joined": "2023-03-20",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "APO",
+     "first_pick": "2019-10-31",
+     "joined": "2024-12-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "EQT",
+     "first_pick": "2020-04-30",
+     "joined": "2022-10-03",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "DDOG",
+     "first_pick": "2020-05-29",
+     "joined": "2025-07-09",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "TRGP",
+     "first_pick": "2020-06-30",
+     "joined": "2022-10-12",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2020-12-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "WSM",
+     "first_pick": "2021-03-31",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2021-06-30",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2021-06-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "ARES",
+     "first_pick": "2021-07-30",
+     "joined": "2025-12-11",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2021-10-29",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 13
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2022-07-29",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2022-07-29",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "IBKR",
+     "first_pick": "2022-10-31",
+     "joined": "2025-08-28",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-02-28",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2023-10-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "GDDY",
+     "first_pick": "2023-11-30",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-02-29",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2024-03-28",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2024-05-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "MRVL",
+     "first_pick": "2024-12-31",
+     "joined": "2026-06-22",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-09-30",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 2
+    }
+   ],
+   "replay_minus_saved": -10.859086069861277,
+   "direction": "top"
+  },
+  {
+   "run_id": "r_354a4c2fd0",
+   "report_id": "rep_43fc882769",
+   "name": "Least volatile SPY stocks (quarterly)",
+   "window": [
+    "2016-08-05",
+    "2026-08-03"
+   ],
+   "rank_by": {
+    "type": "volatility",
+    "lookback_days": 20,
+    "skip_days": 0,
+    "fast": null,
+    "slow": null,
+    "field": null
+   },
+   "n": 20,
+   "rebalance": "quarterly",
+   "saved_net5_total_return": 41.26561061667639,
+   "saved_verdict": "amber",
+   "today": {
+    "net5_total_return": 34.05401251933397,
+    "net5_cagr": 0.4469687603319563,
+    "net5_max_drawdown": -0.5712883364735588,
+    "benchmark_total_return": 3.054084277376214,
+    "start": "2016-10-03",
+    "end": "2026-05-28",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 3.574663472486754,
+    "net5_cagr": 0.17110167652405495,
+    "net5_max_drawdown": -0.5349144755528323,
+    "benchmark_total_return": 3.054084277376214,
+    "start": "2016-10-03",
+    "end": "2026-05-28",
+    "universe_size": 593,
+    "coverage": {
+     "signal_dates": 39,
+     "mean_priced_share": 0.9279080554812302,
+     "min_priced_share": 0.8396039603960396,
+     "min_date": "2016-09-30",
+     "mean_members": 504.20512820512823,
+     "mean_unpriced": 36.38461538461539
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "TPL",
+     "first_pick": "2016-09-30",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "NXPI",
+     "first_pick": "2016-09-30",
+     "joined": "2021-03-22",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "AMD",
+     "first_pick": "2016-09-30",
+     "joined": "2017-03-20",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2016-09-30",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "PODD",
+     "first_pick": "2016-09-30",
+     "joined": "2023-03-15",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "LULU",
+     "first_pick": "2016-09-30",
+     "joined": "2023-10-18",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "TRGP",
+     "first_pick": "2016-09-30",
+     "joined": "2022-10-12",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2016-12-30",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 13
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2016-12-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 15
+    },
+    {
+     "ticker": "TTD",
+     "first_pick": "2016-12-30",
+     "joined": "2025-07-18",
+     "non_member_rebalances": 20
+    },
+    {
+     "ticker": "LVS",
+     "first_pick": "2016-12-30",
+     "joined": "2019-10-03",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "ARES",
+     "first_pick": "2016-12-30",
+     "joined": "2025-12-11",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "WDAY",
+     "first_pick": "2016-12-30",
+     "joined": "2024-12-23",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "JBL",
+     "first_pick": "2016-12-30",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "AXON",
+     "first_pick": "2016-12-30",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2017-03-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "DXCM",
+     "first_pick": "2017-03-31",
+     "joined": "2020-05-12",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "STLD",
+     "first_pick": "2017-03-31",
+     "joined": "2022-12-22",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "WSM",
+     "first_pick": "2017-03-31",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "TSLA",
+     "first_pick": "2017-03-31",
+     "joined": "2020-12-21",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2017-06-30",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 27
+    },
+    {
+     "ticker": "IR",
+     "first_pick": "2017-06-30",
+     "joined": "2020-03-02",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "XYZ",
+     "first_pick": "2017-06-30",
+     "joined": "2025-07-23",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2017-09-29",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "PANW",
+     "first_pick": "2017-09-29",
+     "joined": "2023-06-20",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "NDSN",
+     "first_pick": "2017-12-29",
+     "joined": "2022-02-15",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CASY",
+     "first_pick": "2017-12-29",
+     "joined": "2026-04-09",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "ANET",
+     "first_pick": "2017-12-29",
+     "joined": "2018-08-28",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "FDS",
+     "first_pick": "2017-12-29",
+     "joined": "2021-12-20",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "TKO",
+     "first_pick": "2017-12-29",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "SW",
+     "first_pick": "2018-03-29",
+     "joined": "2024-07-08",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "FANG",
+     "first_pick": "2018-06-29",
+     "joined": "2018-12-03",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2018-06-29",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "WAB",
+     "first_pick": "2018-09-28",
+     "joined": "2019-02-27",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2018-12-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "MRNA",
+     "first_pick": "2019-03-29",
+     "joined": "2021-07-21",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "UBER",
+     "first_pick": "2019-06-28",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2019-09-30",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "FICO",
+     "first_pick": "2019-09-30",
+     "joined": "2023-03-20",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "DDOG",
+     "first_pick": "2019-12-31",
+     "joined": "2025-07-09",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2019-12-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "MRVL",
+     "first_pick": "2019-12-31",
+     "joined": "2026-06-22",
+     "non_member_rebalances": 11
+    },
+    {
+     "ticker": "ON",
+     "first_pick": "2020-03-31",
+     "joined": "2022-06-21",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2020-12-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "DASH",
+     "first_pick": "2021-03-31",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2021-06-30",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 13
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2021-06-30",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2021-09-30",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "ABNB",
+     "first_pick": "2022-03-31",
+     "joined": "2023-09-18",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2022-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2023-03-31",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "APO",
+     "first_pick": "2023-03-31",
+     "joined": "2024-12-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-03-31",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 2
+    }
+   ],
+   "replay_minus_saved": -7.211598097342417,
+   "direction": "top"
+  },
+  {
+   "run_id": "r_7ff6b5113e",
+   "report_id": "rep_96338a692d",
+   "name": "6mo momentum top-5",
+   "window": [
+    "2016-01-04",
+    "2026-01-02"
+   ],
+   "rank_by": {
+    "type": "return",
+    "lookback_days": 126,
+    "skip_days": 0,
+    "fast": null,
+    "slow": null,
+    "field": null
+   },
+   "n": 5,
+   "rebalance": "monthly",
+   "saved_net5_total_return": 186.93039945266264,
+   "saved_verdict": "amber",
+   "today": {
+    "net5_total_return": 186.93259943144625,
+    "net5_cagr": 0.6966284787889201,
+    "net5_max_drawdown": -0.470496600210908,
+    "benchmark_total_return": 3.1609743382765565,
+    "start": "2016-02-01",
+    "end": "2026-01-02",
+    "universe_size": 501
+   },
+   "pit": {
+    "net5_total_return": 2.109566726995355,
+    "net5_cagr": 0.12135658556661655,
+    "net5_max_drawdown": -0.4540772172433507,
+    "benchmark_total_return": 3.1609743382765565,
+    "start": "2016-02-01",
+    "end": "2026-01-02",
+    "universe_size": 586,
+    "coverage": {
+     "signal_dates": 119,
+     "mean_priced_share": 0.9184602083259932,
+     "min_priced_share": 0.8035714285714286,
+     "min_date": "2016-01-29",
+     "mean_members": 504.26050420168065,
+     "mean_unpriced": 41.15126050420168
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "AMD",
+     "first_pick": "2016-03-31",
+     "joined": "2017-03-20",
+     "non_member_rebalances": 11
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2016-04-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "TRGP",
+     "first_pick": "2016-06-30",
+     "joined": "2022-10-12",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2016-10-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 17
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2017-01-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ANET",
+     "first_pick": "2017-04-28",
+     "joined": "2018-08-28",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2017-04-28",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "XYZ",
+     "first_pick": "2017-04-28",
+     "joined": "2025-07-23",
+     "non_member_rebalances": 16
+    },
+    {
+     "ticker": "TTD",
+     "first_pick": "2017-05-31",
+     "joined": "2025-07-18",
+     "non_member_rebalances": 19
+    },
+    {
+     "ticker": "TSLA",
+     "first_pick": "2017-05-31",
+     "joined": "2020-12-21",
+     "non_member_rebalances": 15
+    },
+    {
+     "ticker": "TTWO",
+     "first_pick": "2017-05-31",
+     "joined": "2018-03-19",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2017-11-30",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 32
+    },
+    {
+     "ticker": "PODD",
+     "first_pick": "2017-11-30",
+     "joined": "2023-03-15",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "IBKR",
+     "first_pick": "2017-12-29",
+     "joined": "2025-08-28",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "TKO",
+     "first_pick": "2018-01-31",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "ON",
+     "first_pick": "2018-01-31",
+     "joined": "2022-06-21",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "AXON",
+     "first_pick": "2018-03-29",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "DXCM",
+     "first_pick": "2018-04-30",
+     "joined": "2020-05-12",
+     "non_member_rebalances": 11
+    },
+    {
+     "ticker": "WDAY",
+     "first_pick": "2018-12-31",
+     "joined": "2024-12-23",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "KDP",
+     "first_pick": "2018-12-31",
+     "joined": "2022-06-21",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2019-01-31",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "VEEV",
+     "first_pick": "2019-01-31",
+     "joined": "2026-05-07",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "ERIE",
+     "first_pick": "2019-02-28",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "FICO",
+     "first_pick": "2019-05-31",
+     "joined": "2023-03-20",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "NOW",
+     "first_pick": "2019-05-31",
+     "joined": "2019-11-21",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CSGP",
+     "first_pick": "2019-07-31",
+     "joined": "2022-09-19",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "BX",
+     "first_pick": "2019-08-30",
+     "joined": "2023-09-18",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "GNRC",
+     "first_pick": "2019-09-30",
+     "joined": "2021-03-22",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "MRNA",
+     "first_pick": "2020-01-31",
+     "joined": "2021-07-21",
+     "non_member_rebalances": 13
+    },
+    {
+     "ticker": "PCG",
+     "first_pick": "2020-04-30",
+     "joined": "2022-10-03",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "DDOG",
+     "first_pick": "2020-05-29",
+     "joined": "2025-07-09",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2020-06-30",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "EQT",
+     "first_pick": "2020-07-31",
+     "joined": "2022-10-03",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "STLD",
+     "first_pick": "2021-07-30",
+     "joined": "2022-12-22",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2022-08-31",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2022-12-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2023-05-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-06-30",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 15
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-11-30",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2023-11-30",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "WSM",
+     "first_pick": "2023-11-30",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2024-02-29",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-05-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2024-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2025-08-29",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-10-31",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 1
+    }
+   ],
+   "replay_minus_saved": 0.002199978783608003,
+   "direction": "top"
+  }
+ ],
+ "grid": [
+  {
+   "lookback_days": 21,
+   "today": {
+    "net5_total_return": 5.336466384220245,
+    "net5_cagr": 0.7469671794278627,
+    "net5_max_drawdown": -0.2684047496754354,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 0.9423516557213503,
+    "net5_cagr": 0.2221391271370301,
+    "net5_max_drawdown": -0.252887290463641,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 540,
+    "coverage": {
+     "signal_dates": 40,
+     "mean_priced_share": 0.9769892549465113,
+     "min_priced_share": 0.9582504970178927,
+     "min_date": "2023-01-31",
+     "mean_members": 503.025,
+     "mean_unpriced": 11.575
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "CVNA",
+     "first_pick": "2023-01-31",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-01-31",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2023-02-28",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2023-02-28",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "PANW",
+     "first_pick": "2023-02-28",
+     "joined": "2023-06-20",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "TKO",
+     "first_pick": "2023-04-28",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2023-05-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-05-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "MRVL",
+     "first_pick": "2023-05-31",
+     "joined": "2026-06-22",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2023-06-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2023-08-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2023-08-31",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2023-09-29",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2023-09-29",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CASY",
+     "first_pick": "2023-09-29",
+     "joined": "2026-04-09",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "DECK",
+     "first_pick": "2023-10-31",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "XYZ",
+     "first_pick": "2023-11-30",
+     "joined": "2025-07-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "DDOG",
+     "first_pick": "2023-11-30",
+     "joined": "2025-07-09",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2023-12-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2023-12-29",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2024-01-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "WSM",
+     "first_pick": "2024-03-28",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2024-03-28",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "IBKR",
+     "first_pick": "2025-01-31",
+     "joined": "2025-08-28",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "TTD",
+     "first_pick": "2025-05-30",
+     "joined": "2025-07-18",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-09-30",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-11-28",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    }
+   ]
+  },
+  {
+   "lookback_days": 63,
+   "today": {
+    "net5_total_return": 18.592265606374923,
+    "net5_cagr": 1.4570504274981344,
+    "net5_max_drawdown": -0.3598002804490247,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 3.9477817840793046,
+    "net5_cagr": 0.6211451038281717,
+    "net5_max_drawdown": -0.27713730342434695,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 540,
+    "coverage": {
+     "signal_dates": 40,
+     "mean_priced_share": 0.9769892549465113,
+     "min_priced_share": 0.9582504970178927,
+     "min_date": "2023-01-31",
+     "mean_members": 503.025,
+     "mean_unpriced": 11.575
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-02-28",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2023-03-31",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 11
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2023-04-28",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-04-28",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 12
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2023-05-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2023-06-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2023-08-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "ERIE",
+     "first_pick": "2023-09-29",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2023-10-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2023-11-30",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "GDDY",
+     "first_pick": "2023-11-30",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "XYZ",
+     "first_pick": "2023-12-29",
+     "joined": "2025-07-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-02-29",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 8
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2024-02-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2024-03-28",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2024-05-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "MRVL",
+     "first_pick": "2024-12-31",
+     "joined": "2026-06-22",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "WSM",
+     "first_pick": "2025-01-31",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-07-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-09-30",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-09-30",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 3
+    }
+   ]
+  },
+  {
+   "lookback_days": 126,
+   "today": {
+    "net5_total_return": 27.237232093190055,
+    "net5_cagr": 1.743960831795162,
+    "net5_max_drawdown": -0.47049660021090833,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 4.184880867464369,
+    "net5_cagr": 0.6442363165472464,
+    "net5_max_drawdown": -0.3764696074283018,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 540,
+    "coverage": {
+     "signal_dates": 40,
+     "mean_priced_share": 0.9769892549465113,
+     "min_priced_share": 0.9582504970178927,
+     "min_date": "2023-01-31",
+     "mean_members": 503.025,
+     "mean_unpriced": 11.575
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "AXON",
+     "first_pick": "2023-01-31",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2023-03-31",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2023-05-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2023-05-31",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2023-06-30",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 16
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-06-30",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 15
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2023-08-31",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-11-30",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2023-11-30",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "WSM",
+     "first_pick": "2023-11-30",
+     "joined": "2025-03-24",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2023-12-29",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "ERIE",
+     "first_pick": "2024-01-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2024-02-29",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-05-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 10
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2024-08-30",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2024-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2025-08-29",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-08-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "SNDK",
+     "first_pick": "2025-10-31",
+     "joined": "2025-11-28",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-11-28",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 2
+    }
+   ]
+  },
+  {
+   "lookback_days": 189,
+   "today": {
+    "net5_total_return": 31.582493414838808,
+    "net5_cagr": 1.8652381735172052,
+    "net5_max_drawdown": -0.42080989338372554,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 5.265033554023338,
+    "net5_cagr": 0.7409928957816658,
+    "net5_max_drawdown": -0.36745632720700105,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 540,
+    "coverage": {
+     "signal_dates": 40,
+     "mean_priced_share": 0.9769892549465113,
+     "min_priced_share": 0.9582504970178927,
+     "min_date": "2023-01-31",
+     "mean_members": 503.025,
+     "mean_unpriced": 11.575
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "FICO",
+     "first_pick": "2023-01-31",
+     "joined": "2023-03-20",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "AXON",
+     "first_pick": "2023-01-31",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2023-01-31",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2023-05-31",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 3
+    },
+    {
+     "ticker": "PLTR",
+     "first_pick": "2023-05-31",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2023-06-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 11
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2023-07-31",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 18
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-08-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 19
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-12-29",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 7
+    },
+    {
+     "ticker": "CRWD",
+     "first_pick": "2024-01-31",
+     "joined": "2024-06-24",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "VST",
+     "first_pick": "2024-03-28",
+     "joined": "2024-05-08",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "DELL",
+     "first_pick": "2024-04-30",
+     "joined": "2024-09-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-08-30",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "TPL",
+     "first_pick": "2024-10-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2025-08-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-11-28",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2025-11-28",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-12-31",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 1
+    }
+   ]
+  },
+  {
+   "lookback_days": 252,
+   "today": {
+    "net5_total_return": 35.60851741974993,
+    "net5_cagr": 1.9679001109892234,
+    "net5_max_drawdown": -0.45149503587184625,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 502
+   },
+   "pit": {
+    "net5_total_return": 2.90181359681644,
+    "net5_cagr": 0.5088847531073954,
+    "net5_max_drawdown": -0.3573996860967933,
+    "benchmark_total_return": 0.9413302975854252,
+    "start": "2023-02-01",
+    "end": "2026-05-29",
+    "universe_size": 540,
+    "coverage": {
+     "signal_dates": 40,
+     "mean_priced_share": 0.9769892549465113,
+     "min_priced_share": 0.9582504970178927,
+     "min_date": "2023-01-31",
+     "mean_members": 503.025,
+     "mean_unpriced": 11.575
+    }
+   },
+   "today_pre_join_picks": [
+    {
+     "ticker": "TPL",
+     "first_pick": "2023-01-31",
+     "joined": "2024-11-26",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "SMCI",
+     "first_pick": "2023-02-28",
+     "joined": "2024-03-18",
+     "non_member_rebalances": 12
+    },
+    {
+     "ticker": "FIX",
+     "first_pick": "2023-03-31",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 1
+    },
+    {
+     "ticker": "AXON",
+     "first_pick": "2023-03-31",
+     "joined": "2023-05-04",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "VRT",
+     "first_pick": "2023-06-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 14
+    },
+    {
+     "ticker": "BLDR",
+     "first_pick": "2023-08-31",
+     "joined": "2023-12-18",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "APP",
+     "first_pick": "2023-10-31",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 20
+    },
+    {
+     "ticker": "CVNA",
+     "first_pick": "2023-11-30",
+     "joined": "2025-12-22",
+     "non_member_rebalances": 20
+    },
+    {
+     "ticker": "COIN",
+     "first_pick": "2023-12-29",
+     "joined": "2025-05-19",
+     "non_member_rebalances": 4
+    },
+    {
+     "ticker": "COHR",
+     "first_pick": "2024-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 2
+    },
+    {
+     "ticker": "HOOD",
+     "first_pick": "2024-11-29",
+     "joined": "2025-09-22",
+     "non_member_rebalances": 9
+    },
+    {
+     "ticker": "ECHO",
+     "first_pick": "2025-08-29",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 5
+    },
+    {
+     "ticker": "LITE",
+     "first_pick": "2025-09-30",
+     "joined": "2026-03-23",
+     "non_member_rebalances": 6
+    },
+    {
+     "ticker": "CIEN",
+     "first_pick": "2025-11-28",
+     "joined": "2026-02-09",
+     "non_member_rebalances": 1
+    }
+   ]
+  }
+ ]
+}
