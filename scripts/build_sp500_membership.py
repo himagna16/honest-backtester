@@ -336,9 +336,7 @@ def check_price_identity(spells: pd.DataFrame, px: pd.DataFrame) -> pd.DataFrame
 
 
 def load_fixture_prices() -> pd.DataFrame:
-    """The checked-in price fixtures. They were frozen in June 2026, when some
-    names since removed (AVB) still had full histories on Yahoo; a fresh
-    download can come back truncated for them, so fixtures win."""
+    """The checked-in price fixtures (frozen June 2026)."""
     frames = []
     for name in ("sp500_prices.csv", "war_list_prices.csv", "extras_prices.csv"):
         path = REPO / "fixtures" / name
@@ -494,9 +492,17 @@ def main() -> None:
         fetch_prices(candidates).to_parquet(px_path)
     fresh = pd.read_parquet(px_path)
     fixture = load_fixture_prices()
-    # Fixture columns win; fresh downloads fill only symbols the fixtures lack.
-    px = pd.concat([fixture, fresh[[c for c in fresh.columns if c not in fixture.columns]]],
-                   axis=1).sort_index()
+    # Per symbol, the source with the LONGER history wins. A fresh download
+    # can come back truncated for a name removed since the fixtures were frozen
+    # (AVB), and a fixture can be short on purpose (the War list starts in 2022,
+    # so its URBN would otherwise look like a reused ticker).
+    adequate_by = pd.Timestamp(COVERAGE_START) + pd.Timedelta(days=LATE_START_TOLERANCE_DAYS)
+    from_fresh = [c for c in fresh.columns if fresh[c].notna().any() and (
+        c not in fixture.columns or not fixture[c].notna().any()
+        or (fixture[c].first_valid_index() > adequate_by
+            and fresh[c].first_valid_index() < fixture[c].first_valid_index()))]
+    px = pd.concat([fixture.drop(columns=[c for c in from_fresh if c in fixture.columns]),
+                    fresh[from_fresh]], axis=1, sort=True)
     spells = check_price_identity(spells, px)
     jumps = jump_screen(spells, px)
 
@@ -507,7 +513,7 @@ def main() -> None:
 
     # Only what the checked-in fixtures do not already carry. Rewritten from the
     # download cache on every build so it always matches membership.csv.
-    need = sorted({s for s in spells["price_symbol"].fillna("") if s} - set(fixture.columns))
+    need = sorted({s for s in spells["price_symbol"].fillna("") if s} & set(from_fresh))
     extra = fresh[need].loc[PRICE_FETCH_START:].dropna(how="all")
     extra.to_parquet(PRICES_OUT)
     print(f"wrote {len(need)} price series → {PRICES_OUT.relative_to(REPO)}")

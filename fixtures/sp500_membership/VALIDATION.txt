@@ -1,4 +1,4 @@
-Built 2026-09-17T17:11:06+00:00
+Built 2026-09-17T17:12:25+00:00
 anchor: https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&oldid=1370105675
 changes: https://en.wikipedia.org/w/index.php?title=Historical_components_of_the_S%26P_500&oldid=1370891103
 coverage_start: 2015-01-01
@@ -8,8 +8,8 @@ Inconsistencies before coverage start (not relied on): 20
 
 Member count (securities) and usable price history, per year-end:
   date        members  priced  share
-  2015-12-31      504     403  80.0%
-  2016-12-31      505     424  84.0%
+  2015-12-31      504     404  80.2%
+  2016-12-31      505     425  84.2%
   2017-12-31      505     439  86.9%
   2018-12-31      505     450  89.1%
   2019-12-31      505     461  91.3%
@@ -61,13 +61,13 @@ fja05680/sp500 cross-check over 606 dated snapshots since 2015-01-01:
   same-dates ticker pairs (renames / labelling): 28
     AABA->YHOO, ABC->COR, AMCR->BMS, ANTM->ELV, BBT->TFC, BK->BNY, BLL->BALL, COG->CTRA, CTL->LUMN, DXC->CSC, EQR->VMRK, FB->META, FI->FISV, HRS->LHX, IQV->Q, IR->TT, JEC->J, KDP->DPS, LB->BBWI, LO->QRVO, MMC->MRSH, MYL->VTRS, PKI->RVTY, RE->EG, SATS->ECHO, TMK->GL, UTX->RTX, WYND->WYN
   only in fja05680: 3 ticker(s) on <=3 snapshots (effective-date convention), 15 longer:
-    ARNC   2015-01-07..2020-04-03 (234 snapshots)
+    SYMC   2015-01-07..2019-10-18 (496 snapshots)
     MWV    2015-01-07..2015-07-01 (49 snapshots)
     KORS   2015-01-07..2018-09-18 (445 snapshots)
+    ARNC   2015-01-07..2020-04-03 (234 snapshots)
     BHGE   2015-01-07..2019-10-03 (495 snapshots)
-    HCP    2015-01-07..2019-10-18 (496 snapshots)
-    SYMC   2015-01-07..2019-10-18 (496 snapshots)
     PX     2015-01-07..2018-10-25 (457 snapshots)
+    HCP    2015-01-07..2019-10-18 (496 snapshots)
     CBS    2015-01-07..2019-11-21 (498 snapshots)
     AGN    2015-03-23..2020-04-06 (486 snapshots)
     WRK    2015-07-02..2024-06-24 (521 snapshots)
@@ -77,16 +77,16 @@ fja05680/sp500 cross-check over 606 dated snapshots since 2015-01-01:
     VIAC   2019-12-05..2022-02-15 (34 snapshots)
     PARA   2022-02-17..2025-07-23 (49 snapshots)
   only in this build: 34 ticker(s) on <=3 snapshots (effective-date convention), 12 longer:
-    SW     2015-01-07..2024-06-24 (570 snapshots)
     ACT    2015-01-07..2020-04-06 (506 snapshots)
-    BHI    2015-01-07..2017-06-26 (306 snapshots)
-    DOC    2015-01-07..2024-02-01 (563 snapshots)
-    PSKY   2015-01-07..2025-07-23 (581 snapshots)
-    CPRI   2015-01-07..2015-12-31 (117 snapshots)
-    AA     2015-01-07..2016-10-31 (233 snapshots)
     GEN    2015-01-07..2022-11-01 (545 snapshots)
-    LIN    2015-01-07..2018-10-31 (458 snapshots)
+    CPRI   2015-01-07..2015-12-31 (117 snapshots)
+    BHI    2015-01-07..2017-06-26 (306 snapshots)
     TYC    2015-01-07..2016-09-02 (213 snapshots)
     ACE    2015-01-07..2016-01-15 (122 snapshots)
+    DOC    2015-01-07..2024-02-01 (563 snapshots)
+    LIN    2015-01-07..2018-10-31 (458 snapshots)
+    SW     2015-01-07..2024-06-24 (570 snapshots)
+    AA     2015-01-07..2016-10-31 (233 snapshots)
+    PSKY   2015-01-07..2025-07-23 (581 snapshots)
     BKR    2017-07-07..2019-10-03 (189 snapshots)
 
