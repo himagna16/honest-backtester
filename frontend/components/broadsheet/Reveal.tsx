@@ -144,7 +144,7 @@ const NUM_RE = /\d[\d.]*/; // first run of digits in the printed string
 
 export type FigureCountProps = {
   /**
-   * The exact final printed string: "+1650%", "+163%", "Killed".
+   * The exact final printed string: "+1650%", "+163%", "Lost".
    * Contains digits -> counts up and lands on this exact string.
    * Contains none  -> stamped in (slight scale + opacity), never counted.
    */
@@ -176,7 +176,7 @@ export function FigureCount({
 
     const match = NUM_RE.exec(value);
 
-    /* Stamp mode — no digits ("Killed"): pressed in like a rubber stamp. */
+    /* Stamp mode — no digits ("Lost"): pressed in like a rubber stamp. */
     if (!match) {
       el.dataset.stamp = "pending";
       const dispose = observeOnce(el, () => {

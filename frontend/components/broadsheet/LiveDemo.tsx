@@ -1,7 +1,8 @@
 "use client";
 
-// LiveDemo — a self-playing replay of report rep_2c6332f417, the founding-story
-// run. Four scenes on a loop: the strategy is typed, read back as a spec,
+// LiveDemo — a self-playing replay of report rep_2c6332f417, a 126-day-lookback
+// War-list run (not the founding-story backtest; the landing caption says so).
+// Four scenes on a loop: the strategy is typed, read back as a spec,
 // audited, and stamped with the amber verdict. Pure React + CSS; every number
 // comes from ./demoData, which is transcribed verbatim from the exported run.
 //

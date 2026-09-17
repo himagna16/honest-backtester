@@ -5,11 +5,14 @@ tries to kill it: bias audits, cost sweeps, and an always-on benchmark on
 every single result. *The backtester that tries to kill your strategy before
 the market does.*
 
-Born from a real session: a first momentum backtest said **+1650%**. Removing
-the hand-picked universe dropped it to numbers that **lost to SPY buy-and-hold**.
-A dip-buying strategy beat SPY gross and died at realistic trading costs.
-Every existing retail tool would have shown the first number and none of the
-corrections. This one shows the corrections first.
+Born from a real session: a first momentum backtest said **+1650%** (136% a
+year, February 2023 to May 2026), on 44 tickers picked with hindsight and with
+a 45% drawdown against SPY's 8%. A stricter strategy on the full S&P 500
+(momentum plus low volatility, top 25 names, 2016 to 2026) made +163% and
+**lost to SPY buy-and-hold** (+362%). A dip-buying strategy beat SPY on Sharpe
+before costs (1.05 vs 0.83); at 5 bps a day it was still up 103% but trailed
+SPY's 344%. Every existing retail tool would have shown the first number and
+none of the corrections. This one shows the corrections first.
 
 > **Educational research tool. Past performance does not predict future
 > results. Not investment advice.** No trade execution, no signals — ever.

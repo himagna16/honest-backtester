@@ -83,7 +83,7 @@ export default function Landing() {
           <div className="bs-wrap">
             <p className="bs-kicker bs-enter">Educational research tool · Nothing here is advice</p>
             <h1 className="bs-enter" style={{ "--enter-delay": "60ms" } as React.CSSProperties}>
-              My backtest said <em>+1650%</em>. Then I removed the cheating.
+              My backtest said <em>+1650%</em>. I{"\u00a0"}picked the tickers with hindsight.
             </h1>
             <hr className="rule-under bs-enter-rule" style={{ "--enter-delay": "120ms" } as React.CSSProperties} />
             <div className="lede-row">
@@ -95,31 +95,31 @@ export default function Landing() {
               </p>
               <p className="byline bs-enter" style={{ "--enter-delay": "180ms" } as React.CSSProperties}>
                 <span className="drop">T</span>he number came from forty-four
-                tickers I picked in 2026 and tested from 2016. I was buying
-                winners I already knew had won. Running the identical rules on a
-                neutral universe cut the return by a factor of ten — and the
-                benchmark still beat it. A second strategy looked better than
-                SPY on Sharpe, right up until five basis points of trading cost
-                erased it entirely. Three numbers, one afternoon. The audit that
+                tickers I picked in 2026 and tested on prices from February 2023
+                to May 2026. I was buying winners I already knew had won. A
+                stricter strategy on the full S&amp;P 500 made 9.8% a year from
+                2016 to 2026, behind SPY&apos;s 16%. A dip-buying strategy beat
+                SPY on Sharpe before costs, then fell behind it at five basis
+                points a day. Three numbers, one afternoon. The audit that
                 caught them is now the product.
               </p>
             </div>
 
             <Reveal as="div" className="bs-figures" variant="rule">
               <Reveal as="div" className="bs-fig a" delay={0}>
-                <div className="cap">What the tool said</div>
+                <div className="cap">What my backtest said</div>
                 <div className="num"><FigureCount value="+1650%" strike /></div>
-                <p>Forty-four hand-picked tickers, chosen with the benefit of a decade of hindsight.</p>
+                <p>136% a year over 40 months, on 44 tickers picked with hindsight. Max drawdown 45%, against SPY&apos;s 8%.</p>
               </Reveal>
               <Reveal as="div" className="bs-fig b" delay={90}>
-                <div className="cap">On a neutral universe</div>
+                <div className="cap">A stricter strategy, full S&amp;P 500</div>
                 <div className="num"><FigureCount value="+163%" delay={90} /></div>
-                <p>Same rules, honest universe. Still sounds good — until you notice SPY returned +362%.</p>
+                <p>Different rules: momentum plus low volatility, top 25 names, 2016 to 2026. SPY returned +362% over the same years.</p>
               </Reveal>
               <Reveal as="div" className="bs-fig c" delay={180}>
-                <div className="cap">After realistic costs</div>
-                <div className="num"><FigureCount value="Killed" delay={420} /></div>
-                <p>Beat SPY gross on Sharpe, 1.05 against 0.83. Died completely at five basis points.</p>
+                <div className="cap">After trading costs</div>
+                <div className="num"><FigureCount value="Lost" delay={420} /></div>
+                <p>A dip-buyer beat SPY on Sharpe before costs, 1.05 to 0.83. At five basis points a day it was still up 103% (Sharpe 0.41), behind SPY&apos;s 344% (0.83).</p>
               </Reveal>
             </Reveal>
           </div>
@@ -132,8 +132,11 @@ export default function Landing() {
             <Reveal as="h2" delay={60}>One sentence goes in. An argument comes back.</Reveal>
             <LiveDemo />
             <p className="bs-demo-caption">
-              A replay of run rep_2c6332f417 — the same run as the export
-              further down this page. Every number is from the real report.
+              A replay of run rep_2c6332f417, the same run as the export
+              further down this page. It is a separate test on the same 44
+              tickers, ranked by 6-month return from mid-2024 to May 2026, so
+              its numbers differ from the backtest above. Every number is from
+              the real report.
             </p>
           </div>
         </section>
