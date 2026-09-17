@@ -1247,7 +1247,7 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   font-variant-numeric: tabular-nums; /* width cannot jitter while counting */
 }
 
-/* "Killed" is stamped, not counted: 1.04 -> 1 with opacity, one thud. */
+/* "Lost" is stamped, not counted: 1.04 -> 1 with opacity, one thud. */
 .broadsheet .bs-count[data-stamp="pending"] { opacity: 0; }
 .broadsheet .bs-count[data-stamp="in"] {
   animation: bs-stamp 340ms var(--bs-ease) both;

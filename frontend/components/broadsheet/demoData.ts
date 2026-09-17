@@ -1,5 +1,6 @@
 // Data for the landing-page live demo. Every value below is transcribed from
-// report rep_2c6332f417 — the founding-story run — and nothing else. Raw JSON
+// report rep_2c6332f417 (War list, 126-day lookback, mid-2024 to May 2026; a
+// separate run from the founding-story backtest) and nothing else. Raw JSON
 // values are quoted in comments next to each display string so drift is
 // auditable at a glance. If a number here cannot be traced to that report,
 // it is a defect.

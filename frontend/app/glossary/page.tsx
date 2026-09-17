@@ -26,7 +26,7 @@ const EXPLAINERS: { id: string; title: string; body: string }[] = [
   {
     id: "selection-bias",
     title: "Selection bias (the +1650% trap)",
-    body: "If you pick tickers you already know did well, any backtest on them is partly a memory of that knowledge. In 2016 you couldn't have known which 44 names would win — picking them in 2026 and testing from 2016 is hindsight wearing a lab coat. This tool re-runs your exact rules on the full S&P 500 and compares; a ranked strategy on a hand-picked list can never earn a green verdict.",
+    body: "If you pick tickers you already know did well, any backtest on them is partly a memory of that knowledge. In early 2023 you couldn't have known which 44 names would win over the next three years — picking them in 2026 and testing from 2023 is hindsight wearing a lab coat. This tool re-runs your exact rules on the full S&P 500 and compares; a ranked strategy on a hand-picked list can never earn a green verdict.",
   },
   {
     id: "survivorship-bias",
