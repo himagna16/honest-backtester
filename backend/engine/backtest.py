@@ -109,6 +109,9 @@ class EngineResult:
     # Without this nothing downstream can state which regime a run was in —
     # and conventions.py must not promise an rf the caller never passed.
     rf_used: float | None = None
+    # True when eligibility was gated by point-in-time index membership, so a
+    # report can never claim a survivorship-free universe the engine did not use.
+    membership_applied: bool = False
 
     @property
     def effective_start(self) -> pd.Timestamp:
@@ -264,10 +267,19 @@ def _staleness_panel(raw: pd.DataFrame) -> pd.DataFrame:
 class _SelectionEngine:
     """Computes target weights at any signal date from data ≤ that date."""
 
-    def __init__(self, spec: StrategySpec, prices: pd.DataFrame, universe: list[str]):
+    def __init__(self, spec: StrategySpec, prices: pd.DataFrame, universe: list[str],
+                 membership: pd.DataFrame | None = None):
         self.spec = spec
         self.universe = [t for t in dict.fromkeys(universe) if t in prices.columns]
         self.prices = prices
+        # Point-in-time membership gates WHO MAY BE PICKED at a signal date, and
+        # nothing else: signals still read each name's full price history,
+        # which was public at the time. A universe ticker the mask does not
+        # mention is never eligible — unknown membership is not membership.
+        self.membership = None
+        if membership is not None:
+            self.membership = (membership.reindex(index=prices.index, columns=self.universe)
+                               .fillna(False).astype(bool))
         self.zero_vol_excluded: set[str] = set()
         # ticker -> lowest annualized vol seen where the inverse-vol floor had
         # to bind. A silent floor is still a silent screen.
@@ -320,6 +332,8 @@ class _SelectionEngine:
         sel = self.spec.selection
         px_row = self.prices.loc[t, self.universe]
         eligible = px_row.notna()
+        if self.membership is not None:
+            eligible &= self.membership.loc[t]
         # Stale feeds are screened BEFORE any ranking or filtering, whatever
         # the weighting scheme (see _staleness_panel). Exclusions are tracked
         # and disclosed — a silent screen is its own bias.
@@ -474,6 +488,7 @@ def run(
     *,
     execution_lag_days: int | None = None,
     rf_daily: pd.Series | float | None = None,
+    membership: pd.DataFrame | None = None,
 ) -> EngineResult:
     """Pure function: (spec, price panel, universe tickers) → results.
 
@@ -488,6 +503,10 @@ def run(
     rf_daily: daily risk-free rate credited to uninvested cash — a scalar or a
         dated series. None → 0%, which is only honest when the report also
         uses a 0% hurdle.
+    membership: optional dates × tickers boolean frame (dsl/membership.py).
+        When given, a ranked strategy may only pick a ticker on a signal date
+        where it is True — the index as it stood then, not as it stands now.
+        Static allocations ignore it: their tickers are the user's own choice.
     """
     if prices.index.has_duplicates or not prices.index.is_monotonic_increasing:
         raise EngineError("price panel index must be sorted, unique dates")
@@ -514,7 +533,7 @@ def run(
         prices.loc[: window_index[-1]],
         [t for t in dict.fromkeys(universe) if t in prices.columns],
     )
-    selector = _SelectionEngine(spec, prices, universe)
+    selector = _SelectionEngine(spec, prices, universe, membership)
 
     # Signal dates. Ranked strategies enter at period ends; static allocations
     # buy on day one and then rebalance at period ends (so buy-and-hold over
@@ -682,6 +701,7 @@ def _run_standard(
         mean_cash_weight=float(cash_weight.mean()),
         fill_dates=pd.DatetimeIndex(fills.values),
         rf_used=float(rf_acc.mean()) if rf_supplied else None,
+        membership_applied=selector.membership is not None and not selector.static,
     )
     return result
 
@@ -953,4 +973,5 @@ def _run_cohorts(
         mean_cash_weight=float(np.mean(cash_weight)),
         fill_dates=pd.DatetimeIndex(fills.values),
         rf_used=float(np.mean(rf_acc)) if rf_supplied else None,
+        membership_applied=selector.membership is not None and not selector.static,
     )
