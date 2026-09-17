@@ -7,7 +7,7 @@ strategy than the one that will run.
 from __future__ import annotations
 
 from dsl.schema import Signal, StrategySpec
-from dsl.universes import PRESET_LABELS
+from dsl.universes import INDEX_NAMES, INDEX_PRESETS, PRESET_LABELS, resolve_preset
 
 _REBALANCE_PHRASE = {
     "daily": "Every trading day",
@@ -65,6 +65,13 @@ def _fmt_value(v) -> str:
 def readback(spec: StrategySpec) -> str:
     parts: list[str] = []
     universe_label = PRESET_LABELS.get(spec.universe.preset, spec.universe.preset)
+    if spec.universe.preset in INDEX_PRESETS:
+        # Say which universe will actually run: the index as it stood on each
+        # rebalance date, or today's members standing in for the past.
+        resolved = resolve_preset(spec.universe.preset, spec.window.start, spec.window.end)
+        name = INDEX_NAMES[spec.universe.preset]
+        universe_label = (f"the {name} members as of each rebalance date"
+                          if resolved.point_in_time else f"the {name} as it stands today")
     if spec.universe.preset == "user_watchlist" and spec.universe.resolved_tickers:
         n = len(spec.universe.resolved_tickers)
         sample = ", ".join(spec.universe.resolved_tickers[:5])

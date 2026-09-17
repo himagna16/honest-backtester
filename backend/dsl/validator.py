@@ -16,7 +16,7 @@ import pydantic
 
 from dsl.schema import SPEC_VERSION, StrategySpec
 from dsl.symbols import check_tickers
-from dsl.universes import preset_tickers, read_watchlist_file
+from dsl.universes import INDEX_NAMES, INDEX_PRESETS, read_watchlist_file, resolve_preset
 
 REQUIRED_SWEEP = {0.0, 5.0, 20.0}
 DEFAULT_WINDOW_YEARS = 10
@@ -180,9 +180,28 @@ def validate_spec(raw: dict) -> ValidationResult:
             )
     else:
         try:
-            resolved = preset_tickers(spec.universe.preset)
+            universe = resolve_preset(spec.universe.preset, start, end)
+            resolved = universe.tickers
         except (FileNotFoundError, ValueError) as exc:
             errors.append(str(exc))
+            universe = None
+        if (universe is not None and spec.universe.preset in INDEX_PRESETS
+                and sel.rank_by is not None):
+            name = INDEX_NAMES[spec.universe.preset]
+            if universe.point_in_time:
+                warnings.append(
+                    f"{name} is point-in-time: each rebalance picks only from "
+                    f"that day's members ({len(resolved)} companies over this "
+                    f"window). Members with no free price history can't be "
+                    f"picked; the audit reports how many were missing"
+                )
+            else:
+                warnings.append(
+                    f"{name} will use TODAY's members because "
+                    f"{universe.fallback_reason}. That list includes companies "
+                    f"that joined after their run-ups, so a ranked strategy on "
+                    f"it can't earn a green verdict"
+                )
         if spec.universe.watchlist_file:
             errors.append("watchlist_file only applies to the user_watchlist preset")
         # static allocation tickers must exist even on preset universes

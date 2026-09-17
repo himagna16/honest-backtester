@@ -62,6 +62,8 @@ def test_rigged_universe_triggers_selection_bias(rigged_report):
     assert "S&P 500" in (bias[0]["action"] or "")
     assert r["neutral_rerun"] is not None
     assert r["neutral_rerun"]["universe"] == "sp500"
+    # …and the neutral universe is the S&P 500 as it stood, not today's list
+    assert r["neutral_rerun"]["point_in_time"] is True
 
 
 def test_report_shape_and_invariants(rigged_report):
@@ -121,8 +123,11 @@ def test_honest_sp500_momentum_no_fatal():
     })
     assert not any(f["severity"] == "fatal" for f in r["audit"])
     assert r["neutral_rerun"] is None
-    # current-members caveat is disclosed on presets
-    assert any(f["check"] == "survivorship_universe" for f in r["audit"])
+    # the universe's membership status is disclosed on presets — 2016-2020 is
+    # inside point-in-time coverage
+    surv = [f for f in r["audit"] if f["check"] == "survivorship_universe"]
+    assert surv and surv[0]["evidence"]["point_in_time"] is True
+    assert r["data"]["universe_membership"]["point_in_time"] is True
     # window includes COVID → bear-market coverage
     assert r["regimes"]["has_bear_market"] is True
 
@@ -130,22 +135,15 @@ def test_honest_sp500_momentum_no_fatal():
 def test_fatal_branch_when_user_universe_outperforms_2x(monkeypatch):
     """Unit-test the >2× FATAL branch with a controlled neutral re-run."""
     import audit.universe as um
+    from dsl.membership import MembershipCoverage, load_membership
 
     idx = pd.bdate_range("2023-01-02", periods=300)
     big = pd.Series(0.01, index=idx)      # user run: huge
     small = pd.Series(0.0002, index=idx)  # neutral: modest
-
-    class FakeResult:
-        net_returns = {5.0: small}
-
-    from types import SimpleNamespace
-
-    monkeypatch.setattr(um, "preset_tickers", lambda p: ["AAA", "BBB"])
-    monkeypatch.setattr(
-        um, "get_panel",
-        lambda *a, **k: SimpleNamespace(prices=pd.DataFrame(index=idx)),
-    )
-    monkeypatch.setattr(um, "run", lambda *a, **k: FakeResult())
+    clean = um.MembershipUse(
+        "sp500", True, load_membership("sp500"), None,
+        MembershipCoverage(40, 0.97, 0.95, "2023-01-31", 503.0, 15.0))
+    monkeypatch.setattr(um, "_neutral_run", lambda spec: (small, clean))
 
     res = validate_spec({
         "name": "x", "universe": {"preset": "user_watchlist",
@@ -191,9 +189,29 @@ def test_benchmark_fit_flags_low_beta():
     assert "60/40" in (finding.action or "")
 
 
-def test_index_preset_extreme_outperformance_capped_at_amber():
-    """A ranked strategy harvesting today's index membership for >2x wealth
-    outperformance can never be called a survivor (green)."""
+def test_index_preset_without_point_in_time_is_capped_at_amber():
+    """A ranked strategy on TODAY's index list can never be called a survivor
+    (green), however large or small its margin — the Nasdaq-100 has no dated
+    membership here. (This cap used to need a >2× wealth gap, and a +3553%
+    S&P 500 momentum run on today's list earned green under it.)"""
+    r = build({
+        "name": "ndx momentum melt-up",
+        "universe": {"preset": "nasdaq100"},
+        "selection": {"rank_by": {"type": "return", "lookback_days": 252},
+                      "direction": "top", "n": 5},
+        "weighting": "equal", "rebalance": "monthly", "benchmark": "SPY",
+        "window": {"start": "2023-01-02", "end": "2026-05-29"},
+    }, attempts=3)
+    assert r["verdict"]["color"] in ("red", "amber")
+    surv = [f for f in r["audit"] if f["check"] == "survivorship_universe"][0]
+    assert surv["severity"] == "warning" and surv["evidence"]["point_in_time"] is False
+    if r["verdict"]["color"] == "amber":
+        assert "index membership" in r["verdict"]["headline"]
+
+
+def test_sp500_inside_coverage_runs_point_in_time_and_is_not_capped_for_it():
+    """The same 12-month momentum on the S&P 500 as it stood at each rebalance:
+    the membership cap must not fire, and the universe must say it was PIT."""
     r = build({
         "name": "sp500 momentum melt-up",
         "universe": {"preset": "sp500"},
@@ -202,6 +220,8 @@ def test_index_preset_extreme_outperformance_capped_at_amber():
         "weighting": "equal", "rebalance": "monthly", "benchmark": "SPY",
         "window": {"start": "2023-01-02", "end": "2026-05-29"},
     }, attempts=3)
-    assert r["verdict"]["color"] in ("red", "amber")
-    if r["verdict"]["color"] == "amber":
-        assert "index membership" in r["verdict"]["headline"] or "hand-picked" in r["verdict"]["headline"]
+    membership = r["data"]["universe_membership"]
+    assert membership["point_in_time"] and membership["trustworthy"]
+    assert membership["coverage"]["mean_priced_share"] > 0.95
+    assert "index membership" not in r["verdict"]["headline"]
+    assert "index is missing" not in r["verdict"]["headline"]
