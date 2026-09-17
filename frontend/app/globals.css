@@ -918,7 +918,7 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
     transition-duration: 0.01ms !important;
   }
 }
-/* ---------- the live demo: a replay of run rep_2c6332f417 ----------
+/* ---------- the live demo: a replay of report rep_9534f1bae0 ----------
    Same plate language as .bs-plate — band frame, chrome dots, white sheet.
    Every hidden state is gated on [data-ready="1"], which only client JS
    sets: with no JS the finished verdict scene renders, static and
