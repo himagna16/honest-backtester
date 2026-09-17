@@ -21,7 +21,7 @@ import LiveDemo from "@/components/broadsheet/LiveDemo";
 
 const ENTRIES = [
   ["01", "Selection bias, named out loud",
-    "Hand-pick a watchlist and your exact rules are re-run on the full S&P 500 for comparison. Hindsight gets reported, not rewarded."],
+    "Hand-pick a watchlist and your exact rules are re-run on the S&P 500 as it stood at each rebalance, not on today's winners. Hindsight gets reported, not rewarded."],
   ["02", "Costs swept at 0, 5 and 20 bps",
     "Scaled by your strategy's measured turnover. The report states the cost level at which the edge dies — often lower than you'd guess."],
   ["03", "A verdict you didn't get to see",
@@ -97,11 +97,12 @@ export default function Landing() {
                 <span className="drop">T</span>he number came from forty-four
                 tickers I picked in 2026 and tested on prices from February 2023
                 to May 2026. I was buying winners I already knew had won. A
-                stricter strategy on the full S&amp;P 500 made 9.8% a year from
-                2016 to 2026, behind SPY&apos;s 16%. A dip-buying strategy beat
-                SPY on Sharpe before costs, then fell behind it at five basis
-                points a day. Three numbers, one afternoon. The audit that
-                caught them is now the product.
+                stricter strategy on the S&amp;P 500, tested on the companies
+                actually in the index each month, made 9.6% a year from 2016 to
+                2026, behind SPY&apos;s 16%. A dip-buying strategy trailed SPY
+                on Sharpe before costs and fell far behind at five basis points
+                a day. Three numbers, one afternoon. The audit that caught them
+                is now the product.
               </p>
             </div>
 
@@ -112,14 +113,14 @@ export default function Landing() {
                 <p>136% a year over 40 months, on 44 tickers picked with hindsight. Max drawdown 45%, against SPY&apos;s 8%.</p>
               </Reveal>
               <Reveal as="div" className="bs-fig b" delay={90}>
-                <div className="cap">A stricter strategy, full S&amp;P 500</div>
-                <div className="num"><FigureCount value="+163%" delay={90} /></div>
-                <p>Different rules: momentum plus low volatility, top 25 names, 2016 to 2026. SPY returned +362% over the same years.</p>
+                <div className="cap">A stricter strategy, the S&amp;P 500 as it stood</div>
+                <div className="num"><FigureCount value="+159%" delay={90} /></div>
+                <p>Different rules: momentum plus low volatility, top 25 names, 2016 to 2026, picking only from that month&apos;s index members. SPY returned +362% over the same years.</p>
               </Reveal>
               <Reveal as="div" className="bs-fig c" delay={180}>
                 <div className="cap">After trading costs</div>
                 <div className="num"><FigureCount value="Lost" delay={420} /></div>
-                <p>A dip-buyer beat SPY on Sharpe before costs, 1.05 to 0.83. At five basis points a day it was still up 103% (Sharpe 0.41), behind SPY&apos;s 344% (0.83).</p>
+                <p>A dip-buyer on the S&amp;P 500 as it stood each day had a Sharpe of 0.81 before costs, against SPY&apos;s 0.83. At five basis points a day it was up 22% (Sharpe 0.19), against SPY&apos;s 344%.</p>
               </Reveal>
             </Reveal>
           </div>
@@ -132,11 +133,12 @@ export default function Landing() {
             <Reveal as="h2" delay={60}>One sentence goes in. An argument comes back.</Reveal>
             <LiveDemo />
             <p className="bs-demo-caption">
-              A replay of run rep_2c6332f417, the same run as the export
+              A replay of report rep_9534f1bae0, the same report as the export
               further down this page. It is a separate test on the same 44
               tickers, ranked by 6-month return from mid-2024 to May 2026, so
-              its numbers differ from the backtest above. Every number is from
-              the real report.
+              its numbers differ from the backtest above. Its selection-bias
+              check compares against the S&amp;P 500 as it stood each month.
+              Every number is from the real report.
             </p>
           </div>
         </section>
@@ -163,7 +165,7 @@ export default function Landing() {
                   <Image src="/truth-report-sample.png" width={3000} height={3750}
                     quality={95}
                     sizes="(max-width: 760px) 100vw, 1060px"
-                    alt="An exported Truth Report: an amber verdict reading “Beats the benchmark — but your universe is hand-picked”, above the strategy's return and Sharpe shown next to the SPY benchmark and the full cost sweep table." />
+                    alt="An exported Truth Report: a red verdict reading “Result not trustworthy”, above the strategy's return and Sharpe shown next to the SPY benchmark and the full cost sweep table." />
                 </div>
               </div>
               <figcaption>
@@ -214,7 +216,7 @@ export default function Landing() {
                   <li><span className="mark">✓</span> Plain-English to spec translation</li>
                   <li><span className="mark">✓</span> Shareable Truth Report exports</li>
                   <li><span className="mark">✓</span> Strategy journal and version history</li>
-                  <li className="off"><span className="mark">—</span> Current index membership only</li>
+                  <li><span className="mark">✓</span> Point-in-time S&amp;P 500 membership from 2015, on free price data</li>
                   <li className="off"><span className="mark">—</span> Monthly backtest allowance</li>
                 </ul>
                 <Link className="bs-btn quiet" href="/workbench">Use it now — no account</Link>
@@ -228,7 +230,7 @@ export default function Landing() {
                   data licence is signed, not before.
                 </p>
                 <ul>
-                  <li><span className="mark">✓</span> <strong>Point-in-time index membership</strong>, including companies that went to zero</li>
+                  <li><span className="mark">✓</span> <strong>Point-in-time index membership with every member priced</strong>, including companies that went to zero</li>
                   <li><span className="mark">✓</span> Delisted-stock coverage back through 2008</li>
                   <li><span className="mark">✓</span> Forward testing — freeze a survivor, track it live against its backtest</li>
                   <li><span className="mark">✓</span> Unlimited backtests and longer history</li>

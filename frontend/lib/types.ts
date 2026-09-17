@@ -104,6 +104,19 @@ export interface HoldoutPurge {
   total: number;
 }
 
+/** How a run's universe relates to dated index membership (audit/universe.py). */
+export interface UniverseMembership {
+  preset: string;
+  point_in_time: boolean;
+  trustworthy: boolean;
+  fallback_reason: string | null;
+  coverage: {
+    signal_dates: number; mean_priced_share: number; min_priced_share: number;
+    min_date: string | null; mean_members: number; mean_unpriced: number;
+  } | null;
+  source: Record<string, string> | null;
+}
+
 export interface Report {
   verdict: Verdict;
   metrics: Metrics;
@@ -118,6 +131,8 @@ export interface Report {
   neutral_rerun: {
     universe: string; net5_total_return: number; user_net5_total_return: number;
     wealth_ratio: number; start: string; end: string;
+    // Reports made before point-in-time membership lack these.
+    point_in_time?: boolean; trustworthy?: boolean; membership?: UniverseMembership;
   } | null;
   multiple_testing: { universe_key: string; attempts: number };
   significance?: {
@@ -136,6 +151,7 @@ export interface Report {
     as_of: string; stale: boolean; missing: string[]; notes: string[];
     universe_size: number; effective_start: string; effective_end: string;
     requested_start: string | null; requested_end: string | null; rf_source: string;
+    universe_membership?: UniverseMembership;
   };
   spec: Record<string, unknown>;
   readback: string;

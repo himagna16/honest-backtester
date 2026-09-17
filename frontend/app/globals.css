@@ -1038,6 +1038,9 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
 .bs-demo .ld-audit li.warning { color: var(--warn); font-weight: 600; }
 .bs-demo .ld-audit li.warning .mark,
 .bs-demo .ld-audit li.warning .tag { color: var(--warn); }
+.bs-demo .ld-audit li.fatal { color: var(--neg); font-weight: 600; }
+.bs-demo .ld-audit li.fatal .mark,
+.bs-demo .ld-audit li.fatal .tag { color: var(--neg); }
 .bs-demo .ld-audit li.sub { display: block; padding-left: 26px; font-weight: 400; }
 .bs-demo .ld-audit li.sub strong {
   color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums;
@@ -1052,6 +1055,7 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   transform-origin: left center;
   transition: opacity 240ms ease-out, transform 240ms ease-out;
 }
+.bs-demo .ld-stamp.red { color: var(--neg); border-color: var(--neg); }
 .bs-demo[data-ready="1"] .ld-stamp:not(.is-in) { opacity: 0; transform: scale(1.05); }
 .bs-demo .ld-verdict {
   font-family: var(--font-display); font-weight: 700; font-size: var(--t-lede);
@@ -1060,6 +1064,12 @@ details.fallback[open] summary { margin-bottom: var(--s2); }
   transition: opacity 300ms ease-out 80ms, transform 300ms ease-out 80ms;
 }
 .bs-demo[data-ready="1"] .ld-verdict:not(.is-in) { opacity: 0; transform: translateY(6px); }
+.bs-demo .ld-verdict-sub {
+  margin: 8px 0 0; max-width: 56ch; color: var(--ink-2, var(--ink));
+  font-size: var(--t-small);
+  transition: opacity 300ms ease-out 140ms, transform 300ms ease-out 140ms;
+}
+.bs-demo[data-ready="1"] .ld-verdict-sub:not(.is-in) { opacity: 0; transform: translateY(6px); }
 
 .bs-demo .ld-metrics {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));

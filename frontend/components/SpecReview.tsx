@@ -17,9 +17,9 @@ const WEIGHTING = ["equal", "rank", "inverse_vol"];
 const BENCHMARK = ["SPY", "QQQ", "sixty_forty"];
 const DIRECTION = ["top", "bottom"];
 const UNIVERSE_LABEL: Record<string, string> = {
-  sp500: "S&P 500 · current members",
-  nasdaq100: "Nasdaq-100 · current members",
-  dow30: "Dow 30 · current members",
+  sp500: "S&P 500 · point-in-time from 2015",
+  nasdaq100: "Nasdaq-100 · today's members",
+  dow30: "Dow 30 · today's members",
   sector_etfs: "11 sector ETFs",
   user_watchlist: "Custom watchlist",
 };

@@ -26,12 +26,12 @@ const EXPLAINERS: { id: string; title: string; body: string }[] = [
   {
     id: "selection-bias",
     title: "Selection bias (the +1650% trap)",
-    body: "If you pick tickers you already know did well, any backtest on them is partly a memory of that knowledge. In early 2023 you couldn't have known which 44 names would win over the next three years — picking them in 2026 and testing from 2023 is hindsight wearing a lab coat. This tool re-runs your exact rules on the full S&P 500 and compares; a ranked strategy on a hand-picked list can never earn a green verdict.",
+    body: "If you pick tickers you already know did well, any backtest on them is partly a memory of that knowledge. In early 2023 you couldn't have known which 44 names would win over the next three years — picking them in 2026 and testing from 2023 is hindsight wearing a lab coat. This tool re-runs your exact rules on the S&P 500 as it stood at each rebalance and compares; a ranked strategy on a hand-picked list can never earn a green verdict.",
   },
   {
     id: "survivorship-bias",
     title: "Survivorship bias (index lists have it too)",
-    body: "A CURRENT S&P 500 member list only contains companies that survived and grew into the index. Backtesting the past on today's members means you secretly bought the winners before they won. It's smaller than a hand-picked list's bias, but real — honest index backtests need the membership as of each rebalance date, which requires licensed point-in-time data (V1).",
+    body: "A CURRENT index member list only contains companies that survived and grew into the index. Backtesting the past on today's members means you secretly bought the winners before they won: on today's S&P 500 list, six-month momentum from 2016 turned into +18,693%; on the index as it stood each month the same rules made +211%, behind SPY. So S&P 500 runs from 2015 on use the membership as of each rebalance date, rebuilt from dated index changes. Two gaps remain and are reported on every run: companies with no free price history (mostly acquired, some bankrupt) can't be picked, and the Nasdaq-100 and Dow 30 still use today's members, so a ranked strategy on them can't earn a green verdict.",
   },
   {
     id: "lookahead-bias",

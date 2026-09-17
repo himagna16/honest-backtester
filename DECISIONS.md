@@ -54,9 +54,9 @@ doubt, choose the interpretation consistent with the product thesis
 - **S&P 500 constituent seed list**: checked in at
   `fixtures/sp500_constituents.csv`, sourced from the Wikipedia "List of S&P
   500 companies" table (snapshot taken June 2025 during the original session).
-  `scripts/refresh_sp500.py` re-scrapes it on demand; the audit layer always
-  discloses that a *current* constituent list is still mildly survivorship
-  biased ("less biased, not unbiased").
+  `scripts/refresh_sp500.py` re-scrapes it on demand. *Superseded for S&P 500
+  windows from 2015 on by point-in-time membership — see "Point-in-time S&P
+  500 membership" below; "mildly" survivorship biased turned out to be wrong.*
 - **Snapshot format is parquet** with a SHA-256 content hash stored on the Run
   row. Re-runs replay the snapshot by default; "refresh data" is the only path
   to new numbers.
@@ -867,3 +867,80 @@ symlinked tests directory resolves back to the live module. Use a real copy,
 and prove the mirror is sensitive with a deliberate always-fail mutation before
 trusting any result. One reviewer caught this in its own method and rebuilt —
 which is the only reason its 21/21 kill count means anything.
+
+## Point-in-time S&P 500 membership (2026-09-17)
+
+**The problem.** S&P 500 momentum runs on today's constituent list reported
++534% to +3560% over Feb 2023–May 2026, and a saved 2016–2026 run +18,693%.
+Not a split error (no daily move beyond +80%/−60% since 2022). It was
+survivorship: the list is today's, so the engine could buy AppLovin, Carvana,
+Vertiv and Palantir years before S&P added them. The old note called this
+"mild". It was the whole result.
+
+**Confirmed, controlled.** `scripts/pit_membership_study.py` runs the same
+engine, prices and rules twice, changing only the universe
+(`docs/pit_membership_study.md`). Momentum top 5 over 2023–2026: today's list
++534% to +3561% across 21–252-day lookbacks, point-in-time +94% to +527%
+(SPY +94%). The saved 6-month run: +18,693% → +211%, behind SPY's +316%.
+
+**Source.** Wikipedia's *Historical components of the S&P 500* (dated changes;
+391 of 407 rows cite S&P DJI announcements) walked backward from *List of S&P
+500 companies*, both pinned by revision id. Free and citable, and the pinned
+revisions make it reproducible. Cross-checked against fja05680/sp500, whose
+pre-2019 history is independent of Wikipedia (Clenow/Norgate). Since 2015, every
+disagreement is a rename, a merger labeling quirk, or a 1–3 day
+effective-date convention (`fixtures/sp500_membership/VALIDATION.txt`).
+**Coverage is claimed only from 2015-01-01**: before ~2014 the two sources
+genuinely disagree, and the table says "selected changes". Earlier windows get
+today's list plus the warning, never a half-and-half universe.
+
+**Conventions.** A change counts from its effective date, not its announcement.
+Membership gates only who may be *picked* on a signal date. Signals still read
+each name's full price history, which was public at the time. A name removed
+while held is kept until the next rebalance.
+
+**Price identity is checked, not assumed.** Yahoo reuses tickers (FOX, DOW, SE,
+SNDK, Q) and moves histories to successors (DPS→KDP, FLT→CPAY, DISCA→WBD). A
+spell's price series is rejected if it starts more than 10 days after the spell
+does. Renames are mapped by hand in `corrections.csv`, each with a note. Series
+that change company at a boundary are excluded rather than trusted: Alcoa
+Inc.'s history under today's `AA`, and SmurfitWestrock's flat-lined pre-2024
+`SW`. A ±40% one-day screen found only real events plus one pre-existing
+artifact (DHR +61% on the 2016 Fortive spin, flagged as a separate task). The
+membership file is hash-checked at load, so a hand edit is refused.
+
+**What the audit does with it.**
+- Survivorship finding: *note* when point-in-time and ≥95% of members priced;
+  *warning* at 90–95%; *warning* + amber cap below 90% or on today's list.
+- **Verdict cap changed (reversible):** a ranked strategy on an index without
+  trustworthy point-in-time data is amber *at any margin*. The old cap needed a
+  >2× wealth gap, and a +3553% run on today's list earned GREEN under it.
+  Consequence: ranked Nasdaq-100 and Dow 30 runs can no longer be green.
+- Selection bias: the neutral re-run is the point-in-time S&P 500. Without it,
+  a >2× gap is still FATAL, with the comparison's flattery disclosed. Under 2×
+  the finding is "neutral check unverified" and does not clear the list. The
+  old neutral was today's list, which let the landing demo's hindsight list pass
+  at 1.81×; against the index as it stood the gap is 3.77×, FATAL.
+
+**Saved reports were re-run, not edited** (`scripts/rerun_saved_reports_pit.py`,
+`docs/pit_rerun_log.md`). Each became a new run of the same strategy version
+with `replay_of` set, on its frozen snapshot plus former members' closes. The
+journal keeps the originals as history. Those 8 re-runs each bumped their
+universe's attempt counter, as any run does. The landing demo, export sample
+and README figures were regenerated from the new reports and from
+`scripts/founding_story_pit.py`. That script ports the founding scripts,
+reproduces their original numbers exactly on today's list, then reruns them
+point-in-time. Momentum + low-vol: +163% → +159%. The dip-buyer's gross Sharpe
+went from 1.05 to 0.81, below SPY's 0.83, so the landing no longer claims it
+beat SPY before costs.
+
+**Open question for Sai.** Four re-run S&P 500 reports are now GREEN under the
+existing rules (e.g. 12-month momentum 2023–2026: +286% vs SPY +94%). The
+significance checks call the margin inside the noise, and the factor checks call
+it leveraged SPY beta. Today those findings don't gate the verdict. Whether they
+should is a product decision, not part of this fix.
+
+**Residual bias, disclosed on every report.** Unpriced members (80% priced at
+end-2015 → 99.4% at end-2025) can't be picked, so early windows still lean
+optimistic. Closing that needs licensed delisted-stock prices.
+
