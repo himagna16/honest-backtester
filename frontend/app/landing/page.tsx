@@ -83,7 +83,7 @@ export default function Landing() {
           <div className="bs-wrap">
             <p className="bs-kicker bs-enter">Educational research tool · Nothing here is advice</p>
             <h1 className="bs-enter" style={{ "--enter-delay": "60ms" } as React.CSSProperties}>
-              My backtest said <em>+1650%</em>. I picked the tickers with hindsight.
+              My backtest said <em>+1650%</em>. I{"\u00a0"}picked the tickers with hindsight.
             </h1>
             <hr className="rule-under bs-enter-rule" style={{ "--enter-delay": "120ms" } as React.CSSProperties} />
             <div className="lede-row">
