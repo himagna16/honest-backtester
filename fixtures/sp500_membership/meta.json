@@ -1,0 +1,11 @@
+{
+ "index": "sp500",
+ "anchor_source": "https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&oldid=1370105675",
+ "anchor_date": "2026-08-19",
+ "changes_source": "https://en.wikipedia.org/w/index.php?title=Historical_components_of_the_S%26P_500&oldid=1370891103",
+ "changes_through": "2026-08-18",
+ "coverage_start": "2015-01-01",
+ "license": "Wikipedia text CC BY-SA 4.0 (see README.md)",
+ "membership_sha256": "f85457bc664a4b757c1512581d4b848095fdb2ccf4ef8303e37d3a0348b1855d",
+ "built": "2026-09-17"
+}
