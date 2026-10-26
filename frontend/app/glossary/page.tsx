@@ -36,7 +36,7 @@ const EXPLAINERS: { id: string; title: string; body: string }[] = [
   {
     id: "lookahead-bias",
     title: "Lookahead bias",
-    body: "Using information from after the trade to decide the trade. Here it is impossible by construction: signals at day t use closes through t only, positions earn returns from t+1, and the shift lives inside the engine — no spec can ask for a same-day fill. The test suite proves that altering future prices cannot change past weights.",
+    body: "Using information from after the trade to decide the trade. Here it is impossible by construction: signals at day t use closes through t only, trades fill at the close of t+1 (earning from t+2), and the lag lives inside the engine — no spec can ask for a same-day fill. The test suite proves that altering future prices cannot change past weights.",
   },
   {
     id: "costs",

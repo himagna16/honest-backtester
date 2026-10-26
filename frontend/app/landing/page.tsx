@@ -27,7 +27,7 @@ const ENTRIES = [
   ["03", "A verdict you didn't get to see",
     "Thirty per cent of the window is held out. A large in-sample advantage that vanishes there is flagged as the overfit signature it is."],
   ["04", "Lookahead made impossible",
-    "Signals at day t, returns from t+1, enforced inside the engine rather than by convention. Altering future prices cannot change past weights."],
+    "Signals at day t, fills at the close of t+1, enforced inside the engine rather than by convention. Altering future prices cannot change past weights."],
   ["05", "Regime coverage, stated plainly",
     "If your window contains no sustained bear market, the report says so. A strategy tested only through a bull run has not been tested."],
   ["06", "Reproducible to the byte",
