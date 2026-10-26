@@ -52,6 +52,14 @@ export function riskBadges(r: Report): RiskBadge[] {
       tone: "warn",
       why: "The edge does not survive realistic trading costs.",
     });
+  if (sev(r, "survivorship_universe") === "warning")
+    out.push({
+      label: r.data.universe_membership?.point_in_time ? "Index history gaps" : "Today's index list",
+      tone: "warn",
+      why: r.data.universe_membership?.point_in_time
+        ? "Some past index members have no free price history and could not be picked."
+        : "The index universe is today's members, including companies that joined after their run-ups.",
+    });
   const bias = sev(r, "selection_bias");
   if (bias === "fatal" || bias === "warning")
     out.push({

@@ -114,7 +114,8 @@ def _perturbations(spec: StrategySpec) -> list[tuple[str, StrategySpec]]:
 
 def sensitivity(spec: StrategySpec, prices: pd.DataFrame, universe: list[str],
                 base_net5_total: float, bench: pd.Series,
-                progress=None) -> tuple[list[dict], Finding | None]:
+                progress=None, membership: pd.DataFrame | None = None,
+                ) -> tuple[list[dict], Finding | None]:
     """Re-run each perturbation; flag flips vs the benchmark (net of 5 bps)."""
     bench_total = metrics.total_return(bench)
     base_beats = base_net5_total > bench_total
@@ -124,7 +125,7 @@ def sensitivity(spec: StrategySpec, prices: pd.DataFrame, universe: list[str],
         if progress:
             progress(f"Sensitivity: {label}")
         try:
-            res = run(variant_spec, prices, universe)
+            res = run(variant_spec, prices, universe, membership=membership)
         except EngineError:
             continue
         net5 = res.net_returns.get(SWEEP_VERDICT_BPS)

@@ -1,0 +1,92 @@
+Built 2026-09-17T17:12:25+00:00
+anchor: https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&oldid=1370105675
+changes: https://en.wikipedia.org/w/index.php?title=Historical_components_of_the_S%26P_500&oldid=1370891103
+coverage_start: 2015-01-01
+
+Reconstruction inconsistencies since coverage start: 0
+Inconsistencies before coverage start (not relied on): 20
+
+Member count (securities) and usable price history, per year-end:
+  date        members  priced  share
+  2015-12-31      504     404  80.2%
+  2016-12-31      505     425  84.2%
+  2017-12-31      505     439  86.9%
+  2018-12-31      505     450  89.1%
+  2019-12-31      505     461  91.3%
+  2020-12-31      505     467  92.5%
+  2021-12-31      505     474  93.9%
+  2022-12-31      503     482  95.8%
+  2023-12-31      503     488  97.0%
+  2024-12-31      503     493  98.0%
+  2025-12-31      503     500  99.4%
+  2026-08-01      503     503  100.0%
+
+'Date added' cross-check (current members added since coverage start): 171/188 agree
+  AMCR: list says added 2019-06-07, change table gives 2019-06-11
+  CFG: list says added 2016-01-29, change table gives 2016-02-01
+  COO: list says added 2016-09-23, change table gives 2016-09-22
+  CPAY: list says added 2018-06-20, change table gives 2024-03-25
+  D: list says added 2016-11-30, change table gives None
+  DOW: list says added 2019-04-01, change table gives 2019-04-02
+  EQIX: list says added 2015-03-20, change table gives 2015-03-23
+  FTV: list says added 2016-07-01, change table gives 2016-07-05
+  HSIC: list says added 2015-03-17, change table gives 2015-03-18
+  HWM: list says added 2016-10-21, change table gives 2020-04-01
+  IQV: list says added 2017-08-29, change table gives 2017-11-15
+  IR: list says added 2020-03-03, change table gives 2020-03-02
+  SRE: list says added 2017-03-17, change table gives None
+  TROW: list says added 2019-07-29, change table gives None
+  UAL: list says added 2015-09-03, change table gives 2015-09-02
+  VRSK: list says added 2015-10-08, change table gives 2015-10-07
+  WTW: list says added 2016-01-05, change table gives 2022-01-10
+
+One-day moves beyond ±40% on member days with usable prices: 15
+  EPAM (EPAM) 2022-02-28: -46%
+  DXCM (DXCM) 2024-07-26: -41%
+  FANG (FANG) 2020-03-09: -45%
+  NKTR (NKTR) 2018-06-04: -42%
+  NCLH (NCLH) 2020-03-24: +42%
+  DXC (DXC) 2020-03-24: +41%
+  CNC (CNC) 2025-07-02: -40%
+  AAL (AAL) 2020-06-04: +41%
+  APA (APA) 2020-03-09: -54%
+  BIIB (BIIB) 2020-11-04: +44%
+  DHR (DHR) 2016-07-05: +61%
+  FISV (FISV) 2025-10-29: -44%
+  GL (GL) 2024-04-11: -53%
+  OXY (OXY) 2020-03-09: -52%
+  PCG (PCG) 2019-01-14: -52%
+
+fja05680/sp500 cross-check over 606 dated snapshots since 2015-01-01:
+  same-dates ticker pairs (renames / labelling): 28
+    AABA->YHOO, ABC->COR, AMCR->BMS, ANTM->ELV, BBT->TFC, BK->BNY, BLL->BALL, COG->CTRA, CTL->LUMN, DXC->CSC, EQR->VMRK, FB->META, FI->FISV, HRS->LHX, IQV->Q, IR->TT, JEC->J, KDP->DPS, LB->BBWI, LO->QRVO, MMC->MRSH, MYL->VTRS, PKI->RVTY, RE->EG, SATS->ECHO, TMK->GL, UTX->RTX, WYND->WYN
+  only in fja05680: 3 ticker(s) on <=3 snapshots (effective-date convention), 15 longer:
+    SYMC   2015-01-07..2019-10-18 (496 snapshots)
+    MWV    2015-01-07..2015-07-01 (49 snapshots)
+    KORS   2015-01-07..2018-09-18 (445 snapshots)
+    ARNC   2015-01-07..2020-04-03 (234 snapshots)
+    BHGE   2015-01-07..2019-10-03 (495 snapshots)
+    PX     2015-01-07..2018-10-25 (457 snapshots)
+    HCP    2015-01-07..2019-10-18 (496 snapshots)
+    CBS    2015-01-07..2019-11-21 (498 snapshots)
+    AGN    2015-03-23..2020-04-06 (486 snapshots)
+    WRK    2015-07-02..2024-06-24 (521 snapshots)
+    CCEP   2016-01-04..2016-05-24 (64 snapshots)
+    PEAK   2019-11-05..2024-02-01 (67 snapshots)
+    NLOK   2019-11-05..2022-11-01 (49 snapshots)
+    VIAC   2019-12-05..2022-02-15 (34 snapshots)
+    PARA   2022-02-17..2025-07-23 (49 snapshots)
+  only in this build: 34 ticker(s) on <=3 snapshots (effective-date convention), 12 longer:
+    ACT    2015-01-07..2020-04-06 (506 snapshots)
+    GEN    2015-01-07..2022-11-01 (545 snapshots)
+    CPRI   2015-01-07..2015-12-31 (117 snapshots)
+    BHI    2015-01-07..2017-06-26 (306 snapshots)
+    TYC    2015-01-07..2016-09-02 (213 snapshots)
+    ACE    2015-01-07..2016-01-15 (122 snapshots)
+    DOC    2015-01-07..2024-02-01 (563 snapshots)
+    LIN    2015-01-07..2018-10-31 (458 snapshots)
+    SW     2015-01-07..2024-06-24 (570 snapshots)
+    AA     2015-01-07..2016-10-31 (233 snapshots)
+    PSKY   2015-01-07..2025-07-23 (581 snapshots)
+    BKR    2017-07-07..2019-10-03 (189 snapshots)
+

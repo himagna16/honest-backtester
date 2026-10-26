@@ -18,6 +18,23 @@ Legend:  ☐ = to do   ✅ = done   🔑 = needs an account/key you create (I ca
 
 ---
 
+## Now — point-in-time S&P 500 membership (branch `pit-sp500-membership`)
+
+Built and tested locally, **not deployed**. See DECISIONS.md → "Point-in-time
+S&P 500 membership" and `docs/pit_membership_study.md`.
+
+- ✅ Membership rebuilt from cited sources, engine + audit use it, 8 saved
+  reports re-run, landing demo/export/README regenerated from the re-runs
+- ☐ **Sai: review the numbers, then OK a deploy** (Vercel frontend + Render
+  backend). The new fixture `fixtures/sp500_pit_prices.parquet` ships with the
+  backend and seeds on first boot. Note that S&P 500 runs now load ~90 more
+  names, and a full S&P 500 run was already too heavy for Render's free tier.
+- ☐ Existing local caches: `.venv/bin/python scripts/seed_cache.py --backfill-pit`
+- ☐ Decide: should "margin inside the noise" / "no factor alpha" block a green
+  verdict? (Four point-in-time S&P 500 re-runs are green without it.)
+
+---
+
 ## Phase 0 — Run it and look at it  (now · free · no signup)
 
 - ✅ App runs locally
@@ -113,8 +130,10 @@ These are the blockers that can sink the business if skipped. Details and
 reasoning in [SAAS_PLAN.md](SAAS_PLAN.md).
 
 - 🔑 **Licensed price data** — the single most important one. yfinance is not
-  licensed for commercial use *and* is survivorship-biased (the exact bias this
-  product exists to expose). This is also the paid tier's actual value.
+  licensed for commercial use *and* has no delisted-stock prices. Point-in-time
+  S&P 500 *membership* is now rebuilt from free cited sources, but members with
+  no free price history still can't be picked. This is also the paid tier's
+  actual value.
   - **https://norgatedata.com** ($30–60/mo, delisted-stock coverage) ·
     **https://eodhd.com** · **https://polygon.io**
 - 🔑 **Legal review** (~$1–3k) — a fintech-focused startup attorney reads the

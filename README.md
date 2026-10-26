@@ -7,12 +7,18 @@ the market does.*
 
 Born from a real session: a first momentum backtest said **+1650%** (136% a
 year, February 2023 to May 2026), on 44 tickers picked with hindsight and with
-a 45% drawdown against SPY's 8%. A stricter strategy on the full S&P 500
-(momentum plus low volatility, top 25 names, 2016 to 2026) made +163% and
-**lost to SPY buy-and-hold** (+362%). A dip-buying strategy beat SPY on Sharpe
-before costs (1.05 vs 0.83); at 5 bps a day it was still up 103% but trailed
-SPY's 344%. Every existing retail tool would have shown the first number and
-none of the corrections. This one shows the corrections first.
+a 45% drawdown against SPY's 8%. A stricter strategy on the S&P 500 as it
+stood each month (momentum plus low volatility, top 25 names, 2016 to 2026)
+made +159% and **lost to SPY buy-and-hold** (+362%). A dip-buying strategy on
+the same point-in-time index had a lower Sharpe than SPY even before costs
+(0.81 vs 0.83), and at 5 bps a day it made 22% against SPY's 344%. Every
+existing retail tool would have shown the first number and none of the
+corrections. This one shows the corrections first.
+
+The S&P 500 figures above were first measured on *today's* constituent list,
+which quietly buys companies before they joined the index. Rebuilding
+point-in-time membership turned the app's own saved 2016–2026 momentum report
+from +18,693% into +211% (`docs/pit_membership_study.md`, `docs/founding_story_pit.md`).
 
 > **Educational research tool. Past performance does not predict future
 > results. Not investment advice.** No trade execution, no signals — ever.
@@ -24,12 +30,13 @@ SQLite · matplotlib · an LLM translation layer (multi-provider)
 Every run ends in a **Truth Report** — the verdict first, the benchmark always,
 the flattering number second:
 
-![A Truth Report: an amber "WOUNDED" verdict, the strategy's return and Sharpe next to SPY, the cost sweep, the equity curve, and the audit findings](docs/screenshots/truth-report.png)
+![A Truth Report: a red "KILLED" verdict (selection bias detected), the strategy's return and Sharpe next to SPY, the cost sweep, the equity curve, and the audit findings](docs/screenshots/truth-report.png)
 
 ## Engineering highlights
 
 - **The honesty audit is the product, and it can't be turned off.** Every result
-  runs a gauntlet — selection-bias re-run on the full index, a cost sweep at
+  runs a gauntlet — selection-bias re-run on the S&P 500 as it stood at each
+  rebalance, a cost sweep at
   0/5/20 bps, a 70/30 train/holdout split the verdict is computed on, regime
   coverage, parameter-sensitivity, capacity, and a multiple-testing counter —
   and the benchmark is shown on every single result.
@@ -222,11 +229,16 @@ is the only path to new numbers. yfinance restates adjusted prices over time
 
 ## Data honesty in V0 (known limitations)
 
-- **Universe presets use current index members** (checked-in seed lists from
-  Wikipedia with snapshot dates; `scripts/refresh_universes.py` refreshes).
-  Current-members lists are survivor-loaded; every report discloses this and
-  extreme outperformance on them is capped at an amber verdict. True
-  point-in-time membership needs licensed data (V1).
+- **The S&P 500 is point-in-time from 2015-01-01**, rebuilt from pinned,
+  cited Wikipedia revisions of the dated constituent changes
+  (`fixtures/sp500_membership/`, `scripts/build_sp500_membership.py`). Each
+  rebalance picks only from that day's members. Members with no free price
+  history (mostly acquired companies, some bankruptcies) can't be picked:
+  80% of members were priced at end-2015, 92.5% at end-2020, 99.4% at end-2025,
+  and every report states the share it saw.
+- **Nasdaq-100, Dow 30, and S&P 500 windows starting before 2015 use today's
+  members** (seed lists; `scripts/refresh_universes.py`). The report warns, and
+  a ranked strategy on them is capped at an amber verdict.
 - **yfinance** is fine for personal research, not for a commercial product
   (ToS + survivorship). The V1 path is licensed survivorship-free data.
 - **No market-cap/ADV data** — the wide-spread warning is a heuristic

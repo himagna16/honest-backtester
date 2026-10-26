@@ -1,0 +1,408 @@
+effective_date,added_ticker,added_security,removed_ticker,removed_security,reason,citations
+2026-08-18,RDDT,Reddit,AVB,AvalonBay Communities,Equity Residential (now Vivmark Residential ) acquired AvalonBay Communities.,https://press.spglobal.com/2026-08-13-Reddit-Set-to-Join-S-P-500-and-Sun-Communities-to-Join-S-P-MidCap-400
+2026-08-05,FERG,Ferguson Enterprises,EA,Electronic Arts,"An investor consortium comprising Saudi Arabia's Public Investment Fund (PIF), Silver Lake , and Affinity Partners acquired Electronic Arts.",https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260731-1484374/1484374_ea5-rezi6.pdf
+2026-06-30,,,CAG,Conagra Brands,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260623-1484127/1484127_hon-jhg-bld-ari-1546.pdf
+2026-06-29,HONA,Honeywell Aerospace,,,Honeywell completed the corporate spin-off of Honeywell Aerospace.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260623-1484127/1484127_hon-jhg-bld-ari-1546.pdf
+2026-06-22,MRVL,Marvell Technology,POOL,Pool Corporation,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260605-1483743/1483743_shuffle546-june2026.pdf
+2026-06-22,FLEX,Flex Ltd.,CPB,Campbell's,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260605-1483743/1483743_shuffle546-june2026.pdf
+2026-06-02,,,EPAM,EPAM Systems,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260527-1483532/1483532_fdx-amwd-56.pdf
+2026-06-01,FDXF,FedEx Freight,,,FedEx Corp. completed the corporate spin-off of FedEx Freight Holding.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260527-1483532/1483532_fdx-amwd-56.pdf
+2026-05-07,VEEV,Veeva Systems,CTRA,Coterra Energy,Devon Energy acquired Coterra Energy.,https://press.spglobal.com/2026-04-30-Veeva-Systems-Set-to-Join-S-P-500 https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260430-1483117/1483117_ctra5.pdf
+2026-04-09,CASY,Casey's,HOLX,Hologic,Blackstone Inc. and TPG Inc. acquired Hologic.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260406-1482697/1482697_5holx.pdf
+2026-03-23,VRT,Vertiv,MTCH,Match Group,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260306-1482263/1482263_march2026rebalance1546.pdf
+2026-03-23,LITE,Lumentum,MOH,Molina Healthcare,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260306-1482263/1482263_march2026rebalance1546.pdf
+2026-03-23,COHR,Coherent Corp.,LW,Lamb Weston,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260306-1482263/1482263_march2026rebalance1546.pdf
+2026-03-23,SATS,EchoStar,PAYC,Paycom,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260306-1482263/1482263_march2026rebalance1546.pdf
+2026-02-09,CIEN,Ciena,DAY,Dayforce,Thoma Bravo L.P. acquired Dayforce.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20260204-1482028/1482028_day5dvax6.pdf
+2025-12-22,CRH,CRH,LKQ,LKQ Corporation,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20251205-1480992/1480992_december2025rebalance.pdf
+2025-12-22,CVNA,Carvana,SOLS,Solstice Advanced Materials,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20251205-1480992/1480992_december2025rebalance.pdf
+2025-12-22,FIX,Comfort Systems USA,MHK,Mohawk Industries,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20251205-1480992/1480992_december2025rebalance.pdf
+2025-12-11,ARES,Ares Management,K,Kellanova,Mars Inc. acquired Kellanova.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20251208-1481001/1481001_56-k-hsii-vtle.pdf
+2025-11-28,SNDK,Sandisk,IPG,Interpublic Group,Omnicom Group acquired (The) Interpublic Group.,"https://press.spglobal.com/2025-11-24-Sandisk-Set-to-Join-S-P-500-Upwork,-First-Interstate-BancSystem,-PTC-Therapeutics-to-Join-S-P-SmallCap-600 https://www.nasdaq.com/articles/sandisk-corp-replace-interpublic-group-companies-sp-500"
+2025-11-04,,,EMN,Eastman Chemical Co.,Market capitalization changes.,https://press.spglobal.com/2025-10-27-Solstice-Advance-Materials-and-Qnity-Electronics-Set-to-Join-S-P-500-Others-to-Join-S-P-SmallCap-600
+2025-11-03,Q,Qnity Electronics,,,Dupont completed the corporate spin-off of Qnity Electronics.,https://press.spglobal.com/2025-10-27-Solstice-Advance-Materials-and-Qnity-Electronics-Set-to-Join-S-P-500-Others-to-Join-S-P-SmallCap-600
+2025-10-31,,,KMX,CarMax,Market capitalization changes.,https://press.spglobal.com/2025-10-27-Solstice-Advance-Materials-and-Qnity-Electronics-Set-to-Join-S-P-500-Others-to-Join-S-P-SmallCap-600
+2025-10-30,SOLS,Solstice Advanced Materials,,,Honeywell International completed the corporate spin-off of Solstice Advanced Materials.,https://press.spglobal.com/2025-10-27-Solstice-Advance-Materials-and-Qnity-Electronics-Set-to-Join-S-P-500-Others-to-Join-S-P-SmallCap-600
+2025-09-22,EME,Emcor,ENPH,Enphase Energy,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250905-1479730/1479730_sept2025-1500rebalance.pdf
+2025-09-22,HOOD,Robinhood Markets,CZR,Caesars Entertainment,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250905-1479730/1479730_sept2025-1500rebalance.pdf
+2025-09-22,APP,AppLovin,MKTX,MarketAxess,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250905-1479730/1479730_sept2025-1500rebalance.pdf
+2025-08-28,IBKR,Interactive Brokers,WBA,Walgreens Boots Alliance,Sycamore Partners acquired Walgreen Boots Alliance.,"https://press.spglobal.com/2025-08-25-Interactive-Brokers-Group-Set-to-Join-S-P-500,-Talen-Energy-to-Join-S-P-MidCap-400-and-Kinetik-Holdings-to-Join-S-P-SmallCap-600"
+2025-07-23,XYZ,"Block, Inc.",HES,Hess Corporation,Chevron acquired Hess.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250718-1478910/1478910_hes5.pdf
+2025-07-18,TTD,Trade Desk (The),ANSS,Ansys,Synopsys acquired Ansys.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250714-1478894/1478894_5-anss.pdf
+2025-07-09,DDOG,Datadog,JNPR,Juniper Networks,Hewlett Packard Enterprise acquired Juniper Networks.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250702-1478699/1478699_jnpr5.pdf
+2025-05-19,COIN,Coinbase,DFS,Discover Financial,Capital One acquired Discover Financial.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250512-1478052/1478052_dfs5.pdf
+2025-03-24,DASH,DoorDash,BWA,BorgWarner,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250307-1477251/1477251_march2025rebalance1500.pdf
+2025-03-24,TKO,TKO Group Holdings,TFX,Teleflex,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250307-1477251/1477251_march2025rebalance1500.pdf
+2025-03-24,WSM,"Williams-Sonoma, Inc.",CE,Celanese,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250307-1477251/1477251_march2025rebalance1500.pdf
+2025-03-24,EXE,Expand Energy,FMC,FMC Corporation,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20250307-1477251/1477251_march2025rebalance1500.pdf
+2024-12-23,APO,Apollo Global Management,QRVO,Qorvo,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20241206-1475790/1475790_dec2024apowday.pdf
+2024-12-23,WDAY,"Workday, Inc.",AMTM,Amentum,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20241206-1475790/1475790_dec2024apowday.pdf
+2024-12-23,LII,Lennox International,CTLT,Catalent,Novo Holdings A/S acquired Catalent.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20241218-1475819/1475819_ctlt5.pdf
+2024-11-26,TPL,Texas Pacific Land Corporation,MRO,Marathon Oil,ConocoPhillips acquired Marathon Oil.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20241121-1475569/1475569_5-mro.pdf
+2024-10-01,,,BBWI,"Bath & Body Works, Inc.",Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240924-1474558/1474558_jacobs56.pdf
+2024-09-30,AMTM,Amentum,,,"Jacobs Solutions completed the corporate spin-off of its Critical Mission Solutions and Cyber Intelligence business, which merged with private Amentum to create newly publicly traded Amentum Holdings.",https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240924-1474558/1474558_jacobs56.pdf
+2024-09-23,PLTR,Palantir Technologies,AAL,American Airlines Group,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240906-1474143/1474143_septembershuffle546.pdf
+2024-09-23,DELL,Dell Technologies,ETSY,Etsy,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240906-1474143/1474143_septembershuffle546.pdf
+2024-09-23,ERIE,Erie Indemnity,BIO,Bio-Rad Laboratories,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240906-1474143/1474143_septembershuffle546.pdf
+2024-06-24,KKR,KKR,RHI,Robert Half,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240607-1472747/1472747_finaljuneshuffle546.pdf
+2024-06-24,CRWD,CrowdStrike,CMA,Comerica,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240607-1472747/1472747_finaljuneshuffle546.pdf
+2024-06-24,GDDY,GoDaddy,ILMN,"Illumina, Inc.",Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240607-1472747/1472747_finaljuneshuffle546.pdf
+2024-05-08,VST,Vistra,PXD,Pioneer Natural Resources,ExxonMobil acquired Pioneer Natural Resources.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240503-1472096/1472096_5pxd.pdf
+2024-04-03,,,XRAY,Dentsply Sirona,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240327-1471355/1471355_5gemmm.pdf
+2024-04-03,,,VFC,VF Corporation,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240327-1471355/1471355_5gemmm.pdf
+2024-04-02,GEV,GE Vernova,,,General Electric completed the corporate spin-off of GE Vernova.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240327-1471355/1471355_5gemmm.pdf
+2024-04-01,SOLV,Solventum,,,3M completed the corporate spin-off of Solventum.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240327-1471355/1471355_5gemmm.pdf
+2024-03-25,CPAY,Corpay,FLT,FLEETCOR Technologies,FLEETCOR Technologies changed its name to Corpay.,https://investor.corpay.com/static-files/da396a8f-c8d6-4bb4-aa98-05664f22be1e
+2024-03-18,SMCI,Supermicro,WHR,Whirlpool Corporation,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240301-1470916/1470916_mar2024shuf.pdf
+2024-03-18,DECK,Deckers Brands,ZION,Zions Bancorporation,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20240301-1470916/1470916_mar2024shuf.pdf
+2024-02-01,DAY,Dayforce,CDAY,Ceridian,Ceridian changed its ticker symbol from CDAY to DAY.,https://www.dayforce.com/who-we-are/newsroom/ceridian-to-change-ticker-symbol-to-day-on-nyse-and-tsx-effective-february-1
+2023-12-18,UBER,Uber,SEE,Sealed Air,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20231201-1467851/1467851_dec2023shuf.pdf
+2023-12-18,JBL,Jabil,ALK,Alaska Air Group,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20231201-1467851/1467851_dec2023shuf.pdf
+2023-12-18,BLDR,Builders FirstSource,SEDG,SolarEdge,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20231201-1467851/1467851_dec2023shuf.pdf
+2023-10-18,HUBB,Hubbell,OGN,Organon & Co.,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20231013-1466909/1466909_5atvi.pdf
+2023-10-18,LULU,Lululemon Athletica,ATVI,Activision Blizzard,Acquisition of Activision Blizzard by Microsoft .,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20231013-1466909/1466909_5atvi.pdf
+2023-10-03,,,DXC,DXC Technology,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230928-1466640/1466640_554-k-dhr-armk.pdf
+2023-10-02,VLTO,Veralto,,,Danaher Corporation completed the corporate spin-off of Veralto.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230928-1466640/1466640_554-k-dhr-armk.pdf
+2023-09-18,BX,Blackstone,LNC,Lincoln National Corporation,Market capitalization changes.,"https://press.spglobal.com/2023-09-01-Blackstone-and-Airbnb-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400-and-S-P-SmallCap-600"
+2023-09-18,ABNB,Airbnb,NWL,Newell Brands,Market capitalization changes.,"https://press.spglobal.com/2023-09-01-Blackstone-and-Airbnb-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400-and-S-P-SmallCap-600"
+2023-08-25,KVUE,Kenvue,AAP,Advance Auto Parts,Johnson & Johnson offered to exchange the shares of Kenvue held for shares of Johnson & Johnson in a split-off exchange offer.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230821-1465675/1465675_5jnj6.pdf
+2023-06-20,PANW,Palo Alto Networks,DISH,Dish Network,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230602-1464356/1464356_shufjun23.pdf
+2023-05-04,AXON,Axon Enterprise,FRC,First Republic Bank,The Federal Deposit Insurance Corporation (FDIC) placed First Republic Bank into receivership.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230501-1463787/1463787_frc5.pdf
+2023-03-20,FICO,Fair Isaac,LUMN,Lumen Technologies,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230303-1461866/1461866_shufflemarch2023.pdf
+2023-03-15,BG,Bunge Global,SBNY,Signature Bank,The FDIC placed Signature Bank into FDIC Receivership.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230313-1463166/1463166_5-sbny.pdf
+2023-03-15,PODD,Insulet,SIVB,SVB Financial Group,"The FDIC placed SVB's main subsidiary, Silicon Valley Bank , into receivership.",https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20230310-1461992/1461992_sivb-5.pdf
+2023-01-05,,,VNO,Vornado Realty Trust,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221228-1460542/1460542_ge5spingehc.pdf
+2023-01-04,GEHC,GE HealthCare,,,General Electric completed the corporate spin-off of GE HealthCare.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221228-1460542/1460542_ge5spingehc.pdf
+2022-12-22,STLD,Steel Dynamics,ABMD,Abiomed,Johnson & Johnson acquired Abiomed.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221219-1460299/1460299_5abmd.pdf
+2022-12-19,FSLR,First Solar,FBHS,Fortune Brands Home & Security,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221212-1460145/1460145_5fbhs.pdf
+2022-12-19,,,MBC,MasterBrand,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221212-1460145/1460145_5fbhs.pdf
+2022-12-15,MBC,MasterBrand,,,Fortune Brands Home & Security completed the corporate spin-off of MasterBrand.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221212-1460145/1460145_5fbhs.pdf
+2022-11-01,ACGL,Arch Capital Group,TWTR,Twitter,Elon Musk acquired Twitter.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221027-1457121/1457121_5twtr-4xpo.pdf
+2022-10-12,TRGP,Targa Resources,NLSN,Nielsen Holdings,Elliott Investment Management acquired Nielsen Holdings.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20221006-1456477/1456477_5nlsn.pdf
+2022-10-03,PCG,PG&E,CTXS,Citrix Systems,Vista Equity Partners acquired Citrix Systems.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220923-1456105/1456105_6gcp6xper6abtx5ctxs5dre.pdf
+2022-10-03,EQT,EQT Corporation,DRE,Duke Realty,Prologis acquired Duke Realty.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220923-1456105/1456105_6gcp6xper6abtx5ctxs5dre.pdf
+2022-09-19,CSGP,CoStar Group,PVH,PVH,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220902-1455498/1455498_100amdshuffsept2022-546.pdf
+2022-09-19,INVH,Invitation Homes,PENN,Penn Entertainment,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220902-1455498/1455498_100amdshuffsept2022-546.pdf
+2022-06-21,,,UA,Under Armour (Class C),Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220603-1453030/1453030_shufcernjune2022-546.pdf
+2022-06-21,KDP,Keurig Dr Pepper,UAA,Under Armour (Class A),Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220603-1453030/1453030_shufcernjune2022-546.pdf
+2022-06-21,ON,ON Semiconductor,IPGP,IPG Photonics,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220603-1453030/1453030_shufcernjune2022-546.pdf
+2022-06-08,VICI,Vici Properties,CERN,Cerner,Oracle acquired Cerner.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220603-1453030/1453030_shufcernjune2022-546.pdf
+2022-04-11,WBD,Warner Bros. Discovery,DISCA,"Discovery, Inc.",WarnerMedia and Discovery merged to create Warner Bros. Discovery .,https://press.spglobal.com/2022-04-07-S-P-Dow-Jones-Indices-Announces-Treatment-of-AT-T-Transaction-with-Discovery
+2022-04-11,,,DISCK,"Discovery, Inc.",WarnerMedia and Discovery merged to create Warner Bros. Discovery .,https://press.spglobal.com/2022-04-07-S-P-Dow-Jones-Indices-Announces-Treatment-of-AT-T-Transaction-with-Discovery
+2022-04-04,CPT,Camden Property Trust,PBCT,People's United Financial,M&T Bank acquired People's United Financial.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220329-451101/1451101_pbct5.pdf
+2022-03-02,MOH,Molina Healthcare,INFO,IHS Markit,S&P Global acquired IHS Markit.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220225-1450148/1450148_info5.pdf
+2022-02-15,NDSN,Nordson Corporation,XLNX,Xilinx,Advanced Micro Devices acquired Xilinx.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20220210-1449702/1449702_xlnx5.pdf
+2022-02-03,,,GPS,Gap,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210527-1385972/1385972_5-mrk.pdf
+2022-02-02,CEG,Constellation Energy,,,Exelon completed the corporate spin-off of Constellation Energy.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210527-1385972/1385972_5-mrk.pdf
+2022-01-10,WTW,Willis Towers Watson,WLTW,Willis Towers Watson,Willis Towers Watson changed its ticker symbol from WLTW to WTW.,https://www.sec.gov/Archives/edgar/data/1140536/000119312522004045/d267396d8k.htm
+2021-12-20,SBNY,Signature Bank,LEG,Leggett & Platt,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20211203-1445690/1445690_5shuffle64pr.pdf
+2021-12-20,SEDG,SolarEdge,HBI,Hanesbrands,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20211203-1445690/1445690_5shuffle64pr.pdf
+2021-12-20,FDS,FactSet,WU,Western Union,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20211203-1445690/1445690_5shuffle64pr.pdf
+2021-12-14,EPAM,EPAM Systems,KSU,Kansas City Southern,Canadian Pacific acquired Kansas City Southern.,https://www.spglobal.com/spdji/en/documents/index-news-and-announcements-lls/5ksu.pdf
+2021-09-20,MTCH,Match Group,PRGO,Perrigo,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210903-1443045/1443045_sept2021-546-shuf-rebal.pdf
+2021-09-20,CDAY,Ceridian,UNM,Unum,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210903-1443045/1443045_sept2021-546-shuf-rebal.pdf
+2021-09-20,BRO,Brown & Brown,NOV,Nov,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210903-1443045/1443045_sept2021-546-shuf-rebal.pdf
+2021-08-30,TECH,Bio-Techne,MXIM,Maxim Integrated,Analog Devices acquired Maxim Integrated Products.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210824-1442797/1442797_5mxim6uscr6syke.pdf
+2021-07-21,MRNA,Moderna,ALXN,Alexion Pharmaceuticals,AstraZeneca acquired Alexion Pharmaceuticals.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210715-1419561/1419561_5alxn.pdf
+2021-06-04,,,HFC,HollyFrontier,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210527-1385972/1385972_5-mrk.pdf
+2021-06-03,OGN,Organon & Co.,,,Merck completed the corporate spin-off of Organon.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210527-1385972/1385972_5-mrk.pdf
+2021-05-14,CRL,Charles River Laboratories,FLIR,FLIR Systems,Teledyne Technologies acquired FLIR Systems.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210510-1372967/1372967_5flir-6aegn.pdf
+2021-04-20,PTC,PTC,VAR,Varian Medical Systems,Siemens Healthineers acquired Varian Medical Systems.,https://www.spglobal.com/spdji/en//documents/indexnews/announcements/20210415-1358567/1358567_5var-6egov-pr.pdf
+2021-03-22,NXPI,NXP,FLS,Flowserve,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210312-1336360/1336360_march2021-5146-shuf-pr.pdf
+2021-03-22,PENN,Penn National Gaming,SLG,SL Green Realty,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210312-1336360/1336360_march2021-5146-shuf-pr.pdf
+2021-03-22,GNRC,Generac Holdings,XRX,Xerox,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210312-1336360/1336360_march2021-5146-shuf-pr.pdf
+2021-03-22,CZR,Caesars Entertainment,VNT,Vontier,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210312-1336360/1336360_march2021-5146-shuf-pr.pdf
+2021-02-12,MPWR,Monolithic Power Systems,FTI,TechnipFMC,Corporate spin-off of Technip Energies.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210208-1312961/1312961_technipfmc20210208.pdf
+2021-01-21,TRMB,Trimble,CXO,Concho Resources,ConocoPhillips acquired Concho Resources.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20210115-1298164/1298164_6hilltop45trimbleyeti66.pdf
+2021-01-07,ENPH,Enphase Energy,TIF,Tiffany & Co,LVMH Moet Hennessy-Louis Vuitton SE acquired Tiffany & Co.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20201230-1289571/1289571_6enphase4brooks5elf5capri4.pdf
+2020-12-21,TSLA,Tesla,AIV,Aimco,Aimco completed the corporate spin-off of Apartment Income REIT.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20201211-1277389/1277389_tes15aircaivspindnkn4.pdf
+2020-10-12,,,NBL,Noble Energy,Chevron acquired Noble Energy.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20201005-1233159/1233159_ftvspin5nbl.pdf
+2020-10-09,VNT,Vontier,,,Fortive completed the corporate spin-off of Vontier.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20201005-1233159/1233159_ftvspin5nbl.pdf
+2020-10-07,POOL,Pool Corporation,ETFC,E-Trade,Morgan Stanley acquired E*Trade.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20201001-1231161/1231161_dlph400etfc500.pdf
+2020-09-21,ETSY,Etsy,HRB,H&R Block,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20200904-1214656/1214656_finalmigraseptetsyctltter30.pdf
+2020-09-21,TER,Teradyne,COTY,Coty,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20200904-1214656/1214656_finalmigraseptetsyctltter30.pdf
+2020-09-21,CTLT,Catalent,KSS,Kohl's,Market capitalization changes.,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20200904-1214656/1214656_finalmigraseptetsyctltter30.pdf
+2020-06-22,BIO,Bio-Rad Laboratories,ADS,Alliance Data Systems,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20200612-1164959/1164959_correctedjune2020migrshuf.pdf
+2020-06-22,TDY,Teledyne,HOG,Harley-Davidson,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20200612-1164959/1164959_correctedjune2020migrshuf.pdf
+2020-06-22,TYL,Tyler Technologies,JWN,Nordstrom,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20200612-1164959/1164959_correctedjune2020migrshuf.pdf
+2020-05-22,WST,West Pharmaceutical Services,HP,Helmerich & Payne,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20200518-1145759/1145759_jcpenney6helmer.pdf
+2020-05-12,DPZ,Domino's Pizza,CPRI,Capri Holdings,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20200506-1138565/1138565_dexdomino456capristor.pdf
+2020-05-12,DXCM,Dexcom,AGN,Allergan,Allergan was acquired by AbbVie .,https://www.spindices.com/documents/indexnews/announcements/20200506-1138565/1138565_dexdomino456capristor.pdf
+2020-04-06,,,M,Macy's,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20200331-1119193/1119193_1utxspinrtn15otiscarrier.pdf
+2020-04-06,,,RTN,Raytheon Company,United Technologies corporate spin-off of Otis and Carrier and acquired Raytheon Company.,https://www.spindices.com/documents/indexnews/announcements/20200331-1119193/1119193_1utxspinrtn15otiscarrier.pdf
+2020-04-03,OTIS,Otis Worldwide,,,United Technologies corporate spin-off of Otis and Carrier and acquired Raytheon Company.,https://www.spindices.com/documents/indexnews/announcements/20200331-1119193/1119193_1utxspinrtn15otiscarrier.pdf
+2020-04-03,CARR,Carrier,,,United Technologies completed the corporate spin-off of Otis and Carrier and acquired Raytheon Company.,https://www.spindices.com/documents/indexnews/announcements/20200331-1119193/1119193_1utxspinrtn15otiscarrier.pdf
+2020-04-01,HWM,Howmet Aerospace,ARNC,Arconic,Arconic separated into 2 companies - Howmet remained in the index.,https://www.howmet.com/press-release/2020-05-05/howmet-aerospace-formerly-arconic-inc-reports-full-first-quarter-2020-financial-results/
+2020-03-02,IR,Ingersoll Rand,XEC,Cimarex Energy,"Gardner Denver acquired Ingersoll Rand 's industrial businesses then changed its name to the ""new"" Ingersoll Rand Inc.",https://www.spindices.com/documents/indexnews/announcements/20200227-1098962/1098962_Final5Ingersol4Cimar.pdf https://investors.irco.com/news/news-details/2020/Gardner-Denver-and-Ingersoll-Rand-Industrial-Segment-Finalize-Merger-to-Form-a-Global-Leader-in-Mission-Critical-Flow-Creation-and-Industrial-Technologies/default.aspx
+2020-01-28,PAYC,Paycom,WCG,WellCare,Centene acquired Wellcare.,https://www.spindices.com/documents/indexnews/announcements/20200122-1077359/1077359_5payc.pdf
+2019-12-23,LYV,Live Nation Entertainment,AMG,Affiliated Managers Group,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20191213-1051561/1051561_migradec34253624lopeleaUntFtr.pdf
+2019-12-23,ZBRA,Zebra Technologies,TRIP,TripAdvisor,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20191213-1051561/1051561_migradec34253624lopeleaUntFtr.pdf
+2019-12-23,STE,Steris,MAC,Macerich,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20191213-1051561/1051561_migradec34253624lopeleaUntFtr.pdf
+2019-12-09,ODFL,Old Dominion Freight Line,STI,SunTrust Banks,BB&T acquired SunTrust to form Truist Financial .,https://www.spindices.com/documents/indexnews/announcements/20191202-1042569/1042569_14Dominion5Ready6Cabot4Logistics.pdf
+2019-12-05,WRB,W. R. Berkley Corporation,VIAB,Viacom,CBS acquired Viacom to form ViacomCBS .,https://www.spindices.com/documents/indexnews/announcements/20191127-1041559/1041559_BerkleyRJoe546.pdf
+2019-11-21,NOW,ServiceNow,CELG,Celgene,Bristol-Myers Squibb acquired Celgene.,https://www.spindices.com/documents/indexnews/announcements/20191118-1035566/1035566_Thermo1Service5.pdf
+2019-10-03,LVS,Las Vegas Sands,NKTR,Nektar Therapeutics,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20190926-1004359/1004359_4sands6pennantnektar5.pdf
+2019-09-26,NVR,NVR,JEF,Jefferies Financial Group,SPB completed the corporate spin-off of Jefferies Financial Group.,https://www.spindices.com/documents/indexnews/announcements/20190920-1000559/1000559_4jefferies5vicallon6finisar4smart2nvr.pdf
+2019-09-23,CDW,CDW,TSS,TSYS,Global Payments acquired TSS.,https://www.spindices.com/documents/indexnews/announcements//20190917-998359/998359_totalsystemstss5cdw.pdf
+2019-08-09,LDOS,Leidos,APC,Anadarko Petroleum,Occidental Petroleum acquired Anadarko Petroleum.,https://www.spindices.com/documents/indexnews/announcements/20190801-969367/969367_1leidos546foot6fizz6.pdf
+2019-08-09,IEX,IDEX Corporation,FL,Foot Locker,Market capitalization changes.,https://www.spindices.com/documents/indexnews/announcements/20190801-969367/969367_1leidos546foot6fizz6.pdf
+2019-07-15,TMUS,T-Mobile US,RHT,Red Hat,IBM acquired Red Hat.,https://www.spindices.com/documents/indexnews/announcements/20190709-957359/957359_hat5mobile.pdf
+2019-07-01,MKTX,MarketAxess,LLL,L3 Technologies,L3 was acquired by Harris Corporation.,https://www.spindices.com/documents/indexnews/announcements/20190624-948566/948566_mktxaaxnmlab546usna6xncr6.pdf
+2019-06-11,AMCR,Amcor,BMS,Bemis,BMS changed to AMCR post merger with Amcor; subsequently renamed to Amcor .,https://www.nyse.com/trader-update/history#110000134831 https://www.spindices.com/documents/indexnews/announcements/20190603-938358/938358_5bemis4mattel-newboiler.pdf
+2019-06-07,BMS,Bemis,MAT,Mattel,Merger of Bemis and Amcor; Bemis was the surviving entity.,https://www.spindices.com/documents/indexnews/announcements/20190603-938358/938358_5bemis4mattel-newboiler.pdf
+2019-06-03,DD,DuPont,DWDP,DuPont,DWDP changed to DD after spinning off Corteva.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/936758_correcteddwdpspin5blmn6.pdf
+2019-06-03,CTVA,Corteva,FLR,Fluor Corporation,DowDuPont completed the corporate spin-off of Corteva.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/936758_correcteddwdpspin5blmn6.pdf
+2019-04-02,DOW,Dow,BHF,Brighthouse Financial,DowDuPont completed the corporate spin-off of Dow Inc.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/898958_1dowspin100trex400.pdf
+2019-03-19,FOXA,Fox Corporation,FOXA,21st Century Fox,21st Century Fox merged with Disney and some parts spun off as Fox Corporation.,https://press.spglobal.com/2019-03-14-Fox-Set-to-Join-S-P-500-Adobe-to-Join-S-P-100
+2019-03-19,FOX,Fox Corporation,FOX,21st Century Fox,21st Century Fox merged with Disney and some parts spun off as Fox Corporation.,https://press.spglobal.com/2019-03-14-Fox-Set-to-Join-S-P-500-Adobe-to-Join-S-P-100
+2019-02-27,WAB,Wabtec,GT,The Goodyear Tire & Rubber Company,Wabtec acquired GE transportation business,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/878161_ge5wabtec4goodyear.pdf
+2019-02-15,ATO,Atmos Energy,NFX,Newfield Exploration,Encana acquired Newfield Exploration.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/870958_newfieldencana5.pdf
+2019-01-18,TFX,Teleflex,PCG,Pacific Gas & Electric Company,Pacific Gas & Electric Company filed for bankruptcy.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/856358_pcg456.pdf
+2019-01-02,FRC,First Republic Bank,SCG,SCANA,Dominion Energy acquired SCANA.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/845559_firstrepscan5.pdf
+2018-12-24,CE,Celanese,ESRX,Express Scripts,Cigna acquired Express Scripts.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/839558_celscript5.pdf
+2018-12-03,LW,Lamb Weston,COL,Rockwell Collins,UTX acquired Rockwell Collins.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/822558_5lambrockdiamondpebblecvs46.pdf
+2018-12-03,MXIM,Maxim Integrated,AET,Aetna,CVS acquired Aetna.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/822558_5lambrockdiamondpebblecvs46.pdf
+2018-12-03,FANG,Diamondback Energy,SRCL,Stericycle,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/822558_5lambrockdiamondpebblecvs46.pdf
+2018-11-13,JKHY,Jack Henry & Associates,EQT,EQT Corporation,EQT completed the corporate spin-off of ETRN.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/813582_eqtspinb46superiorflotek.pdf
+2018-11-06,KEYS,Keysight,CA,CA Technologies,CA was acquired by Broadcom .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/808381_acammilgndkeys-5426.pdf
+2018-10-11,FTNT,Fortinet,EVHC,Envision Healthcare,EVHC was acquired by KKR .,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20181004-794361/794361_pennchefftntasgnvbtx546vv.pdf
+2018-10-01,ROL,Rollins,ANDV,Andeavor,ANDV was acquired by Marathon Petroleum .,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20180925-786958/786958_rollininvandamotion.pdf
+2018-09-14,WCG,WellCare,XL,XL Group,XL was acquired by Axa .,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20180911-776955/776955_health54energy8.pdf
+2018-08-28,ANET,Arista Networks,GGP,GGP Inc.,GGP was acquired by Brookfield Property Partners .,https://www.spglobal.com/spdji/en/documents/indexnews/announcements/20180823-764552/764552_ichor5arista6micro.pdf
+2018-07-02,CPRT,Copart,DPS,Dr Pepper Snapple Group,DPS was acquired by Keurig Green Mountain .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/731759_june25drpepperclarifications.pdf
+2018-06-20,FLT,FleetCor Technologies,TWX,Time Warner,AT&T acquired Time Warner.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/727360_time1fleet5nvid14.pdf
+2018-06-18,BR,Broadridge Financial Solutions,RRC,Range Resources,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/722756_1hollybroadshuf252426finl.pdf
+2018-06-18,HFC,HollyFrontier,AYI,Acuity Brands,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/722756_1hollybroadshuf252426finl.pdf
+2018-06-07,TWTR,Twitter,MON,Monsanto,Bayer acquired Monsanto.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/719152_nflx1twtr5rgnx6.pdf
+2018-06-05,EVRG,Evergy,NAVI,Navient,Westar Energy acquired Great Plains Energy and changed name to Evergy.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/717364_renav4inte6ambgreat.pdf
+2018-05-31,ABMD,Abiomed,WYN,Wyndham Worldwide,Wyndham Worldwide completed the corporate spin-off of Wyndham Hotels & Resorts .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/714752_spinwyndxccmicro54.pdf
+2018-04-04,MSCI,MSCI,CSRA,CSRA,General Dynamics acquired CSRA.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/684554_mscs6genlum4energ5.pdf
+2018-03-19,TTWO,Take-Two Interactive,SIG,Signet Jewelers,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/675150_idesshuf18nktr.pdf
+2018-03-19,SIVB,SVB Financial Group,PDCO,Patterson Companies,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/675150_idesshuf18nktr.pdf
+2018-03-19,NKTR,Nektar Therapeutics,CHK,Chesapeake Energy,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/675150_idesshuf18nktr.pdf
+2018-03-07,IPGP,IPG Photonics,SNI,Scripps Networks Interactive,Discovery Communications acquired Scripps Networks Interactive.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/671577_ipgalenymtgnl5466.pdf
+2018-01-03,HII,Huntington Ingalls Industries,BCR,CR Bard,Becton Dickinson acquired CR Bard.,https://press.spglobal.com/2017-12-28-Huntington-Ingalls-Industries-Set-to-Join-S-P-500-Scientific-Games-to-Join-S-P-MidCap-400-and-Ultra-Clean-Holdings-to-Join-S-P-SmallCap-600
+2017-11-15,IQV,IQVIA,Q,QuintilesIMS,QuintilesIMS changed its name to IQVIA and ticker symbol from Q to IQV.,https://s201.q4cdn.com/580005511/files/doc_financials/2017/q4/IQVIA-2017-10K-Filed.pdf
+2017-10-13,NCLH,Norwegian Cruise Line Holdings,LVLT,Level 3 Communications,CenturyLink acquired Level 3 Communications.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/593950_cruise5century6pacific.pdf
+2017-09-18,CDNS,Cadence Design Systems,SPLS,Staples,Sycamore Partners acquired Staples.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/580952_spls5cadencewoofbrinkwebrebal64.pdf
+2017-09-01,DWDP,DuPont,DOW,Dow Chemical Company,The Dow Chemical Company renamed to DowDuPont Inc.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/572951_500dowdupont1chartsbacwfm.pdf
+2017-09-01,SBAC,SBA Communications,DD,DuPont,The Dow Chemical Company acquired DuPont.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/572951_500dowdupont1chartsbacwfm.pdf
+2017-08-29,Q,QuintilesIMS,WFM,Whole Foods Market,Amazon acquired Whole Foods Market.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/572951_500dowdupont1chartsbacwfm.pdf
+2017-08-08,BHF,Brighthouse Financial,AN,AutoNation,MetLife completed the corporate spin-off of Brighthouse Financial.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/560953_spinmetnoganfcn546.pdf
+2017-07-26,DRE,Duke Realty,RIG,Transocean,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/555951_reynoldsamerican54shuffle.pdf
+2017-07-26,AOS,A. O. Smith,BBBY,Bed Bath & Beyond,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/555951_reynoldsamerican54shuffle.pdf
+2017-07-26,PKG,Packaging Corporation of America,MUR,Murphy Oil,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/555951_reynoldsamerican54shuffle.pdf
+2017-07-26,RMD,ResMed,MNK,Mallinckrodt,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/555951_reynoldsamerican54shuffle.pdf
+2017-07-26,MGM,MGM Resorts International,RAI,Reynolds American,British American Tobacco (NYSE MKT:BTI) acquired Reynolds American.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/555951_reynoldsamerican54shuffle.pdf
+2017-07-07,BKR,Baker Hughes,BHI,Baker Hughes,Baker Hughes merged with GE Oil & Gas to form a new company.,https://investors.bakerhughes.com/news-releases/news-release-details/baker-hughes-stockholders-approve-combination-ge-oil-gas
+2017-06-19,HLT,Hilton,YHOO,Yahoo!,Verizon acquired Yahoo operations; remainder of Yahoo became Altaba .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/538160_yhoohlt5anssalgnrydertera.pdf
+2017-06-19,ALGN,Align Technology,TDC,Teradata,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/538160_yhoohlt5anssalgnrydertera.pdf
+2017-06-19,ANSS,Ansys,R,Ryder System,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/538160_yhoohlt5anssalgnrydertera.pdf
+2017-06-19,RE,Everest Re,MJN,Mead Johnson,Reckitt Benckiser acquired Mead Johnson Nutrition.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/539353_everpinneast546.pdf
+2017-06-02,INFO,IHS Markit,TGNA,Tegna,TGNA completed the corporate spin-off of Cars.com .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/530961_info5tgnacars4jcptime6.pdf
+2017-04-05,IT,Gartner,DNB,Dun & Bradstreet,Gartner acquired CEB.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/505361_mentit5cebhskadnb46.pdf
+2017-04-04,DXC,DXC Technology,SWN,Southwestern Energy,"HPE completed the corporate spin-off of Everett, merged with CSC to form DXC Technology.",https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/504361_cscswn54.pdf https://www.forbes.com/sites/joecornell/2017/04/04/hewlett-packard-enterprise-completes-spin-merger-to-form-dxc-technology/#774130497058
+2017-03-20,AMD,Advanced Micro Devices,URBN,Urban Outfitters,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/496757_mktcapupiposhuffspri17.pdf
+2017-03-20,RJF,Raymond James Financial,FTR,Frontier Communications,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/496757_mktcapupiposhuffspri17.pdf
+2017-03-20,ARE,Alexandria Real Estate Equities,FSLR,First Solar,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/496757_mktcapupiposhuffspri17.pdf
+2017-03-16,SNPS,Synopsys,HAR,Harman International,Samsung Electronics acquired Harman International Industries.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/497559_snpsgeocokeofix5466.pdf
+2017-03-13,DISH,Dish Network,LLTC,Linear Technology,Analog Devices acquired Linear Technology.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/493956_lineardish5.pdf
+2017-03-02,REG,Regency Centers,ENDP,Endo International,Regency Centers acquired EQY.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/489183_5specincycboebatsclareqydds4.pdf
+2017-03-01,CBOE,Cboe Holdings,PBI,Pitney Bowes,CBOE acquired BATS.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/489183_5specincycboebatsclareqydds4.pdf
+2017-02-28,INCY,Incyte,SE,Spectra Energy,SE was acquired by ENB,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/489183_5specincycboebatsclareqydds4.pdf
+2017-01-05,IDXX,Idexx Laboratories,STJ,St Jude Medical,Abbott Laboratories acquired St. Jude Medical.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/465757_idxx5cc4shak6.pdf
+2016-12-02,MAA,Mid-America Apartments,OI,Owens-Illinois,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/444551_midamericaam5pzza4wing6.pdf
+2016-12-02,EVHC,Envision Healthcare,LM,Legg Mason,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/444551_midamericaam5pzza4wing6.pdf
+2016-11-01,ARNC,Arconic,AA,Alcoa,Alcoa completed the corporate spin-off off Arconic.,
+2016-09-30,COTY,Coty,DO,Diamond Offshore Drilling,Siris Capital Group acquired Polycom.,https://press.spglobal.com/2016-09-27-Coty-Set-to-Join-the-S-P-500-Diamond-Offshore-Drilling-to-Join-S-P-MidCap-400-Tile-Shop-to-Join-S-P-SmallCap-600
+2016-09-22,COO,The Cooper Companies,HOT,Starwood Hotels and Resorts,MAR acquired Starwood Hotels,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/406345_hot5coopernorththermonuvafox.pdf
+2016-09-08,CHTR,Charter Communications,EMC,EMC Corporation,Dell acquired EMC.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/396552_emc15.pdf
+2016-09-06,MTD,Mettler Toledo,TYC,Tyco International,TYC acquired JCI and retained JCI ticker.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/393354_mtdmpwrwcicnls5466.pdf
+2016-07-05,FTV,Fortive Corp,CPGX,Columbia Pipeline Group,CPGX was acquired by TRP.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/365754_tecocolumbiaspindhr.pdf
+2016-07-01,LNT,Alliant Energy Corp,GAS,AGL Resources,AGL Resources was acquired by Southern Company.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/369149_1lntswxsstk546.pdfe
+2016-07-01,ALB,Albemarle Corporation,TE,TECO Energy,TECO Energy was acquired by EMA.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/365754_tecocolumbiaspindhr.pdf
+2016-06-22,FBHS,Fortune Brands Home & Security,CVC,Cablevision Systems,Cablevision Systems was acquired by Altice.,http://www.spindices.com/documents/indexnews/announcements/20160621-364753/364753_cablehorse45mi.pdf
+2016-06-03,TDG,TransDigm Group,BXLT,Baxalta,SHPG acquired Baxalta.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/352950_tdgheletisibrcdmdc54466.pdf
+2016-05-31,AJG,Arthur J. Gallagher & Co.,CCE,Coca-Cola Enterprises,Coca-Cola Enterprises merged with European bottlers.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/351348_cceajgedraxl546.pdf
+2016-05-23,LKQ,LKQ Corporation,ARG,Airgas,Airgas was acquired by Air Liquide.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/348544_lkqairgas465.pdf
+2016-05-18,DLR,Digital Realty,TWC,Time Warner Cable,Time Warner Cable was acquired by Charter.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/346753_ntdigitalcable5.pdf
+2016-05-13,ALK,Alaska Air Group,SNDK,SanDisk,Sandisk was acquired by Western Digital.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/345162_alaskatotexascavs.pdf
+2016-05-03,AYI,Acuity Brands,ADT,ADT,ADT was acquired by Apollo.,http://www.spindices.com/documents/indexnews/announcements/337754_ayivsatlablopb5466.pdf
+2016-04-25,GPN,Global Payments,GME,GameStop,Global Payments acquired Heartland Payment Systems.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/333750_globalpaykrispygame54622.pdf
+2016-04-18,ULTA,Ulta Beauty,THC,Tenet Healthcare,,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/329544_ulta5tenet24jah.pdf
+2016-04-08,UA,Under Armour (Class C),,,Under Armour distribution of second class of stock.,
+2016-04-04,FL,Foot Locker,CAM,Cameron International,Schlumberger acquired Cameron.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/323362_footcam5dctindustrial4.pdf
+2016-03-30,HOLX,Hologic,POM,Pepco Holdings,Exelon acquired Pepco.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/323162_healthnetfirsten524pom425holxmigr46.pdf
+2016-03-30,CNC,Centene Corporation,ESV,Ensco,Centene acquired Health Net .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/323162_healthnetfirsten524pom425holxmigr46.pdf
+2016-03-07,UDR,UDR,GMCR,Keurig Green Mountain,JAB Holding Company acquired Keurig Green Mountain.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/313547_gmcrudrhr546prlb.pdf
+2016-03-04,AWK,American Water Works,CNX,Consol Energy,,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/312347_524slhcnxawk.pdf
+2016-02-22,CXO,Concho Resources,PCL,Plum Creek Timber,Weyerhaeuser acquired Plum Creek Timber.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/305547_conch5plum.pdf
+2016-02-01,CFG,Citizens,PCP,Precision Castparts Corporation,,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/295550_precisioncfg5mdaszltq66peprmaxsoo.pdf
+2016-02-01,FRT,Federal Realty Investment Trust,BRCM,Broadcom Corporation,,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/293975_soofrtbrcmcwcray5poolabg462ann.pdf
+2016-01-19,EXR,Extra Space Storage,ACE,Chubb,ACE Ltd acquired Chubb and retained the CB ticker.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/290355_chubbaceextraspacement5546epr.pdf
+2016-01-05,WLTW,Willis Towers Watson,FOSL,Fossil Group,Willis Holdings merged with Towers Watson and was renamed Willis Towers Watson.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/282746_williswatglobaladept4256domfloat.pdf
+2015-12-29,CHD,Church & Dwight,ALTR,Altera,Altera was acquired by Intel.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/280955_5churchsyngreen64.pdf
+2015-12-15,,,CMCSK,Comcast Series K,CMCSK shares were no longer listed.,https://www.sec.gov/Archives/edgar/data/1166691/000095010315009516/dp61838_8k.htm
+2015-12-01,CSRA,CSRA,CSC,Computer Sciences Corporation,CSC completed the corporate spin-off off CSRA.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/265783_csracscspinzeropsem645.pdf
+2015-11-19,ILMN,Illumina,SIAL,Sigma-Aldrich,Sigma-Aldrich was acquired by Merck KGaA.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/261545_illumin5sigma.pdf
+2015-11-18,SYF,Synchrony Financial,GNW,Genworth Financial,GE completed the corporate spin-off of Synchrony Financial.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/259953_split0ffsyf5ge4rovi4virginia.pdf
+2015-11-02,HPE,Hewlett Packard Enterprise,HCBK,Hudson City Bancorp,HPQ completed the corporate spin-off of Hewlett Packard Enterprise.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/253375_bbz2hpspinzerohudsonexterranspin6451.pdf
+2015-10-07,VRSK,Verisk Analytics,JOY,Joy Global,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/242147_4thorverisk5.pdf
+2015-09-18,CMCSK,Comcast Class K Special,,,Share class methodology change.,https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-us-indices.pdf
+2015-09-18,FOX,Twenty-First Century Fox Class B,,,Share class methodology change.,
+2015-09-18,NWS,News Corporation Class B,,,Share class methodology change.,
+2015-09-02,UAL,United Continental Holdings,HSP,Hospira,Hospira was acquired.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/228146_airlinefreezing500.pdf
+2015-08-28,ATVI,Activision Blizzard,PLL,Pall Corporation,Pall was acquired.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/228146_airlinefreezing500.pdf
+2015-07-29,SIG,Signet Jewelers,DTV,DirecTV,DirecTV was acquired by AT&T.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/212159_bookspinlitesusq64.pdf
+2015-07-20,PYPL,PayPal,NE,Noble Corporation,eBay completed the corporate spin-off of PayPal.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/206958_ebaypalswiftroserti654.pdf
+2015-07-08,AAP,Advance Auto Parts,FDO,Family Dollar,Family Dollar was acquired.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/204357_dollarjackcontact546.pdf
+2015-07-06,KHC,Kraft Heinz,KRFT,Kraft Foods,Kraft merged with Heinz.,
+2015-07-02,CPGX,Columbia Pipeline Group,ATI,Allegheny Technologies,Spin off of Columbia Pipeline.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/197980_spingcimasaolghcddnienrsummer546.pdf
+2015-07-01,JBHT,J.B. Hunt,TEG,Integrys Energy Group,Integrys was acquired.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/200150_integrys5jbhtmohmyrg46.pdf
+2015-07-01,BXLT,Baxalta,QEP,QEP Resources,Baxter completed the corporate spin-off of Baxalta.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/196557_rockzep46.pdf
+2015-06-11,QRVO,Qorvo,LO,Lorillard Tobacco Company,Lorillard was acquired.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/193151_qorvo5lowisdom4.pdf
+2015-04-07,O,Realty Income Corporation,WIN,Windstream Communications,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/161552_game4win500odeiecho6cjes.pdf
+2015-03-23,AAL,American Airlines Group,AGN,Allergan,Allergan was acquired by Actavis (and changed its name to Allergan ).,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/155946_americanair1agn5.pdf
+2015-03-23,EQIX,Equinix,DNR,Denbury Resources,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/155157_5100celgkmiactdnrnbravpeqixslghbi.pdf
+2015-03-23,SLG,SL Green Realty,NBR,Nabors Industries,Market capitalization changes.,
+2015-03-23,HBI,Hanesbrands,AVP,Avon Products,Market capitalization changes.,
+2015-03-18,HSIC,Henry Schein,CFN,Carefusion,Carefusion was acquired by Becton Dickinson.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/155157_5100celgkmiactdnrnbravpeqixslghbi.pdf
+2015-03-12,SWKS,Skyworks,PETM,PetSmart,PetSmart was acquired by private equity consortium.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/152351_petskyjet546.pdf
+2015-01-27,HCA,HCA Holdings,SWY,Safeway,Safeway was acquired by a private equity consortium.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/135155_safeway1hca5.pdf
+2015-01-27,ENDP,Endo International,COV,Covidien,Covidien was acquired by Medtronic.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/134545_endocovidienbrew546.pdf
+2014-12-05,RCL,Royal Caribbean Cruises,BMS,Bemis Company,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/123164_royalconcurtibco456.pdf
+2014-11-05,LVLT,Level 3 Communications,JBL,Jabil Circuit,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/118367_alevel3jbl54twtc.pdf
+2014-09-20,URI,United Rentals,BTU,Peabody Energy,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/110952_fall4cgnx6wabc5uhs4btu5uri4ghc.pdf
+2014-09-20,UHS,Universal Health Services,GHC,Graham Holdings,Market capitalization changes.,
+2014-08-18,MNK,Mallinckrodt,RDC,Rowan Companies,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/106159_qcormallingulf546.pdf
+2014-08-06,DISCK,Discovery Communications,,,Class C share distribution.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/103766_multidiscovery1.pdf
+2014-07-02,MLM,Martin Marietta,X,United States Steel,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/98965_500martinxdepo.pdf
+2014-07-01,AMG,Affiliated Managers Group,FRX,Forest Laboratories,Actavis acquired Forest Laboratories.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/98159_treesmanager3spintracker.pdf
+2014-06-20,XEC,Cimarex Energy,IGT,International Game Technology,Market capitalization changes.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/96179_1gamexeclivearrisbrinkmasimo6menjoe.pdf
+2014-05-08,AVGO,Avago Technologies,LSI,LSI Corporation,Avago acquired LSI.,https://www.bloomberg.com/bb/newsarchive/a6xty1RCs9wY.html
+2014-05-01,UA,Under Armour,BEAM,Suntory Global Spirits,Beam was acquired by Suntory.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/88734_updatedspinsallie5beamunderpol6.pdf
+2014-05-01,NAVI,Navient,SLM,SLM Corporation,SLM completed the corporate spin-off of Navient.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/88734_updatedspinsallie5beamunderpol6.pdf
+2014-04-03,GOOGL,Google,,,Google Class C share distribution.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/81745_multisharecgoogle2.pdf
+2014-04-02,ESS,Essex Property Trust,CLF,Cliffs Natural Resources,Market capitalization changes.,https://www.bloomberg.com/article/2014-03-26/amgBgzXHdIGc.html
+2014-03-21,GMCR,Keurig Green Mountain,WPX,WPX Energy,Market capitalization changes.,https://www.bloomberg.com/news/2014-03-14/keurig-green-mountain-to-replace-wpx-energy-in-s-p-500-index.html
+2014-01-24,TSCO,Tractor Supply,LIFE,Life Technologies,Life Technologies was acquired by Thermo Fisher Scientific.,https://www.bloomberg.com/article/2014-01-16/aBDguLEybT1Q.html
+2013-12-23,ADS,Alliance Data Systems,ANF,Abercrombie & Fitch,Market capitalization changes.,http://www.spindices.com/documents/indexnews/announcements/20131211/67155_fbshuf252426100.pdf
+2013-12-23,MHK,Mohawk Industries,JDSU,JDS Uniphase,Market capitalization changes.,http://www.spindices.com/documents/indexnews/announcements/20131211/67155_fbshuf252426100.pdf
+2013-12-23,FB,Facebook,TER,Teradyne,Market capitalization changes.,http://www.spindices.com/documents/indexnews/announcements/20131211/67155_fbshuf252426100.pdf
+2013-12-10,GGP,General Growth Properties,MOLX,Molex,MOLX was acquired by Koch Industries .,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/65942_genprop5molx.pdf
+2013-12-02,ALLE,Allegion,JCP,JCPenney,Ingersoll Rand completed the corporate spin-off of Allegion.,https://www.bloomberg.com/news/2013-11-22/j-c-penney-will-be-replaced-by-allegion-in-s-p-500-after-drop.html
+2013-11-13,KORS,Michael Kors,NYX,NYSE Euronext,ICE Exchange acquired NYSE Euronext.,https://abcnews.go.com/Business/wireStory/ice-closes-11b-acquisition-nyse-euronext-20874378
+2013-10-29,RIG,Transocean,DELL,Dell,Founder Michael Dell and Silver Lake Partners acquired Dell.,http://www.prnewswire.com/news-releases/transocean-set-to-join-the-sp-500-228685521.html
+2013-09-20,VRTX,Vertex Pharmaceuticals,AMD,Advanced Micro Devices,Market capitalization changes.,http://www.spice-indices.com//idpfiles/spice-assets/resources/public/documents/46135_aashufspinsept2013vrtxamesaiamd.pdf
+2013-09-20,AME,Ametek,SAI,SAIC,Market capitalization changes.,http://www.spice-indices.com//idpfiles/spice-assets/resources/public/documents/46135_aashufspinsept2013vrtxamesaiamd.pdf
+2013-09-10,DAL,Delta Air Lines,BMC,BMC Software,BMC was acquired by a consortium.,http://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/43130_flybabyfly.pdf
+2013-07-08,NLSN,Nielsen Holdings,S,Sprint Nextel,Softbank consortium purchase resulted in public float below 50%.,http://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/12558_sprintniel.pdf
+2013-07-01,NWSA,21st Century Fox,APOL,Apollo Education Group,Market capitalization changes.,http://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/12413_spinnewsrodt54.pdf
+2013-06-21,ZTS,Zoetis,FHN,First Horizon,Pfizer completed the corporate spin-off of Zoetis.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/12291_zoetissplitoff.pdf
+2013-06-06,GM,General Motors,HNZ,Heinz,HNZ was acquired by a consortium.,https://www.spice-indices.com/idpfiles/spice-assets/resources/public/documents/12152_sp100heinzmotoraig.pdf
+2013-05-23,KSU,Kansas City Southern,DF,Dean Foods,DF was too small after spinoff of White Wave Foods.,http://www.spindices.com/ids_spice_data/idsfiles/11854_whitewavekansasdeanspin.pdf
+2013-05-08,MAC,Macerich,CVH,Coventry Health Care,CVH was acquired by Aetna.,https://www.spindices.com/ids_spice_data/idsfiles/11700_3dmaccor546.pdf
+2013-04-30,REGN,Regeneron Pharmaceuticals,PCS,MetroPCS,A majority of MetroPCS was acquired by T-Mobile.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245350692387
+2013-02-15,PVH,PVH,BIG,Big Lots,Market capitalization changes.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245347280028
+2013-01-02,ABBV,AbbVie,FII,Federated Investors,Abbott Labs completed the corporate spin-off of AbbVie.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245345385447
+2012-12-21,DLPH,Delphi Automotive,TIE,Titanium Metals,TIE was acquired by Precision Cast Parts.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245345188426
+2012-12-11,GRMN,Garmin,RRD,RR Donnelley,Market capitalization changes.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245344431098
+2012-12-03,DG,Dollar General,CBE,Cooper Industries,Cooper was acquired by Eaton Corp. (ETN),http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245343856827
+2012-10-10,PETM,PetSmart,SUN,Sunoco,Sunoco was acquired by Energy Transfer Partners (ETP),http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245341391586
+2012-10-02,KRFT,Kraft Foods,ANR,Alpha Natural Resources,Kraft split into two companies.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245341064105
+2012-10-02,MDLZ,Mondelez,KFT,Kraft Foods,Old Kraft Foods was renamed Mondelez.,https://press.spglobal.com/2012-09-25-Kraft-Foods-Group-Set-to-Join-the-S-P-500-Alpha-Natural-Resources-InterDigital-Genesee-Wyoming-to-Join-the-S-P-MidCap-400-and-Korn-Ferry-to-Join-the-S-P-SmallCap-600
+2012-10-01,ADT,ADT,LXK,Lexmark,Tyco completed the corporate spin-off of ADT.,https://press.spglobal.com/2012-09-24-ADT-Pentair-Set-to-Join-the-S-P-500-Lexmark-DeVry-to-Join-the-S-P-MidCap-400-and-MarketAxess-to-Join-the-S-P-SmallCap-600
+2012-10-01,PNR,Pentair,DV,DeVry,Tyco spin-off merged with Pentair.,https://press.spglobal.com/2012-09-24-ADT-Pentair-Set-to-Join-the-S-P-500-Lexmark-DeVry-to-Join-the-S-P-MidCap-400-and-MarketAxess-to-Join-the-S-P-SmallCap-600
+2012-09-05,LYB,LyondellBasell,SHLD,Sears Holdings,SHLD below public float threshold.,https://press.spglobal.com/2012-08-29-LyondellBasell-Industries-Set-to-Join-the-S-P-500
+2012-07-31,ESV,Ensco plc,GR,Goodrich Corporation,Goodrich was acquired by United Technologies.,https://press.spglobal.com/2012-07-26-Ensco-plc-Set-to-Join-the-S-P-500
+2012-07-02,STX,Seagate Technology,PGN,Progress Energy,Progress Energy was acquired by Duke Energy.,https://press.spglobal.com/2012-06-25-S-P-Indices-Announces-Change-to-U-S-Index
+2012-06-29,MNST,Monster Beverage,SLE,Sara Lee Corporation,Split up of Sara Lee.,https://press.spglobal.com/2012-06-21-S-P-Indices-Announces-Changes-to-U-S-Indices
+2012-06-05,LRCX,Lam Research,NVLS,Novellus Systems,Novellus Systems was acquired by Lam Research.,https://press.spglobal.com/2012-05-10-S-P-Indices-Announces-Changes-to-U-S-Indices
+2012-05-21,ALXN,Alexion Pharmaceuticals,MMI,Motorola Mobility,Motorola Mobility was acquired by Google.,https://press.spglobal.com/2012-05-21-S-P-Indices-Announces-Change-to-U-S-Index
+2012-05-17,KMI,Kinder Morgan,EP,El Paso Corporation,El Paso was acquired by Kinder Morgan.,https://press.spglobal.com/2012-05-17-S-P-Indices-Announces-Change-to-U-S-Index
+2012-04-23,PSX,Phillips 66,SVU,Supervalu,ConocoPhillips completed the corporate spin-off of Phillips 66.,https://press.spglobal.com/2012-04-23-S-P-Indices-Announces-Changes-to-U-S-Indices
+2012-04-03,FOSL,Fossil Group,MHS,Medco Health Solutions,Medco was acquired by Express Scripts.,https://www.dallasnews.com/business/2012/04/03/richardson-based-fossil-added-to-the-elite-club-sp-500/
+2012-03-13,CCI,Crown Castle,CEG,Constellation Energy Group,Constellation was acquired by Exelon,https://press.spglobal.com/2012-03-07-S-P-Indices-Announces-Change-to-U-S-Index
+2011-12-31,WPX,WPX Energy,CPWR,Compuware,Market capitalization changes.,https://www.prnewswire.com/news-releases/sp-indices-announces-changes-to-us-indices-136108648.html
+2011-12-20,TRIP,TripAdvisor,TLAB,Tellabs,Expedia completed the corporate spin-off of TripAdvisor.,http://www.standardandpoors.com/indices/articles/en/us/?articleType=PDF&assetID=1245325881852
+2011-12-16,BWA,BorgWarner,AKS,AK Steel,Market capitalization changes.,http://www.standardandpoors.com/indices/articles/en/us/?articleType=PDF&assetID=1245325539523
+2011-12-16,PRGO,Perrigo,MWW,Monster Worldwide,Market capitalization changes.,
+2011-12-16,DLTR,Dollar Tree,WFR,MEMC Electronic Materials,Market capitalization changes.,
+2011-12-12,GAS,AGL Resources.,GAS,Nicor Gas,"Nicor was acquired by AGL, which retained the GAS ticker.",https://southerncompany.mediaroom.com/2011-12-09-AGL-Resources-Completes-Nicor-Merger
+2011-11-18,CBE,Cooper Industries,JNS,Janus Capital Group,Market capitalization changes.,http://www.standardandpoors.com/indices/articles/en/us/?articleType=PDF&assetID=1245324449943
+2011-10-31,XYL,Xylem,ITT,ITT,ITT Corp. completed the corporate spin-off of Xylem.,https://www.bloomberg.com/news/articles/2011-10-24/xylem-to-replace-itt-in-s-p-500-index-exelis-to-join-midcap-400
+2011-10-14,TEL,TE Connectivity,CEPH,Cephalon,Cephalon was acquired by Teva Pharmaceutical Industries .,https://www.forbes.com/2011/10/12/te-connectivity-to-replace-cephalon-in-sp-500-marketnewsvideo.html
+2011-09-23,MOS,The Mosaic Company,NSM,National Semiconductor,National Semi was acquired by Texas Instruments .,https://www.forbes.com/2011/09/22/mosaic-to-replace-national-semi-in-sp-500-marketnewsvideo.html
+2011-07-05,ACN,Accenture,MI,Marshall & Ilsley,Marshall & Ilsley was acquired by Bank of Montreal.,https://www.marketwatch.com/story/accenture-to-replace-marshall-ilsley-on-sp-500-2011-06-27 https://www.bloomberg.com/news/articles/2011-06-27/accenture-to-replace-marshall-ilsley-in-s-p-500-s-p-announces
+2011-06-30,MPC,Marathon Oil,RSH,RadioShack,Market capitalization changes.,http://www.standardandpoors.com/indices/articles/en/us/?articleType=PDF&assetID=1245307628841
+2011-06-01,ANR,Alpha Natural Resources,MEE,Massey Energy,Alpha Natural Resources acquired Massey Energy.,https://www.bloomberg.com/news/articles/2011-05-24/alpha-natural-to-replace-massey-energy-in-s-p-500
+2011-04-27,CMG,Chipotle Mexican Grill,NOVL,Novell,Novell was acquired by private equity firms.,http://www.standardandpoors.com/indices/articles/en/us/?assetID=1245303080455
+2011-04-01,BLK,BlackRock,GENZ,Genzyme,Genzyme was acquired by Sanofi Aventis.,https://www.prnewswire.com/news-releases/standard--poors-announces-change-to-us-index-118873854.html
+2011-03-31,EW,Edwards Lifesciences,Q,Qwest Communications,Qwest was acquired by CenturyLink.,https://www.forbes.com/2011/03/25/sp-says-edwards-life-sciences-to-replace-qwest-in-sp-500-marketnewsvideo.html
+2011-02-28,COV,Covidien,MFE,McAfee,McAfee was acquired by Intel .,https://www.wsj.com/articles/SB10001424052748704721104576106552693451710
+2011-02-25,JOYG,Joy Global,AYE,Allegheny Energy,Alleghany was acquired by First Energy.,https://www.marketwatch.com/story/joy-global-to-replace-allegheny-energy-in-sp-500-2011-02-16-185520
+2011-01-03,MMI,Motorola Mobility,MDP,Meredith Corp,Motorola completed the corporate spin-off of Motorola Mobility.,https://www.reuters.com/article/technology/s-p-says-adding-motorola-mobility-to-s-p-500-index-idUSN22112398/
+2010-12-17,CVC,Cablevision,KG,King Pharmaceuticals,King was acquired by Pfizer .,https://www.prnewswire.com/news-releases/standard--poors-announces-changes-to-us-indices-111631204.html
+2010-12-17,FFIV,F5 Networks,EK,Eastman Kodak,Market capitalization changes.,https://www.prnewswire.com/news-releases/standard--poors-announces-changes-to-us-indices-111631204.html
+2010-12-17,NFLX,Netflix,ODP,Office Depot,Market capitalization changes.,
+2010-12-17,NFX,Newfield Exploration,NYT,The New York Times Company,Market capitalization changes.,
+2010-11-17,IR,Ingersoll-Rand,PTV,Pactiv,Reynolds Group Holdings acquired Pactiv.,https://www.marketwatch.com/story/ingersoll-rand-replacing-pactiv-in-sp-500-2010-11-10
+2010-08-26,TYC,Tyco International,SII,Smith International,Smith was acquired by Schlumberger .,http://www.marketwatch.com/story/tyco-international-to-replace-smith-on-sp-500-2010-08-19
+2010-07-14,CB,Chubb,MIL,Millipore,Millipore was acquired by Merck KGaA.,http://www.marketwatch.com/story/reinsurer-ace-to-replace-millipore-in-sp-500-2010-07-08
+2010-06-30,QEP,QEP Resources,STR,Questar,"Company split. QEP retained, but ticker changed.",https://www.marketwatch.com/story/qep-resources-to-replace-questar-on-sp-500-2010-06-23-1828430
+2010-06-28,KMX,CarMax,XTO,XTO Energy,XTO was acquired by ExxonMobil .,http://www.marketwatch.com/story/carmax-replacing-xto-energy-on-the-sp-500-2010-06-22
+2010-04-29,CERN,Cerner,BJS,BJ Services,BJ Services was acquired by Baker Hughes .,https://www.wsj.com/articles/SB10001424052748703523204575130140773409572
+2010-02-26,HP,Helmerich & Payne,RX,IMS Health,IMS was acquired by affiliates of TPG Capital,https://www.wsj.com/articles/SB10001424052748703494404575081932713252238
+2009-12-18,V,Visa,CIEN,Ciena,Market capitalization changes.,https://www.brecorder.com/news/3709752/standard--poors-adding-five-companies-to-sp-500-index-20091213995856
+2009-12-18,MJN,Mead Johnson Nutrition,DYN,Dynegy,Market capitalization changes.,https://www.brecorder.com/news/3709752/standard--poors-adding-five-companies-to-sp-500-index-20091213995856
+2009-12-18,CLF,Cliffs Natural Resources,KBH,KB Home,Market capitalization changes.,https://www.brecorder.com/news/3709752/standard--poors-adding-five-companies-to-sp-500-index-20091213995856
+2009-12-18,SAI,SAIC,CVG,Convergys,Market capitalization changes.,https://www.brecorder.com/news/3709752/standard--poors-adding-five-companies-to-sp-500-index-20091213995856
+2009-12-18,ROST,Ross Stores,MBI,MBIA,Market capitalization changes.,https://www.brecorder.com/news/3709752/standard--poors-adding-five-companies-to-sp-500-index-20091213995856
+2009-11-03,PCLN,Priceline.com,SGP,Schering-Plough,Schering-Plough was acquired by Merck & Co.,https://www.bloomberg.com/news/articles/2009-10-29/priceline-com-to-replace-schering-plough-in-s-p-500
+2009-09-28,ARG,Airgas,CBE,Cooper Industries,Cooper redomesticated to Ireland.,https://www.bloomberg.com/news/articles/2009-08-28/airgas-to-replace-cooper-industries-in-s-p-500-index
+2009-08-19,FMC,FMC Corporation,CTX,Centex Corp.,Centex was acquired by Pulte Homes .,https://www.sandiegouniontribune.com/2009/08/11/sp-adding-fmc-to-sp-500-replacing-centex/
+2009-06-29,PCS,MetroPCS,,,,https://www.rttnews.com/985877/metropcs-communications-to-replace-tyco-electronics-in-s-p-500-quick-facts.aspx
+2009-06-25,,,TEL,TE Connectivity,"Tyco Electronics was removed because it was reincorporating in Switzerland, making it ineligible for inclusion.",https://www.rttnews.com/985877/metropcs-communications-to-replace-tyco-electronics-in-s-p-500-quick-facts.aspx
+2009-06-05,FTI,FMC Technologies,COV,Covidien,"Covidien moved its place of incorporation to Ireland, making it ineligible for inclusion in the index.",
+2009-03-03,HRL,Hormel Foods,ACAS,American Capital,Market capitalization changes.,https://www.marketwatch.com/story/hormel-ventas-new-additions-sp-500
+2009-03-03,VTR,Ventas,JNY,Jones Apparel Group,Market capitalization changes.,https://www.marketwatch.com/story/hormel-ventas-new-additions-sp-500
+2008-12-31,OI,Owens-Illinois,WB,Wachovia Bank,Wachovia Bank was acquired by Wells Fargo .,https://www.toledoblade.com/local/2008/12/25/Owens-Illinois-Inc-headed-back-to-S-P-500-stock-index/stories/200812250071
+2008-09-16,HRS,Harris Corporation,LEH,Lehman Brothers,Lehman Brothers filed for bankruptcy .,https://www.wsj.com/articles/SB122153819736141943
+2008-09-12,CRM,Salesforce,FRE,Freddie Mac,Market capitalization changes.,https://www.barrons.com/articles/BL-TB-8680
+2008-09-12,FAST,Fastenal,FNM,Fannie Mae,Market capitalization changes.,https://www.barrons.com/articles/BL-TB-8680
+2008-07-01,AKS,AK Steel,CFC,Countrywide Financial Corp,Market capitalization changes.,https://www.reuters.com/article/sandp-aksteel/ak-steel-to-replace-countrywide-on-sp-500-index-idUSWNAS944120080626/
+2008-06-23,COG,Cabot Oil & Gas,BC,Brunswick,Market capitalization changes.,https://www.bloomberg.com/news/articles/2008-06-12/massey-energy-cabot-oil-gas-to-join-s-p-500-index-s-p-says
+2008-06-23,MEE,Massey Energy,OMX,OfficeMax,Market capitalization changes.,https://www.bloomberg.com/news/articles/2008-06-12/massey-energy-cabot-oil-gas-to-join-s-p-500-index-s-p-says
+2008-06-10,LO,Lorillard Tobacco Company,ABK,Ambac Financial,Market capitalization changes.,https://jp.reuters.com/article/lorillard-to-replace-ambac-in-sp-500-index-idUSN03417711/ https://www.wsj.com/articles/BL-MB-3544
+2007-12-20,RRC,Range Resources,TRB,Tribune Media,Tribune was acquired.,https://www.marketwatch.com/story/range-resources-to-replace-tribune-co-on-sp-500
+2007-12-13,GME,GameStop,DJ,Dow Jones,Dow Jones was acquired by News Corporation .,https://www.nytimes.com/2007/12/17/technology/17gamestop.html
+2007-10-26,JEC,Jacobs Engineering Group,AV,Avaya,Avaya was acquired.,https://www.marketwatch.com/story/jacobs-engineering-to-replace-avaya-in-sp-500-thursday
+2007-10-02,EXPE,Expedia,SLR,Solectron,Solectron was acquired by Flextronics .,https://media.corporate-ir.net/media_files/irol/21/215054/092707.pdf
+2007-10-01,TDC,Teradata,NCR,NCR Corporation,NCR Corporation completed the corporate spin-off of Teradata.,https://media.corporate-ir.net/media_files/irol/21/215054/092707.pdf
+2007-09-27,TSO,Tesoro Corporation,MXIM,Maxim Integrated Products,MXIM was delisted from NASDAQ exchange.,https://media.corporate-ir.net/media_files/irol/21/215054/092707.pdf
+2007-09-26,ICE,Intercontinental Exchange,FDC,First Data,FDC was acquired by KKR .,https://media.corporate-ir.net/media_files/irol/21/215054/092707.pdf
+2007-08-24,LUK,Leucadia National,KSE,KeySpan,KeySpan was acquired by National Grid plc .,https://www.reuters.com/article/sp500-changes/leucadia-to-replace-keyspan-in-sp-500-idUKN1642868720070816/
+2007-07-02,DFS,Discover Financial,ADCT,ADC Telecommunications,Discover Financial Services was listed on New York Stock Exchange.,https://www.reuters.com/article/markets/tyco-spin-offs-discover-to-join-sp-500-idUSN21420089/
+2007-03-30,KFT,Kraft Foods,TSG,Sabre Corporation,Sabre was acquired.,https://www.cnbc.com/2007/03/23/kraft-replaces-sabre-in-sp-500-kodak-in-sp-100.html
+2007-01-10,AVB,AvalonBay Communities,SBL,Symbol Technologies,Symbol Technologies was acquired by Motorola.,https://www.marketwatch.com/story/avalonbay-tapped-as-reit-no-12-in-the-sp-500
+2006-06-02,JNPR,Juniper Networks,ABS,Albertsons,Albertsons was acquired by SuperValu and CVS Corp.,https://www.latimes.com/archives/la-xpm-2006-may-26-fi-wrap26.2-story.html
+2005-11-18,AMZN,Amazon,T,AT&T Corporation,AT&T Corp. was acquired by SBC Communications,https://www.wsj.com/articles/SB113207902652797811
+2005-07-01,STZ,Constellation Brands,GLK,Great Lakes Chemical,Great Lakes Chemical was acquired by Crompton Corp.,https://www.cbrands.com/blogs/press-releases/constellation-brands-to-be-added-to-s-p-500
+2003-09-25,ESRX,Express Scripts,QTRN,Quintiles Transnational,Acquired.,
+2000-12-05,INTU,Intuit,BS,Bethlehem Steel,Market capitalization changes.,https://www.nytimes.com/2000/12/05/business/s-p-eliminates-4-old-line-stocks-from-its-500-index.html
+2000-12-05,SBL,Symbol Technologies,OI,Owens-Illinois,Market capitalization changes.,https://www.nytimes.com/2000/12/05/business/s-p-eliminates-4-old-line-stocks-from-its-500-index.html
+2000-12-05,AYE,Allegheny Energy,GRA,WR Grace,Market capitalization changes.,https://www.nytimes.com/2000/12/05/business/s-p-eliminates-4-old-line-stocks-from-its-500-index.html
+2000-12-05,ABK,Ambac Financial,CCK,Crown Holdings,Market capitalization changes.,https://www.nytimes.com/2000/12/05/business/s-p-eliminates-4-old-line-stocks-from-its-500-index.html
+2000-07-27,JDSU,JDS Uniphase,RAD,Rite Aid,Market capitalization changes.,https://www.marketwatch.com/story/jds-uniphase-jumps-into-sp-500
+2000-06-12,CVG,Convergys,TMC,Times Mirror,Tribune Co. acquired Times Mirror.,
+2000-06-07,SBUX,Starbucks,SMS,Shared Medical Systems,Siemens AG acquired Shared Medical Systems.,https://www.marketwatch.com/story/starbucks-joins-the-sp-500
+1999-12-08,YHOO,Yahoo!,LDW,Laidlaw,Market capitalization changes.,https://www.latimes.com/archives/la-xpm-1999-dec-01-fi-39314-story.html
+1999-06-09,WLP,Wellpoint,HPH,Harnischfeger Industries,Harnischfeger filed for bankruptcy.,https://www.latimes.com/archives/la-xpm-1999-jun-09-nc-45825-story.html
+1999-04-12,ACT,Actavis,,,Actavis plc was added to the S&P 500.,
+1998-12-11,FSR,Firstar,AN,Amoco,BP purchased Amoco.,https://www.latimes.com/archives/la-xpm-1998-dec-11-fi-52806-story.html
+1998-12-11,CCL,Carnival Corporation,GRN,General Re,Berkshire Hathaway acquired General Re.,https://www.latimes.com/archives/la-xpm-1998-dec-11-fi-52806-story.html
+1998-12-11,CPWR,Compuware,SUN,SunAmerica,AIG acquired SunAmerica.,https://www.latimes.com/archives/la-xpm-1998-dec-11-fi-52806-story.html
+1997-06-17,CCR,Countrywide Credit Industries,USL,USLife,AIG acquired USLife.,https://www.nytimes.com/1997/06/13/business/s-p-500-replacement.html
+1994-09-30,NCC,National City,MCK,McKesson,McKesson sold PCS Health Services to Eli Lilly .,"https://books.google.com/books?id=8oEUAAAAIBAJ&dq=Standard+and+Poor+added+company&pg=PA14&article_id=2831,122476"
+1976-07-01,BUD,Anheuser Busch,HNG,Houston Natural Gas,"S&P 500 reorganized to have fewer industrials and utilities, and more financial companies to add ""new strength and breadth"".","https://books.google.com/books?id=m6swAAAAIBAJ&dq=S+%26+P+500+added+new+constituent&pg=PA13&article_id=4737,1456335"
+1976-07-01,DIS,The Walt Disney Company,AYE,Allegheny Energy,"S&P 500 reorganized to have fewer industrials and utilities, and more financial companies to add ""new strength and breadth"".","https://books.google.com/books?id=m6swAAAAIBAJ&dq=S+%26+P+500+added+new+constituent&pg=PA13&article_id=4737,1456335"

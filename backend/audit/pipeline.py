@@ -10,7 +10,10 @@ Verdict rollup (Section 3, determinized — documented in DECISIONS.md):
 3. net-20bps (full window) trails   → AMBER "Beats gross, dies at 20 bps"
 4. no bear market in window         → AMBER "…but your window has no bear market"
 5. sensitivity flipped              → AMBER "…but depends on a parameter choice"
-6. otherwise                        → GREEN "Survived the gauntlet" (rare)
+6. ranked on a hand-picked list     → AMBER "…but your universe is hand-picked"
+7. ranked on an index without
+   trustworthy point-in-time data   → AMBER "…but on today's index membership"
+8. otherwise                        → GREEN "Survived the gauntlet" (rare)
 The verdict always quotes the pessimistic cell: net-of-costs, holdout.
 """
 from __future__ import annotations
@@ -27,6 +30,7 @@ from audit.findings import Finding, sort_findings
 from audit.lookahead import lookahead_statement
 from dsl.readback import readback
 from dsl.schema import StrategySpec
+from dsl.membership import load_membership
 from dsl.universes import preset_tickers
 from engine import metrics
 from engine.backtest import run
@@ -251,8 +255,14 @@ def build_report(
     # window itself (and discloses its own shortfalls). Cash earns this rate,
     # closing the hurdle-vs-cash-yield disagreement conventions.py documented.
     rf_panel, _, rf_source, _ = _rf_daily(panel, panel.prices.index)
+    # Index presets pick only from the index as it stood on each signal date
+    # when dated membership covers the window (audit/universe.py).
+    membership_use = universe_mod.membership_for(spec)
+    membership_mask = membership_use.mask(panel.prices.index, universe_tickers)
     result = run(spec, panel.prices, universe_tickers,
-                 rf_daily=None if rf_source == "none" else rf_panel)
+                 rf_daily=None if rf_source == "none" else rf_panel,
+                 membership=membership_mask)
+    membership_use.measure(result.signal_dates, panel.prices)
 
     # Metrics need the same rate on the ACCRUAL calendar; metrics._excess
     # refuses partial coverage, which is why this is derived, not resliced.
@@ -277,7 +287,7 @@ def build_report(
 
     # ---- selection bias (may trigger a neutral-universe re-run) ----
     bias_finding, neutral_rerun = universe_mod.check_selection_bias(
-        spec, net5, progress=report_progress
+        spec, net5, membership_use, progress=report_progress
     )
     findings.append(bias_finding)
 
@@ -287,6 +297,10 @@ def build_report(
     known_large = set(preset_tickers("sp500")) | set(preset_tickers("nasdaq100")) \
         | set(preset_tickers("dow30")) | set(BENCHMARK_TICKERS["sixty_forty"]) \
         | {"QQQ", "DIA"}
+    sp500_history = load_membership("sp500")
+    if sp500_history is not None:
+        # Former members were large caps while they were in the index.
+        known_large |= set(sp500_history.symbols_between(sp500_history.coverage_start, None))
     spread_note = costs_mod.small_cap_note(universe_tickers, known_large)
     if spread_note:
         findings.append(spread_note)
@@ -303,6 +317,7 @@ def build_report(
     sens_rows, sens_finding = oos.sensitivity(
         spec, panel.prices, universe_tickers,
         metrics.total_return(net5), bench, progress=report_progress,
+        membership=membership_mask,
     )
     if sens_finding:
         findings.append(sens_finding)
@@ -464,25 +479,13 @@ def build_report(
                 "re-run it on the full S&P 500."
             ),
         }
-    elif (spec.universe.preset in ("sp500", "nasdaq100", "dow30")
-          and spec.selection.static_allocation is None
-          and (1 + metrics.total_return(net20))
-              / max(1 + metrics.total_return(bench), 1e-9) > 2.0):
-        # Extreme outperformance on a CURRENT-members index list gets the
-        # same 2× discipline as hand-picked universes: today's constituents
-        # include exactly the stocks that mooned into the index, and a
-        # ranked strategy harvesting them cannot be called a survivor.
-        verdict = {
-            "color": "amber", "icon": "▲",
-            "headline": "Beats the benchmark — but on today's index membership.",
-            "sub": (
-                "This preset uses the index's CURRENT constituents, which "
-                "include exactly the winners that grew into it. Outperformance "
-                "this large (>2× in wealth terms) is what index survivorship "
-                "inflates — point-in-time membership data (V1) is the honest "
-                "test."
-            ),
-        }
+    elif (index_verdict := universe_mod.membership_verdict(membership_use)) is not None:
+        # A ranked strategy on an index without trustworthy point-in-time
+        # membership is picking from a survivor-loaded list. This used to fire
+        # only above a 2× wealth gap, and a +3553% S&P 500 momentum run earned
+        # GREEN under it: today's constituents include exactly the winners
+        # that grew into the index, so no size of margin clears that list.
+        verdict = index_verdict
     else:
         verdict = {
             "color": "green", "icon": "✓",
@@ -541,6 +544,7 @@ def build_report(
             "requested_start": spec.window.start,
             "requested_end": spec.window.end,
             "rf_source": rf_source,
+            "universe_membership": membership_use.to_dict(),
         },
         "spec": spec.model_dump(mode="json"),
         "readback": readback(spec),

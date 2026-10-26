@@ -5,10 +5,13 @@ exactly why the lists are CHECKED IN as seeds and this script is a manual,
 occasional refresh (not a runtime dependency). Each output file records its
 source and snapshot date on the first lines.
 
-V0 honesty caveat (disclosed by the audit on every run): these are *current*
-constituent lists. Backtests over past windows using today's members carry
-survivorship bias — smaller than a hand-picked list, but real. True
-point-in-time membership needs licensed data (V1).
+Honesty caveat (disclosed by the audit on every run): these are *current*
+constituent lists, and backtesting past windows on today's members is
+survivorship-biased — on this project's own S&P 500 momentum runs, by an order
+of magnitude. S&P 500 windows from 2015 use point-in-time membership instead
+(scripts/build_sp500_membership.py); these lists remain the universe for the
+Nasdaq-100, the Dow 30 and earlier S&P 500 windows, and the audit caps a
+ranked strategy on them at amber.
 
 Usage: .venv/bin/python scripts/refresh_universes.py
 """

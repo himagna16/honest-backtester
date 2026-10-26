@@ -1,10 +1,10 @@
 "use client";
 
-// LiveDemo — a self-playing replay of report rep_2c6332f417, a 126-day-lookback
-// War-list run (not the founding-story backtest; the landing caption says so).
-// Four scenes on a loop: the strategy is typed, read back as a spec,
-// audited, and stamped with the amber verdict. Pure React + CSS; every number
-// comes from ./demoData, which is transcribed verbatim from the exported run.
+// LiveDemo — a self-playing replay of report rep_9534f1bae0, a 126-day-lookback
+// War-list run (not the founding-story backtest; the landing caption says so),
+// re-run against the point-in-time S&P 500. Four scenes on a loop: the strategy
+// is typed, read back as a spec, audited, and stamped with the red verdict. Pure
+// React + CSS; every number comes from ./demoData, which is read from that report.
 //
 // Motion contract: one rAF clock drives a declarative timeline; everything on
 // screen is derived from a single elapsed-ms value, so pause, scene jumps and
@@ -56,6 +56,9 @@ const TYPE_END = CHAR_AT[CHAR_AT.length - 1];
 const ROW_STEP = 480; // audit rows land every 480 ms
 const ROW_LEAD = 350; // first row after the scene settles
 const ROW_COUNT = AUDIT_ROWS.length + 1; // + the neutral re-run sub-row
+
+const SEVERITY_MARK = { pass: "✓", warning: "▲", fatal: "✕" } as const;
+const SEVERITY_TAG = { pass: "Pass", warning: "Warning", fatal: "Fatal" } as const;
 
 // Scene lengths (ms). Holds are the reading pauses between scenes; the
 // verdict holds ~5 s before the loop restarts.
@@ -354,19 +357,19 @@ export default function LiveDemo() {
     <section
       className="bs-demo"
       data-ready={ready ? "1" : "0"}
-      aria-label={`Self-playing replay of backtest run ${REPORT_ID}: a plain-English strategy is read back as a spec, audited, and stamped with an amber verdict — beats the benchmark, but the universe is hand-picked.`}
+      aria-label={`Self-playing replay of backtest run ${REPORT_ID}: a plain-English strategy is read back as a spec, audited, and stamped with a red verdict — selection bias detected, so the result is not trustworthy.`}
     >
       {/* Everything the animation shows, in one static sentence for screen
           readers; the ticking scenes below are decorative repetition. */}
       <p className="bs-demo-sr">
         The strategy “{TYPED_STRATEGY}” is read back as a spec —{" "}
         {SPEC_CHIPS.join(", ").toLowerCase()} — and audited: five checks pass,
-        one warns that the 44-ticker universe is hand-picked.{" "}
+        and one is fatal: the 44-ticker universe is hand-picked.{" "}
         {NEUTRAL_RERUN.lead}
         {NEUTRAL_RERUN.sp500}
         {NEUTRAL_RERUN.mid}
         {NEUTRAL_RERUN.user}
-        {NEUTRAL_RERUN.tail} Verdict: amber — {VERDICT.headline} Strategy
+        {NEUTRAL_RERUN.tail} Verdict: red — {VERDICT.headline} {VERDICT.sub}. Strategy
         versus SPY buy-and-hold:{" "}
         {METRIC_PAIRS.map((m) => `${m.label} ${m.strategy} vs ${m.spy}`).join(
           ", ",
@@ -451,12 +454,10 @@ export default function LiveDemo() {
                   className={`${row.severity}${i < frame.rows ? " is-in" : ""}`}
                 >
                   <span className="mark" aria-hidden="true">
-                    {row.severity === "warning" ? "▲" : "✓"}
+                    {SEVERITY_MARK[row.severity]}
                   </span>
                   <span className="name">{row.name}</span>
-                  <span className="tag">
-                    {row.severity === "warning" ? "Warning" : "Pass"}
-                  </span>
+                  <span className="tag">{SEVERITY_TAG[row.severity]}</span>
                 </li>
               ))}
               <li
@@ -477,12 +478,15 @@ export default function LiveDemo() {
             aria-hidden={sceneHidden(3)}
           >
             <p className="ld-kicker">04 · Verdict</p>
-            <p className={`ld-stamp${frame.stamp ? " is-in" : ""}`}>
-              <span aria-hidden="true">▲ </span>
+            <p className={`ld-stamp red${frame.stamp ? " is-in" : ""}`}>
+              <span aria-hidden="true">✕ </span>
               {VERDICT.stamp}
             </p>
             <p className={`ld-verdict${frame.stamp ? " is-in" : ""}`}>
               {VERDICT.headline}
+            </p>
+            <p className={`ld-verdict-sub${frame.stamp ? " is-in" : ""}`}>
+              {VERDICT.sub}
             </p>
 
             <dl className={`ld-metrics${frame.metrics ? " is-in" : ""}`}>

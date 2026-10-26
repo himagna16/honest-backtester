@@ -144,7 +144,7 @@ const NUM_RE = /\d[\d.]*/; // first run of digits in the printed string
 
 export type FigureCountProps = {
   /**
-   * The exact final printed string: "+1650%", "+163%", "Lost".
+   * The exact final printed string: "+1650%", "+159%", "Lost".
    * Contains digits -> counts up and lands on this exact string.
    * Contains none  -> stamped in (slight scale + opacity), never counted.
    */
